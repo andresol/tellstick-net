@@ -1,0 +1,20 @@
+     1: #include "crc.h"
+     2: 
+     3: unsigned char calculateCrc8(unsigned char crc, const unsigned char c, unsigned char polynom)
+     4: {
+     5:         unsigned int i;
+     6:         int onebit;
+     7: 
+     8:         for (i = 0x80; i > 0; i >>= 1) {
+     9:                 onebit = !!(crc & 0x80);
+    10:                 if (c & i) {
+    11:                         onebit = !onebit;
+    12:                 }
+    13:                 crc <<= 1;
+    14:                 if (onebit) {
+    15:                         crc ^= polynom;
+    16:                 }
+    17:         }
+    18:         crc &= 0xff;
+    19:         return crc & 0xff;
+    20: }

@@ -1,0 +1,4692 @@
+[p LITE_MODE AUTOSTATIC LFSROK EMI_WORD ]
+[d version 1.1 ]
+[d edition pro ]
+[d chip 18F67J60 ]
+[s S21 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S27 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"1569 /usr/hitech/picc-18/pro/9.66/include/pic18.h
+[e E3956 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"141 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DHCP.h
+[s S38 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S41 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S46 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S49 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S66 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S71 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S74 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S107 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S115 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S119 . 6 `[6]uc 1 v 6 0 ]
+[s S121 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+[s S139 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S145 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"170 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[e E3956 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[s S166 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S169 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S174 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S177 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S194 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S199 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S202 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S235 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S243 . 6 `[6]uc 1 v 6 0 ]
+[s S245 . 10 `S107 1 IPAddr 4 0 `S119 1 MACAddr 6 4 ]
+[u S248 . 10 `S245 1 remoteNode 10 0 `ul 1 remoteHost 4 0 ]
+[e E4932 . `uc
+UDP_DNS_IS_RESOLVED 0
+UDP_DNS_RESOLVE 1
+UDP_GATEWAY_SEND_ARP 2
+UDP_GATEWAY_GET_ARP 3
+UDP_CLOSED 4
+UDP_OPENED 5
+]
+[s S258 . 1 `uc 1 bRemoteHostIsROM 1 0 :1:0 
+]
+[s S260 . 23 `S248 1 remote 10 0 `us 1 remotePort 2 10 `us 1 localPort 2 12 `E4932 1 smState 1 14 `ul 1 retryInterval 4 15 `uc 1 retryCount 1 19 `S258 1 flags 1 20 `us 1 eventTime 2 21 ]
+"91 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[s S279 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S283 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+"158 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[s S299 . 37 `[6]uc 1 MACAddr 6 0 `[11]uc 1 secret 11 6 `S107 1 ipAddr 4 17 `S107 1 netmask 4 21 `S107 1 gateway 4 25 `S107 1 dns1 4 29 `S107 1 dns2 4 33 ]
+"23 /home/andresol/tellstick-net/firmware/discovery.c
+[e E5292 . `uc
+DISCOVERY_HOME 0
+DISCOVERY_LISTEN 1
+DISCOVERY_REQUEST_RECEIVED 2
+DISCOVERY_DISABLED 3
+]
+[s S320 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S326 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+[s S359 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S365 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[e E5348 . `uc
+SM_CLEARED 0
+SM_PARSE_SIGNATURE 1
+SM_PARSE_LENGTH 2
+SM_PARSE_MESSAGE 3
+SM_MESSAGE_RECEIVED 4
+]
+"41 /usr/hitech/picc-18/pro/9.66/include/string.h
+[e E4014 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"50
+[e E4910 . `uc
+HASH_MD5 0
+HASH_SHA1 1
+]
+[s S406 . 89 `ul 1 h0 4 0 `ul 1 h1 4 4 `ul 1 h2 4 8 `ul 1 h3 4 12 `ul 1 h4 4 16 `ul 1 bytesSoFar 4 20 `[64]uc 1 partialBlock 64 24 `E4910 1 hashType 1 88 ]
+[s S487 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S493 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"9 /home/andresol/tellstick-net/firmware/livemessage.h
+[e E3956 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"18 /home/andresol/tellstick-net/firmware/localaccess.c
+[e E5330 . `uc
+LA_RESET 0
+LA_LISTEN 1
+]
+[s S514 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S520 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[s S524 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S527 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S532 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S535 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S552 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S557 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S560 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S593 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S601 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S605 . 6 `[6]uc 1 v 6 0 ]
+[s S607 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+"28 /home/andresol/tellstick-net/firmware/main.c
+[s S619 . 37 `[6]uc 1 MACAddr 6 0 `[11]uc 1 secret 11 6 `S107 1 ipAddr 4 17 `S107 1 netmask 4 21 `S107 1 gateway 4 25 `S107 1 dns1 4 29 `S107 1 dns2 4 33 ]
+"29
+[s S628 . 1 `Vuc 1 RBIF 1 0 :1:0 
+`Vuc 1 INT0IF 1 0 :1:1 
+`Vuc 1 TMR0IF 1 0 :1:2 
+`Vuc 1 RBIE 1 0 :1:3 
+`Vuc 1 INT0IE 1 0 :1:4 
+`Vuc 1 TMR0IE 1 0 :1:5 
+`Vuc 1 PEIE_GIEL 1 0 :1:6 
+`Vuc 1 GIE_GIEH 1 0 :1:7 
+]
+[s S637 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 . 1 0 :1:1 
+`Vuc 1 . 1 0 :1:2 
+`Vuc 1 . 1 0 :1:3 
+`Vuc 1 . 1 0 :1:4 
+`Vuc 1 . 1 0 :1:5 
+`Vuc 1 PEIE 1 0 :1:6 
+`Vuc 1 GIE 1 0 :1:7 
+]
+[s S646 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 . 1 0 :1:1 
+`Vuc 1 . 1 0 :1:2 
+`Vuc 1 . 1 0 :1:3 
+`Vuc 1 . 1 0 :1:4 
+`Vuc 1 . 1 0 :1:5 
+`Vuc 1 GIEL 1 0 :1:6 
+`Vuc 1 GIEH 1 0 :1:7 
+]
+[s S655 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 . 1 0 :1:1 
+`Vuc 1 . 1 0 :1:2 
+`Vuc 1 . 1 0 :1:3 
+`Vuc 1 . 1 0 :1:4 
+`Vuc 1 . 1 0 :1:5 
+`Vuc 1 . 1 0 :1:6 
+`Vuc 1 . 1 0 :1:7 
+]
+[s S664 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 INT0F 1 0 :1:1 
+`Vuc 1 T0IF 1 0 :1:2 
+`Vuc 1 . 1 0 :1:3 
+`Vuc 1 INT0E 1 0 :1:4 
+`Vuc 1 T0IE 1 0 :1:5 
+`Vuc 1 . 1 0 :1:6 
+`Vuc 1 . 1 0 :1:7 
+]
+[s S673 . 1 `Vuc 1 . 1 0 :6:0 
+`Vuc 1 . 1 0 :1:6 
+`Vuc 1 . 1 0 :1:7 
+]
+[u S677 . 1 `S628 1 . 1 0 `S637 1 . 1 0 `S646 1 . 1 0 `S655 1 . 1 0 `S664 1 . 1 0 `S673 1 . 1 0 ]
+"3 /home/andresol/tellstick-net/rf/transmit.h
+[s S697 . 1 `Vuc 1 nBOR 1 0 :1:0 
+`Vuc 1 nPOR 1 0 :1:1 
+`Vuc 1 nPD 1 0 :1:2 
+`Vuc 1 nTO 1 0 :1:3 
+`Vuc 1 nRI 1 0 :1:4 
+`Vuc 1 . 1 0 :2:5 
+`Vuc 1 IPEN 1 0 :1:7 
+]
+[s S705 . 1 `Vuc 1 BOR 1 0 :1:0 
+`Vuc 1 POR 1 0 :1:1 
+`Vuc 1 PD 1 0 :1:2 
+`Vuc 1 TO 1 0 :1:3 
+`Vuc 1 RI 1 0 :1:4 
+]
+[u S711 . 1 `S697 1 . 1 0 `S705 1 . 1 0 ]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[e E208 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"31 /home/andresol/tellstick-net/firmware/main.c
+[v F5354 `(v  1 t 0 ]
+"41
+[v F5357 `(v  1 t 0 ]
+[s S764 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S770 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+[s S803 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S809 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[e E5286 . `uc
+PWM 0
+BLINK 1
+FIXED 2
+]
+[s S817 pwms 9 `uc 1 duty 1 0 `uc 1 fixedDuty 1 1 `c 1 dir 1 2 `uc 1 pulses 1 3 `E5286 1 type 1 4 `ul 1 blinkTimer 4 5 ]
+[s S864 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S870 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+[s S903 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S909 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+[s S941 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S947 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"22 /home/andresol/tellstick-net/firmware/tellsticknet.c
+[s S953 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S956 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S961 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S964 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S981 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S986 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S989 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S1022 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S1030 . 6 `[6]uc 1 v 6 0 ]
+[s S1032 . 10 `S107 1 IPAddr 4 0 `S119 1 MACAddr 6 4 ]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[u S1037 . 10 `S245 1 remoteNode 10 0 `ul 1 remoteHost 4 0 ]
+[e E4932 . `uc
+UDP_DNS_IS_RESOLVED 0
+UDP_DNS_RESOLVE 1
+UDP_GATEWAY_SEND_ARP 2
+UDP_GATEWAY_GET_ARP 3
+UDP_CLOSED 4
+UDP_OPENED 5
+]
+[s S1047 . 1 `uc 1 bRemoteHostIsROM 1 0 :1:0 
+]
+[s S1049 . 23 `S248 1 remote 10 0 `us 1 remotePort 2 10 `us 1 localPort 2 12 `E4932 1 smState 1 14 `ul 1 retryInterval 4 15 `uc 1 retryCount 1 19 `S258 1 flags 1 20 `us 1 eventTime 2 21 ]
+"61
+[e E3956 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"2 /home/andresol/tellstick-net/rf/transmit.h
+[s S1084 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S1088 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[s S1100 . 37 `[6]uc 1 MACAddr 6 0 `[11]uc 1 secret 11 6 `S107 1 ipAddr 4 17 `S107 1 netmask 4 21 `S107 1 gateway 4 25 `S107 1 dns1 4 29 `S107 1 dns2 4 33 ]
+[s S1156 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S1162 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"1569 /usr/hitech/picc-18/pro/9.66/include/pic18.h
+[e E3956 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+[s S1193 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S1199 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+[s S1312 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S1318 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[e E3934 . `uc
+SM_NONE 0
+SM_FIRST 1
+SM_OLD_BEFOREPARSE 2
+SM_OLD_PARSE 3
+SM_SECOND_NEW 4
+SM_THIRD_NEW 5
+SM_NEW_BEFOREPARSE 6
+SM_NEW_PARSE 7
+]
+[s S1391 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S1397 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+[e E3935 . `uc
+SM_WAIT 0
+SM_PARSE_ID 1
+SM_PARSE_DATA 2
+]
+[s S1439 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S1445 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+[e E3935 . `uc
+SM_PREAMBLE 0
+SM_SYNC 1
+SM_PARSE_V3ID 2
+SM_PARSE_PAYLOAD 3
+]
+[s S1487 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S1493 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+[s S1544 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S1550 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+[s S1574 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S1580 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+[s S1604 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S1610 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+[s S1614 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S1617 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S1622 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S1625 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S1642 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S1647 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S1650 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S1683 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S1691 . 6 `[6]uc 1 v 6 0 ]
+[s S1693 . 10 `S107 1 IPAddr 4 0 `S119 1 MACAddr 6 4 ]
+"79 /home/andresol/tellstick-net/tcpip/ARP.c
+[s S1697 . 28 `us 1 HardwareType 2 0 `us 1 Protocol 2 2 `uc 1 MACAddrLen 1 4 `uc 1 ProtocolLen 1 5 `us 1 Operation 2 6 `S119 1 SenderMACAddr 6 8 `S107 1 SenderIPAddr 4 14 `S119 1 TargetMACAddr 6 18 `S107 1 TargetIPAddr 4 24 ]
+[e E208 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[s S1714 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S1718 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+"423 /home/andresol/tellstick-net/tcpip/ARP.c
+[e E5287 . `uc
+SM_ARP_IDLE 0
+SM_ARP_REPLY 1
+]
+[s S1764 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S1770 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"3016 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[s S1781 . 1 `Vuc 1 ADON 1 0 :1:0 
+`Vuc 1 GO_nDONE 1 0 :1:1 
+`Vuc 1 CHS 1 0 :4:2 
+]
+[s S1785 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 . 1 0 :1:1 
+`Vuc 1 . 1 0 :4:2 
+]
+[s S1789 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 DONE 1 0 :1:1 
+`Vuc 1 CHS0 1 0 :1:2 
+`Vuc 1 CHS1 1 0 :1:3 
+`Vuc 1 CHS2 1 0 :1:4 
+`Vuc 1 CHS3 1 0 :1:5 
+`Vuc 1 . 1 0 :1:6 
+`Vuc 1 ADCAL 1 0 :1:7 
+]
+[s S1798 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 GO_DONE 1 0 :1:1 
+]
+[s S1801 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 GO 1 0 :1:1 
+]
+[s S1804 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 nDONE 1 0 :1:1 
+]
+[u S1807 . 1 `S1781 1 . 1 0 `S1785 1 . 1 0 `S1789 1 . 1 0 `S1798 1 . 1 0 `S1801 1 . 1 0 `S1804 1 . 1 0 ]
+"2631
+[s S1815 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S1818 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S1823 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S1826 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S1843 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S1848 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S1851 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S1884 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[e E208 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"220 /home/andresol/tellstick-net/tcpip/Helpers.c
+[u S1908 . 4 `ul 1 dw 4 0 `[2]us 1 w 4 0 ]
+"1165
+[u S1960 . 4 `[2]us 1 w 4 0 `ul 1 dw 4 0 ]
+[s S1981 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S1987 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[s S1991 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S1994 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S1999 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S2002 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S2019 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S2024 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S2027 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S2060 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S2068 . 6 `[6]uc 1 v 6 0 ]
+[s S2070 . 10 `S107 1 IPAddr 4 0 `S119 1 MACAddr 6 4 ]
+"168 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[s S2077 _IP_HEADER 20 `uc 1 VersionIHL 1 0 `uc 1 TypeOfService 1 1 `us 1 TotalLength 2 2 `us 1 Identification 2 4 `us 1 FragmentInfo 2 6 `uc 1 TimeToLive 1 8 `uc 1 Protocol 1 9 `us 1 HeaderChecksum 2 10 `S107 1 SourceAddress 4 12 `S107 1 DestAddress 4 16 ]
+[e E208 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"292
+[s S2093 . 14 `S119 1 DestMACAddr 6 0 `S119 1 SourceMACAddr 6 6 `S66 1 Type 2 12 ]
+[s S2112 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S2118 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"102 /home/andresol/tellstick-net/tcpip/IP.c
+[s S2124 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S2127 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S2132 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S2135 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S2152 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S2157 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S2160 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S2193 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S2201 . 6 `[6]uc 1 v 6 0 ]
+[s S2203 . 10 `S107 1 IPAddr 4 0 `S119 1 MACAddr 6 4 ]
+[e E208 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+[s S2209 _IP_HEADER 20 `uc 1 VersionIHL 1 0 `uc 1 TypeOfService 1 1 `us 1 TotalLength 2 2 `us 1 Identification 2 4 `us 1 FragmentInfo 2 6 `uc 1 TimeToLive 1 8 `uc 1 Protocol 1 9 `us 1 HeaderChecksum 2 10 `S107 1 SourceAddress 4 12 `S107 1 DestAddress 4 16 ]
+"105
+[s S2226 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S2230 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+[s S2262 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S2268 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[e E5275 . `uc
+SM_STACK_IDLE 0
+SM_STACK_MAC 1
+SM_STACK_IP 2
+SM_STACK_ARP 3
+SM_STACK_TCP 4
+SM_STACK_UDP 5
+]
+"78 /home/andresol/tellstick-net/tcpip/StackTsk.c
+[s S2280 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S2283 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S2288 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S2291 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S2308 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S2313 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S2316 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S2349 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S2357 . 6 `[6]uc 1 v 6 0 ]
+[s S2359 . 10 `S107 1 IPAddr 4 0 `S119 1 MACAddr 6 4 ]
+"80
+[s S2363 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S2367 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[e E208 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+[s S2422 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S2428 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"3012 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[s S2436 . 1 `Vuc 1 RBIP 1 0 :1:0 
+`Vuc 1 INT3IP 1 0 :1:1 
+`Vuc 1 TMR0IP 1 0 :1:2 
+`Vuc 1 INTEDG3 1 0 :1:3 
+`Vuc 1 INTEDG2 1 0 :1:4 
+`Vuc 1 INTEDG1 1 0 :1:5 
+`Vuc 1 INTEDG0 1 0 :1:6 
+`Vuc 1 nRBPU 1 0 :1:7 
+]
+[s S2445 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 . 1 0 :1:1 
+`Vuc 1 T0IP 1 0 :1:2 
+`Vuc 1 . 1 0 :3:3 
+`Vuc 1 . 1 0 :1:6 
+`Vuc 1 RBPU 1 0 :1:7 
+]
+[u S2452 . 1 `S2436 1 . 1 0 `S2445 1 . 1 0 ]
+"3238
+[s S2456 . 1 `Vuc 1 RBIF 1 0 :1:0 
+`Vuc 1 INT0IF 1 0 :1:1 
+`Vuc 1 TMR0IF 1 0 :1:2 
+`Vuc 1 RBIE 1 0 :1:3 
+`Vuc 1 INT0IE 1 0 :1:4 
+`Vuc 1 TMR0IE 1 0 :1:5 
+`Vuc 1 PEIE_GIEL 1 0 :1:6 
+`Vuc 1 GIE_GIEH 1 0 :1:7 
+]
+[s S2465 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 . 1 0 :1:1 
+`Vuc 1 . 1 0 :1:2 
+`Vuc 1 . 1 0 :1:3 
+`Vuc 1 . 1 0 :1:4 
+`Vuc 1 . 1 0 :1:5 
+`Vuc 1 PEIE 1 0 :1:6 
+`Vuc 1 GIE 1 0 :1:7 
+]
+[s S2474 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 . 1 0 :1:1 
+`Vuc 1 . 1 0 :1:2 
+`Vuc 1 . 1 0 :1:3 
+`Vuc 1 . 1 0 :1:4 
+`Vuc 1 . 1 0 :1:5 
+`Vuc 1 GIEL 1 0 :1:6 
+`Vuc 1 GIEH 1 0 :1:7 
+]
+[s S2483 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 . 1 0 :1:1 
+`Vuc 1 . 1 0 :1:2 
+`Vuc 1 . 1 0 :1:3 
+`Vuc 1 . 1 0 :1:4 
+`Vuc 1 . 1 0 :1:5 
+`Vuc 1 . 1 0 :1:6 
+`Vuc 1 . 1 0 :1:7 
+]
+[s S2492 . 1 `Vuc 1 . 1 0 :1:0 
+`Vuc 1 INT0F 1 0 :1:1 
+`Vuc 1 T0IF 1 0 :1:2 
+`Vuc 1 . 1 0 :1:3 
+`Vuc 1 INT0E 1 0 :1:4 
+`Vuc 1 T0IE 1 0 :1:5 
+`Vuc 1 . 1 0 :1:6 
+`Vuc 1 . 1 0 :1:7 
+]
+[s S2501 . 1 `Vuc 1 . 1 0 :6:0 
+`Vuc 1 . 1 0 :1:6 
+`Vuc 1 . 1 0 :1:7 
+]
+[u S2505 . 1 `S628 1 . 1 0 `S637 1 . 1 0 `S646 1 . 1 0 `S655 1 . 1 0 `S664 1 . 1 0 `S673 1 . 1 0 ]
+[s S2524 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S2530 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"170 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[s S2536 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S2539 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S2544 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S2547 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S2564 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S2569 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S2572 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S2605 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S2613 . 6 `[6]uc 1 v 6 0 ]
+[s S2615 . 10 `S107 1 IPAddr 4 0 `S119 1 MACAddr 6 4 ]
+"72 /home/andresol/tellstick-net/tcpip/Reboot.c
+[s S2619 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S2623 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+"107 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[s S2638 . 1 `Vuc 1 nBOR 1 0 :1:0 
+`Vuc 1 nPOR 1 0 :1:1 
+`Vuc 1 nPD 1 0 :1:2 
+`Vuc 1 nTO 1 0 :1:3 
+`Vuc 1 nRI 1 0 :1:4 
+`Vuc 1 . 1 0 :2:5 
+`Vuc 1 IPEN 1 0 :1:7 
+]
+[s S2646 . 1 `Vuc 1 BOR 1 0 :1:0 
+`Vuc 1 POR 1 0 :1:1 
+`Vuc 1 PD 1 0 :1:2 
+`Vuc 1 TO 1 0 :1:3 
+`Vuc 1 RI 1 0 :1:4 
+]
+[u S2652 . 1 `S697 1 . 1 0 `S705 1 . 1 0 ]
+"101 /home/andresol/tellstick-net/tcpip/Reboot.c
+[s S2660 . 12 `[6]uc 1 vMACAddress 6 0 `ul 1 dwIPAddress 4 6 `us 1 wChecksum 2 10 ]
+[s S2666 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S2672 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"74 /home/andresol/tellstick-net/tcpip/DNS.c
+[s S2680 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S2683 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S2688 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S2691 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S2708 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S2713 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S2716 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S2749 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S2757 . 6 `[6]uc 1 v 6 0 ]
+[s S2759 . 10 `S107 1 IPAddr 4 0 `S119 1 MACAddr 6 4 ]
+"75
+[s S2763 . 1 `uc 1 DNSInUse 1 0 :1:0 
+`uc 1 AddressValid 1 0 :1:1 
+`uc 1 filler 1 0 :6:2 
+]
+[u S2767 . 1 `uc 1 Val 1 0 `S2763 1 bits 1 0 ]
+"87
+[e E5288 . `uc
+DNS_START 0
+DNS_ARP_START_RESOLVE 1
+DNS_ARP_RESOLVE 2
+DNS_OPEN_SOCKET 3
+DNS_QUERY 4
+DNS_GET_RESULT 5
+DNS_FAIL 6
+DNS_DONE 7
+]
+"100
+[e E208 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"97 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[s S2787 . 12 `S66 1 TransactionID 2 0 `S66 1 Flags 2 2 `S66 1 Questions 2 4 `S66 1 Answers 2 6 `S66 1 AuthoritativeRecords 2 8 `S66 1 AdditionalRecords 2 10 ]
+[s S2794 . 10 `S66 1 ResponseType 2 0 `S66 1 ResponseClass 2 2 `S107 1 ResponseTTL 4 4 `S66 1 ResponseLen 2 8 ]
+"86 /home/andresol/tellstick-net/tcpip/TCPIP Stack/ARP.h
+[s S2800 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S2804 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+[s S2869 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S2875 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[e E208 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"139 /home/andresol/tellstick-net/tcpip/DHCP.c
+[e E5204 . `uc
+SM_DHCP_DISABLED 0
+SM_DHCP_GET_SOCKET 1
+SM_DHCP_SEND_DISCOVERY 2
+SM_DHCP_GET_OFFER 3
+SM_DHCP_SEND_REQUEST 4
+SM_DHCP_GET_REQUEST_ACK 5
+SM_DHCP_SEND_REQUEST2 6
+SM_DHCP_GET_REQUEST_ACK2 7
+SM_DHCP_SEND_REQUEST3 8
+SM_DHCP_GET_REQUEST_ACK3 9
+SM_DHCP_SEND_REQUEST4 10
+SM_DHCP_GET_REQUEST_ACK4 11
+SM_DHCP_BOUND 12
+SM_DHCP_SEND_RENEW 13
+SM_DHCP_GET_RENEW_ACK 14
+SM_DHCP_SEND_RENEW2 15
+SM_DHCP_GET_RENEW_ACK2 16
+SM_DHCP_SEND_RENEW3 17
+SM_DHCP_GET_RENEW_ACK3 18
+]
+[s S2903 . 1 `uc 1 bIsBound 1 0 :1:0 
+`uc 1 bEvent 1 0 :1:1 
+`uc 1 bOfferReceived 1 0 :1:2 
+`uc 1 bDHCPServerDetected 1 0 :1:3 
+`uc 1 bUseUnicastMode 1 0 :1:4 
+]
+[u S2909 . 1 `S2903 1 bits 1 0 `uc 1 val 1 0 ]
+[s S2912 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S2915 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S2920 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S2923 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S2940 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S2945 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S2948 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S2981 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S2989 . 1 `uc 1 IPAddress 1 0 :1:0 
+`uc 1 Gateway 1 0 :1:1 
+`uc 1 Mask 1 0 :1:2 
+`uc 1 DNS 1 0 :1:3 
+`uc 1 DNS2 1 0 :1:4 
+`uc 1 HostName 1 0 :1:5 
+]
+[u S2996 . 1 `S2989 1 bits 1 0 `uc 1 val 1 0 ]
+[s S2999 . 40 `uc 1 hDHCPSocket 1 0 `E5204 1 smState 1 1 `S2909 1 flags 1 2 `ul 1 dwTimer 4 3 `ul 1 dwSecs 4 7 `ul 1 dwLeaseTime 4 11 `ul 1 dwServerID 4 15 `S107 1 tempIPAddress 4 19 `S107 1 tempGateway 4 23 `S107 1 tempMask 4 27 `S107 1 tempDNS 4 31 `S107 1 tempDNS2 4 35 `S2996 1 validValues 1 39 ]
+"30 /usr/hitech/picc-18/pro/9.66/include/string.h
+[s S3019 . 6 `[6]uc 1 v 6 0 ]
+[s S3021 . 10 `S107 1 IPAddr 4 0 `S119 1 MACAddr 6 4 ]
+[u S3024 . 10 `S245 1 remoteNode 10 0 `ul 1 remoteHost 4 0 ]
+[e E4932 . `uc
+UDP_DNS_IS_RESOLVED 0
+UDP_DNS_RESOLVE 1
+UDP_GATEWAY_SEND_ARP 2
+UDP_GATEWAY_GET_ARP 3
+UDP_CLOSED 4
+UDP_OPENED 5
+]
+[s S3034 . 1 `uc 1 bRemoteHostIsROM 1 0 :1:0 
+]
+[s S3036 . 23 `S248 1 remote 10 0 `us 1 remotePort 2 10 `us 1 localPort 2 12 `E4932 1 smState 1 14 `ul 1 retryInterval 4 15 `uc 1 retryCount 1 19 `S258 1 flags 1 20 `us 1 eventTime 2 21 ]
+"141 /home/andresol/tellstick-net/tcpip/DHCP.c
+[s S3052 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S3056 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+[s S3107 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S3113 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[s S3117 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S3120 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S3125 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S3128 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S3145 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S3150 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S3153 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S3186 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S3194 . 6 `[6]uc 1 v 6 0 ]
+[s S3196 . 10 `S107 1 IPAddr 4 0 `S119 1 MACAddr 6 4 ]
+[u S3199 . 10 `S245 1 remoteNode 10 0 `ul 1 remoteHost 4 0 ]
+[e E4932 . `uc
+UDP_DNS_IS_RESOLVED 0
+UDP_DNS_RESOLVE 1
+UDP_GATEWAY_SEND_ARP 2
+UDP_GATEWAY_GET_ARP 3
+UDP_CLOSED 4
+UDP_OPENED 5
+]
+[s S3209 . 1 `uc 1 bRemoteHostIsROM 1 0 :1:0 
+]
+[s S3211 . 23 `S248 1 remote 10 0 `us 1 remotePort 2 10 `us 1 localPort 2 12 `E4932 1 smState 1 14 `ul 1 retryInterval 4 15 `uc 1 retryCount 1 19 `S258 1 flags 1 20 `us 1 eventTime 2 21 ]
+"119 /home/andresol/tellstick-net/tcpip/UDP.c
+[s S3227 . 1 `uc 1 bFirstRead 1 0 :1:0 
+`uc 1 bWasDiscarded 1 0 :1:1 
+]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[e E208 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"292 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[s S3247 . 8 `us 1 SourcePort 2 0 `us 1 DestinationPort 2 2 `us 1 Length 2 4 `us 1 Checksum 2 6 ]
+[s S3252 . 14 `S119 1 DestMACAddr 6 0 `S119 1 SourceMACAddr 6 6 `S66 1 Type 2 12 ]
+[s S3256 _IP_HEADER 20 `uc 1 VersionIHL 1 0 `uc 1 TypeOfService 1 1 `us 1 TotalLength 2 2 `us 1 Identification 2 4 `us 1 FragmentInfo 2 6 `uc 1 TimeToLive 1 8 `uc 1 Protocol 1 9 `us 1 HeaderChecksum 2 10 `S107 1 SourceAddress 4 12 `S107 1 DestAddress 4 16 ]
+"296
+[s S3282 _PSEUDO_HEADER 12 `S107 1 SourceAddress 4 0 `S107 1 DestAddress 4 4 `uc 1 Zero 1 8 `uc 1 Protocol 1 9 `us 1 Length 2 10 ]
+"137 /home/andresol/tellstick-net/tcpip/UDP.c
+[s S3295 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S3299 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+[s S3376 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S3382 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[s S3386 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S3389 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S3406 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+"99 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[s S3413 . 1 `uc 1 bWasDiscarded 1 0 :1:0 
+`uc 1 bRXPolarityValid 1 0 :1:1 
+`uc 1 bRXPolarityTimerOnTX 1 0 :1:2 
+`uc 1 bRXPolarityAtNextTX 1 0 :1:3 
+`uc 1 filler 1 0 :4:4 
+]
+[u S3419 . 1 `uc 1 v 1 0 `S3413 1 bits 1 0 ]
+"1608 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[s S3428 . 1 `Vuc 1 . 1 0 :5:0 
+`Vuc 1 ETHEN 1 0 :1:5 
+`Vuc 1 PKTDEC 1 0 :1:6 
+`Vuc 1 AUTOINC 1 0 :1:7 
+]
+[u S3433 . 1 `S3428 1 . 1 0 ]
+"1557
+[s S3438 . 1 `Vuc 1 PHYRDY 1 0 :1:0 
+`Vuc 1 TXABRT 1 0 :1:1 
+`Vuc 1 RXBUSY 1 0 :1:2 
+`Vuc 1 . 1 0 :1:3 
+`Vuc 1 . 1 0 :1:4 
+`Vuc 1 . 1 0 :1:5 
+`Vuc 1 BUFER 1 0 :1:6 
+]
+[u S3446 . 1 `S3438 1 . 1 0 ]
+"140
+[s S3465 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S3468 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S3473 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S3476 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S3509 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S3517 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S3521 . 6 `[6]uc 1 v 6 0 ]
+[s S3523 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+"177 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[s S3541 . 1 `Vuc 1 . 1 0 :2:0 
+`Vuc 1 RXEN 1 0 :1:2 
+`Vuc 1 TXRTS 1 0 :1:3 
+`Vuc 1 CSUMEN 1 0 :1:4 
+`Vuc 1 DMAST 1 0 :1:5 
+`Vuc 1 RXRST 1 0 :1:6 
+`Vuc 1 TXRST 1 0 :1:7 
+]
+[u S3549 . 1 `S3541 1 . 1 0 ]
+"2960 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[e E208 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+[s S3555 . 2 `uc 1 . 1 0 :8:0 
+`uc 1 PDPXMD 1 1 :1:0 
+`uc 1 . 1 1 :7:1 
+]
+[s S3559 . 2 `uc 1 . 1 0 :2:0 
+`uc 1 LLSTAT 1 0 :1:2 
+`uc 1 . 1 0 :5:3 
+`uc 1 . 1 1 :8:0 
+]
+[s S3564 . 2 `uc 1 . 1 0 :4:0 
+`uc 1 RXAPDIS 1 0 :1:4 
+`uc 1 . 1 0 :3:5 
+`uc 1 HDLDIS 1 1 :1:0 
+`uc 1 . 1 1 :5:1 
+`uc 1 FRCLNK 1 1 :1:6 
+`uc 1 . 1 1 :1:7 
+]
+[s S3572 . 2 `uc 1 . 1 0 :8:0 
+`uc 1 . 1 1 :2:0 
+`uc 1 LSTAT 1 1 :1:2 
+`uc 1 COLSTAT 1 1 :1:3 
+`uc 1 RXSTAT 1 1 :1:4 
+`uc 1 TXSTAT 1 1 :1:5 
+`uc 1 . 1 1 :2:6 
+]
+[s S3580 . 2 `uc 1 . 1 0 :1:0 
+`uc 1 PGEIE 1 0 :1:1 
+`uc 1 . 1 0 :2:2 
+`uc 1 PLNKIE 1 0 :1:4 
+`uc 1 . 1 0 :3:5 
+`uc 1 . 1 1 :8:0 
+]
+[s S3587 . 2 `uc 1 . 1 0 :2:0 
+`uc 1 PGIF 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 PLNKIF 1 0 :1:4 
+`uc 1 . 1 0 :3:5 
+`uc 1 . 1 1 :8:0 
+]
+[s S3594 . 2 `uc 1 . 1 0 :1:0 
+`uc 1 STRCH 1 0 :1:1 
+`uc 1 LFRQ0 1 0 :1:2 
+`uc 1 LFRQ1 1 0 :1:3 
+`uc 1 LBCFG0 1 0 :1:4 
+`uc 1 LBCFG1 1 0 :1:5 
+`uc 1 LBCFG2 1 0 :1:6 
+`uc 1 LBCFG3 1 0 :1:7 
+`uc 1 LACFG0 1 1 :1:0 
+`uc 1 LACFG1 1 1 :1:1 
+`uc 1 LACFG2 1 1 :1:2 
+`uc 1 LACFG3 1 1 :1:3 
+`uc 1 . 1 1 :4:4 
+]
+[s S3608 . 2 `uc 1 . 1 0 :1:0 
+`uc 1 STRCH 1 0 :1:1 
+`uc 1 LFRQ 1 0 :2:2 
+`uc 1 LBCFG 1 0 :4:4 
+`uc 1 LACFG 1 1 :4:0 
+`uc 1 . 1 1 :4:4 
+]
+[u S3615 . 2 `us 1 Val 2 0 `S66 1 VAL 2 0 `S3555 1 PHCON1bits 2 0 `S3559 1 PHSTAT1bits 2 0 `S3564 1 PHCON2bits 2 0 `S3572 1 PHSTAT2bits 2 0 `S3580 1 PHIEbits 2 0 `S3587 1 PHIRbits 2 0 `S3594 1 PHLCONbits 2 0 `S3608 1 PHLCONbits2 2 0 ]
+"567
+[s S3633 . 4 `us 1 ByteCount 2 0 `uc 1 PreviouslyIgnored 1 2 :1:0 
+`uc 1 RXDCPreviouslySeen 1 2 :1:1 
+`uc 1 CarrierPreviouslySeen 1 2 :1:2 
+`uc 1 CodeViolation 1 2 :1:3 
+`uc 1 CRCError 1 2 :1:4 
+`uc 1 LengthCheckError 1 2 :1:5 
+`uc 1 LengthOutOfRange 1 2 :1:6 
+`uc 1 ReceiveOk 1 2 :1:7 
+`uc 1 Multicast 1 3 :1:0 
+`uc 1 Broadcast 1 3 :1:1 
+`uc 1 DribbleNibble 1 3 :1:2 
+`uc 1 ControlFrame 1 3 :1:3 
+`uc 1 PauseControlFrame 1 3 :1:4 
+`uc 1 UnsupportedOpcode 1 3 :1:5 
+`uc 1 VLANType 1 3 :1:6 
+`uc 1 Zero 1 3 :1:7 
+]
+[u S3651 . 4 `[4]uc 1 v 4 0 `S3633 1 bits 4 0 ]
+[s S3654 . 20 `us 1 NextPacketPointer 2 0 `S3651 1 StatusVector 4 2 `S119 1 DestMACAddr 6 6 `S119 1 SourceMACAddr 6 12 `S66 1 Type 2 18 ]
+"104 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[s S3664 . 1 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+]
+[u S3673 . 1 `uc 1 Val 1 0 `S3664 1 bits 1 0 ]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[s S3677 . 14 `S119 1 DestMACAddr 6 0 `S119 1 SourceMACAddr 6 6 `S66 1 Type 2 12 ]
+"304 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[s S3683 . 1 `Vuc 1 RXERIF 1 0 :1:0 
+`Vuc 1 TXERIF 1 0 :1:1 
+`Vuc 1 . 1 0 :1:2 
+`Vuc 1 TXIF 1 0 :1:3 
+`Vuc 1 LINKIF 1 0 :1:4 
+`Vuc 1 DMAIF 1 0 :1:5 
+`Vuc 1 PKTIF 1 0 :1:6 
+]
+[u S3691 . 1 `S3683 1 . 1 0 ]
+"302 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[s S3703 . 1 `Vuc 1 BUSY 1 0 :1:0 
+`Vuc 1 SCAN 1 0 :1:1 
+`Vuc 1 NVALID 1 0 :1:2 
+`Vuc 1 . 1 0 :1:3 
+]
+[u S3708 . 1 `S3703 1 . 1 0 ]
+[s S3786 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S3792 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[s S3796 . 6 `uc 1 vSocketPurpose 1 0 `uc 1 vMemoryMedium 1 1 `us 1 wTXBufferSize 2 2 `us 1 wRXBufferSize 2 4 ]
+"202 /home/andresol/tellstick-net/tcpip/TCP.c
+[u S3803 . 2 `us 1 delayedACKTime 2 0 `us 1 closeWaitTime 2 0 ]
+[e E5018 . `uc
+TCP_GET_DNS_MODULE 0
+TCP_DNS_RESOLVE 1
+TCP_GATEWAY_SEND_ARP 2
+TCP_GATEWAY_GET_ARP 3
+TCP_LISTEN 4
+TCP_SYN_SENT 5
+TCP_SYN_RECEIVED 6
+TCP_ESTABLISHED 7
+TCP_FIN_WAIT_1 8
+TCP_FIN_WAIT_2 9
+TCP_CLOSING 10
+TCP_CLOSE_WAIT 11
+TCP_LAST_ACK 12
+TCP_CLOSED 13
+TCP_CLOSED_BUT_RESERVED 14
+]
+[s S3822 . 2 `uc 1 vUnackedKeepalives 1 0 :3:0 
+`uc 1 bServer 1 0 :1:3 
+`uc 1 bTimerEnabled 1 0 :1:4 
+`uc 1 bTimer2Enabled 1 0 :1:5 
+`uc 1 bDelayedACKTimerEnabled 1 0 :1:6 
+`uc 1 bOneSegmentReceived 1 0 :1:7 
+`uc 1 bHalfFullFlush 1 1 :1:0 
+`uc 1 bTXASAP 1 1 :1:1 
+`uc 1 bTXASAPWithoutTimerReset 1 1 :1:2 
+`uc 1 bTXFIN 1 1 :1:3 
+`uc 1 bSocketReset 1 1 :1:4 
+`uc 1 bSSLHandshaking 1 1 :1:5 
+`uc 1 filler 1 1 :2:6 
+]
+[s S3836 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S3839 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S3856 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S3861 . 28 `us 1 bufferTxStart 2 0 `us 1 bufferRxStart 2 2 `us 1 bufferEnd 2 4 `us 1 txHead 2 6 `us 1 txTail 2 8 `us 1 rxHead 2 10 `us 1 rxTail 2 12 `ul 1 eventTime 4 14 `us 1 eventTime2 2 18 `S3803 1 OverlappedTimers 2 20 `E5018 1 smState 1 22 `S3822 1 Flags 2 23 `S66 1 remoteHash 2 25 `uc 1 vMemoryMedium 1 27 ]
+"219
+[s S3877 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S3880 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S3885 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S3888 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S3921 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+[s S3929 . 6 `[6]uc 1 v 6 0 ]
+[s S3931 . 10 `S107 1 IPAddr 4 0 `S119 1 MACAddr 6 4 ]
+[u S3934 . 10 `S245 1 niRemoteMACIP 10 0 `ul 1 dwRemoteHost 4 0 ]
+[s S3937 . 1 `uc 1 bFINSent 1 0 :1:0 
+`uc 1 bSYNSent 1 0 :1:1 
+`uc 1 bRemoteHostIsROM 1 0 :1:2 
+`uc 1 bRXNoneACKed1 1 0 :1:3 
+`uc 1 bRXNoneACKed2 1 0 :1:4 
+`uc 1 filler 1 0 :3:5 
+]
+[s S3944 . 39 `ul 1 retryInterval 4 0 `ul 1 MySEQ 4 4 `ul 1 RemoteSEQ 4 8 `us 1 txUnackedTail 2 12 `S66 1 remotePort 2 14 `S66 1 localPort 2 16 `us 1 remoteWindow 2 18 `us 1 wFutureDataSize 2 20 `S3934 1 remote 10 22 `s 1 sHoleSize 2 32 `S3937 1 flags 1 34 `us 1 wRemoteMSS 2 35 `uc 1 retryCount 1 37 `uc 1 vSocketPurpose 1 38 ]
+"247
+[s S3961 . 20 `S245 1 niSourceAddress 10 0 `us 1 wSourcePort 2 10 `ul 1 dwSourceSEQ 4 12 `us 1 wDestPort 2 16 `us 1 wTimestamp 2 18 ]
+"30 /usr/hitech/picc-18/pro/9.66/include/string.h
+[e E208 _BOOL `uc
+FALSE 0
+TRUE 1
+]
+"63 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DNS.h
+[s S3987 . 12 `S245 1 remote 10 0 `S66 1 remotePort 2 10 ]
+"87 /home/andresol/tellstick-net/tcpip/TCPIP Stack/ARP.h
+[s S4006 . 1 `uc 1 Reserved3 1 0 :4:0 
+`uc 1 Val 1 0 :4:4 
+]
+[s S4009 . 1 `uc 1 flagFIN 1 0 :1:0 
+`uc 1 flagSYN 1 0 :1:1 
+`uc 1 flagRST 1 0 :1:2 
+`uc 1 flagPSH 1 0 :1:3 
+`uc 1 flagACK 1 0 :1:4 
+`uc 1 flagURG 1 0 :1:5 
+`uc 1 Reserved2 1 0 :2:6 
+]
+[u S4017 . 1 `S4009 1 bits 1 0 `uc 1 byte 1 0 ]
+[s S4020 . 20 `us 1 SourcePort 2 0 `us 1 DestPort 2 2 `ul 1 SeqNumber 4 4 `ul 1 AckNumber 4 8 `S4006 1 DataOffset 1 12 `S4017 1 Flags 1 13 `us 1 Window 2 14 `us 1 Checksum 2 16 `us 1 UrgentPointer 2 18 ]
+[s S4030 _PSEUDO_HEADER 12 `S107 1 SourceAddress 4 0 `S107 1 DestAddress 4 4 `uc 1 Zero 1 8 `uc 1 Protocol 1 9 `us 1 Length 2 10 ]
+"272 /home/andresol/tellstick-net/tcpip/TCP.c
+[s S4050 . 4 `uc 1 Kind 1 0 `uc 1 Length 1 1 `S66 1 MaxSegSize 2 2 ]
+[s S4054 . 14 `S119 1 DestMACAddr 6 0 `S119 1 SourceMACAddr 6 6 `S66 1 Type 2 12 ]
+[s S4058 _IP_HEADER 20 `uc 1 VersionIHL 1 0 `uc 1 TypeOfService 1 1 `us 1 TotalLength 2 2 `us 1 Identification 2 4 `us 1 FragmentInfo 2 6 `uc 1 TimeToLive 1 8 `uc 1 Protocol 1 9 `us 1 HeaderChecksum 2 10 `S107 1 SourceAddress 4 12 `S107 1 DestAddress 4 16 ]
+"297 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[s S4070 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 bIsDHCPEnabled 1 0 :1:6 
+`uc 1 bInConfigMode 1 0 :1:7 
+]
+[s S4074 . 51 `S107 1 MyIPAddr 4 0 `S107 1 MyMask 4 4 `S107 1 MyGateway 4 8 `S107 1 PrimaryDNSServer 4 12 `S107 1 SecondaryDNSServer 4 16 `S107 1 DefaultIPAddr 4 20 `S107 1 DefaultMask 4 24 `[16]uc 1 NetBIOSName 16 28 `S115 1 Flags 1 44 `S119 1 MyMACAddr 6 45 ]
+[s S4303 . 1 `uc 1 Cap1OVF 1 0 :1:0 
+`uc 1 Cap2OVF 1 0 :1:1 
+`uc 1 Cap3OVF 1 0 :1:2 
+`uc 1 Cap4OVF 1 0 :1:3 
+`uc 1 Cap5OVF 1 0 :1:4 
+]
+[u S4309 capstatus 1 `S21 1 . 1 0 `uc 1 . 1 0 :8:0 
+]
+"85 /home/andresol/tellstick-net/tcpip/Hashes.c
+[e E4852 . `uc
+HASH_MD5 0
+HASH_SHA1 1
+]
+[s S4317 . 89 `ul 1 h0 4 0 `ul 1 h1 4 4 `ul 1 h2 4 8 `ul 1 h3 4 12 `ul 1 h4 4 16 `ul 1 bytesSoFar 4 20 `[64]uc 1 partialBlock 64 24 `E4852 1 hashType 1 88 ]
+"480
+[s S4335 . 4 `us 1 LW 2 0 `us 1 HW 2 2 ]
+[s S4338 . 4 `uc 1 LB 1 0 `uc 1 HB 1 1 `uc 1 UB 1 2 `uc 1 MB 1 3 ]
+[s S4343 . 2 `uc 1 LB 1 0 `uc 1 HB 1 1 ]
+[s S4346 . 2 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+]
+[u S4363 . 2 `us 1 Val 2 0 `[2]uc 1 v 2 0 `S46 1 byte 2 0 `S49 1 bits 2 0 ]
+[s S4368 . 4 `S66 1 low 2 0 `S66 1 high 2 2 ]
+[s S4371 . 4 `uc 1 b0 1 0 :1:0 
+`uc 1 b1 1 0 :1:1 
+`uc 1 b2 1 0 :1:2 
+`uc 1 b3 1 0 :1:3 
+`uc 1 b4 1 0 :1:4 
+`uc 1 b5 1 0 :1:5 
+`uc 1 b6 1 0 :1:6 
+`uc 1 b7 1 0 :1:7 
+`uc 1 b8 1 1 :1:0 
+`uc 1 b9 1 1 :1:1 
+`uc 1 b10 1 1 :1:2 
+`uc 1 b11 1 1 :1:3 
+`uc 1 b12 1 1 :1:4 
+`uc 1 b13 1 1 :1:5 
+`uc 1 b14 1 1 :1:6 
+`uc 1 b15 1 1 :1:7 
+`uc 1 b16 1 2 :1:0 
+`uc 1 b17 1 2 :1:1 
+`uc 1 b18 1 2 :1:2 
+`uc 1 b19 1 2 :1:3 
+`uc 1 b20 1 2 :1:4 
+`uc 1 b21 1 2 :1:5 
+`uc 1 b22 1 2 :1:6 
+`uc 1 b23 1 2 :1:7 
+`uc 1 b24 1 3 :1:0 
+`uc 1 b25 1 3 :1:1 
+`uc 1 b26 1 3 :1:2 
+`uc 1 b27 1 3 :1:3 
+`uc 1 b28 1 3 :1:4 
+`uc 1 b29 1 3 :1:5 
+`uc 1 b30 1 3 :1:6 
+`uc 1 b31 1 3 :1:7 
+]
+[u S4404 . 4 `ul 1 Val 4 0 `[2]us 1 w 4 0 `[4]uc 1 v 4 0 `S38 1 word 4 0 `S41 1 byte 4 0 `S71 1 wordUnion 4 0 `S74 1 bits 4 0 ]
+"18 /home/andresol/tellstick-net/firmware/common.c
+[v _hexToByte `(uc  1 e 1 0 ]
+"17 /home/andresol/tellstick-net/firmware/discovery.c
+[v _discoveryTask `(v  1 e 0 0 ]
+"20 /home/andresol/tellstick-net/firmware/eeprom.c
+[v _initEEPROM `(v  1 e 0 0 ]
+"27
+[v _saveEEPROM `(v  1 e 0 0 ]
+"36
+[v _loadEEPROM `(v  1 e 0 0 ]
+"31 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMAppendChar `(v  1 e 0 0 ]
+"38
+[v _LMClear `(v  1 e 0 0 ]
+"44
+[v _LMAppendString `(v  1 e 0 0 ]
+"55
+[v _LMAppendRomString `(v  1 e 0 0 ]
+"66
+[v _LMAppendInt `(v  1 e 0 0 ]
+"90
+[v _LMStartHash `(v  1 e 0 0 ]
+"94
+[v _LMAppendHashString `(v  1 e 0 0 ]
+"99
+[v _LMAppendHashHexString `(v  1 e 0 0 ]
+"120
+[v _LMAppendHashInt `(v  1 e 0 0 ]
+"125
+[v _LMEndHash `(v  1 e 0 0 ]
+"129
+[v _LMNextIsInt `(E4014  1 e 1 0 ]
+"133
+[v _LMTakeInt `(ul  1 e 4 0 ]
+"150
+[v _LMTakeString `(E4014  1 e 1 0 ]
+"174
+[v _LMEnterHash `(E4014  1 e 1 0 ]
+"183
+[v _LMFindHashString `(E4014  1 e 1 0 ]
+"285
+[v _LMContent `(*.Muc  1 e 2 0 ]
+"14 /home/andresol/tellstick-net/firmware/localaccess.c
+[v _localAccessTask `(v  1 e 0 0 ]
+"31 /home/andresol/tellstick-net/firmware/main.c
+[v _LowISR `IL(v  1 e 0 0 ]
+"41
+[v _HighISR `I(v  1 e 0 0 ]
+"57
+[v _initInterrupts `(v  1 e 0 0 ]
+"66
+[v _initWDT `(v  1 e 0 0 ]
+"70
+[v _initAppConfig `(v  1 s 0 _initAppConfig ]
+"110
+[v _main `(i  1 e 2 0 ]
+"27 /home/andresol/tellstick-net/firmware/message.c
+[v _rfMessageBeginRaw `(v  1 e 0 0 ]
+"36
+[v _rfMessageEnd `(v  1 e 0 0 ]
+"52
+[v _rfMessageAddLong `(v  1 e 0 0 ]
+"74
+[v _rfMessageAddString `(v  1 e 0 0 ]
+"81
+[v _rfMessageAddHexString `(v  1 e 0 0 ]
+"31 /home/andresol/tellstick-net/firmware/pwm.c
+[v _initPwm `(v  1 e 0 0 ]
+"84
+[v _pwmUpdate `(v  1 e 0 0 ]
+"130
+[v _setRXPulses `(v  1 e 0 0 ]
+"134
+[v _setTXPulses `(v  1 e 0 0 ]
+"14 /home/andresol/tellstick-net/firmware/rf.c
+[v _activateReceiver `(v  1 e 0 0 ]
+"19
+[v _activateTransmitter `(v  1 e 0 0 ]
+"24
+[v _initReceiver `(v  1 e 0 0 ]
+"51
+[v _initTransmitter `(v  1 e 0 0 ]
+"70
+[v _rfStartTransmit `(v  1 e 0 0 ]
+"75
+[v _rfStopTransmit `(v  1 e 0 0 ]
+"25 /home/andresol/tellstick-net/firmware/tellsticknet.c
+[v _registerListener `(v  1 e 0 0 ]
+"36
+[v _sendToLocalListeners `(v  1 e 0 0 ]
+"58
+[v _send `(v  1 e 0 0 ]
+"107
+[v _saveIp `(v  1 e 0 0 ]
+"125
+[v _setIp `(v  1 e 0 0 ]
+"170
+[v _handleMessage `(v  1 e 0 0 ]
+"28 /home/andresol/tellstick-net/firmware/transmit_arctech.c
+[v _sendOne `(v  1 s 0 _sendOne ]
+"39
+[v _sendZero `(v  1 s 0 _sendZero ]
+"50
+[v _sendBits `(v  1 s 0 _sendBits ]
+"65
+[v _sendArctechCommand `(v  1 s 0 _sendArctechCommand ]
+"97
+[v _sendArctechSelflearning `(v  1 e 0 0 ]
+"9 /home/andresol/tellstick-net/rf/arctech.c
+[v _arctechCodeSwitchBit `(uc  1 e 1 0 ]
+"19
+[v _arctechSelflearningBit `(uc  1 e 1 0 ]
+"29
+[v _parseArcTechCodeSwitch `(uc  1 e 1 0 ]
+"69
+[v _parseArcTechSelflearning `(uc  1 e 1 0 ]
+"4 /home/andresol/tellstick-net/rf/crc.c
+[v _calculateCrc8 `(uc  1 e 1 0 ]
+"9 /home/andresol/tellstick-net/rf/everflourish.c
+[v _everflourishBit `(uc  1 e 1 0 ]
+"20
+[v _parseEverFlourish `(uc  1 e 1 0 ]
+"18 /home/andresol/tellstick-net/rf/fineoffset.c
+[v _fineOffsetBit `(uc  1 e 1 0 ]
+"32
+[v _parseFineOffset `(uc  1 e 1 0 ]
+"48 /home/andresol/tellstick-net/rf/hasta.c
+[v _clearHasta `(v  1 e 0 0 ]
+"59
+[v _streamHasta `(v  1 e 0 0 ]
+"15 /home/andresol/tellstick-net/rf/mandolyn.c
+[v _mandolynBit `(uc  1 e 1 0 ]
+"27
+[v _parseMandolyn `(uc  1 e 1 0 ]
+"25 /home/andresol/tellstick-net/rf/oregon.c
+[v _clearOregon `(v  1 e 0 0 ]
+"33
+[v _oregonBit `(c  1 e 1 0 ]
+"72
+[v _oregonByte `(i  1 e 2 0 ]
+"94
+[v _streamOregon `(v  1 e 0 0 ]
+"27 /home/andresol/tellstick-net/rf/oregonv3.c
+[v _clearOregonV3 `(v  1 e 0 0 ]
+"35
+[v _oregonBitV3 `(c  1 e 1 0 ]
+"57
+[v _oregonByteV3 `(i  1 e 2 0 ]
+"87
+[v _streamOregonV3 `(v  1 e 0 0 ]
+"25 /home/andresol/tellstick-net/rf/receive.c
+[v _rfReceiveUpdate `(v  1 e 0 0 ]
+"76
+[v _rfRetreatBit `(v  1 e 0 0 ]
+"88
+[v _getBit `(b  1 e 0 0 ]
+"96
+[v _rfCountSimilar `(uc  1 e 1 0 ]
+"113
+[v _calculateDistance `(i  1 e 2 0 ]
+"126
+[v _rfReceiveTask `(v  1 e 0 0 ]
+"9 /home/andresol/tellstick-net/rf/transmit.c
+[v _rfTransmitUpdate `(v  1 e 0 0 ]
+"31
+[v _rfSend `(v  1 e 0 0 ]
+"10 /home/andresol/tellstick-net/rf/x10.c
+[v _x10Bit `(uc  1 e 1 0 ]
+"22
+[v _parseX10 `(uc  1 e 1 0 ]
+"320 /home/andresol/tellstick-net/tcpip/ARP.c
+[v _ARPPut `(E208  1 s 1 _ARPPut ]
+"374
+[v _ARPInit `(v  1 e 0 0 ]
+"413
+[v _ARPProcess `(E208  1 e 1 0 ]
+"566
+[v _ARPResolve `(v  1 e 0 0 ]
+"649
+[v _ARPIsResolved `(E208  1 e 1 0 ]
+"679
+[v _SwapARPPacket `(v  1 e 0 0 ]
+"216 /home/andresol/tellstick-net/tcpip/DHCP.c
+[v _DHCPInit `(v  1 e 0 0 ]
+"278
+[v _DHCPDisable `(v  1 e 0 0 ]
+"313
+[v _DHCPEnable `(v  1 e 0 0 ]
+"375
+[v _DHCPIsBound `(E3956  1 e 1 0 ]
+"474
+[v _DHCPTask `(v  1 e 0 0 ]
+"742
+[v __DHCPReceive `(uc  1 s 1 __DHCPReceive ]
+"1060
+[v __DHCPSend `(v  1 s 0 __DHCPSend ]
+"170 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _DNSBeginUsage `(E208  1 e 1 0 ]
+"207
+[v _DNSEndUsage `(E208  1 e 1 0 ]
+"252
+[v _DNSResolve `(v  1 e 0 0 ]
+"304
+[v _DNSResolveROM `(v  1 e 0 0 ]
+"348
+[v _DNSIsResolved `(E208  1 e 1 0 ]
+"650
+[v _DNSPutString `(v  1 s 0 _DNSPutString ]
+"703
+[v _DNSPutROMString `(v  1 s 0 _DNSPutROMString ]
+"757
+[v _DNSDiscardName `(v  1 s 0 _DNSDiscardName ]
+"146 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACInit `(v  1 e 0 0 ]
+"256
+[v _MACIsLinked `(E3956  1 e 1 0 ]
+"286
+[v _MACIsTxReady `(E208  1 e 1 0 ]
+"322
+[v _MACDiscardRx `(v  1 e 0 0 ]
+"372
+[v _MACGetFreeRxSize `(us  1 e 2 0 ]
+"430
+[v _MACGetHeader `(E208  1 e 1 0 ]
+"555
+[v _MACPutHeader `(v  1 e 0 0 ]
+"601
+[v _MACFlush `(v  1 e 0 0 ]
+"672
+[v _MACSetReadPtrInRx `(v  1 e 0 0 ]
+"706
+[v _MACSetWritePtr `(us  1 e 2 0 ]
+"731
+[v _MACSetReadPtr `(us  1 e 2 0 ]
+"760
+[v _MACCalcRxChecksum `(us  1 e 2 0 ]
+"881
+[v _CalcIPBufferChecksum `(us  1 e 2 0 ]
+"955
+[v _MACMemCopyAsync `(v  1 e 0 0 ]
+"1057
+[v _MACIsMemCopyDone `(E208  1 e 1 0 ]
+"1080
+[v _MACGet `(uc  1 e 1 0 ]
+"1109
+[v _MACGetArray `(us  1 e 2 0 ]
+"1162
+[v _MACPut `(v  1 e 0 0 ]
+"1195
+[v _MACPutArray `(v  1 e 0 0 ]
+"1212
+[v _MACPutROMArray `(v  1 e 0 0 ]
+"1247
+[v _ReadPHYReg `(S3615  1 e 2 0 ]
+"1289
+[v _WritePHYReg `(v  1 e 0 0 ]
+"100 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _LFSRSeedRand `(ul  1 e 4 0 ]
+"158
+[v _LFSRRand `(us  1 e 2 0 ]
+"212
+[v _GenerateRandomDWORD `(ul  1 e 4 0 ]
+"444
+[v _StringToIPAddress `(E208  1 e 1 0 ]
+"541
+[v _ROMStringToIPAddress `(E208  1 e 1 0 ]
+"975
+[v _btohexa_high `(uc  1 e 1 0 ]
+"1001
+[v _btohexa_low `(uc  1 e 1 0 ]
+"1087
+[v _swaps `(us  1 e 2 0 ]
+"1116
+[v _swapl `(ul  1 e 4 0 ]
+"1158
+[v _CalcIPChecksum `(us  1 e 2 0 ]
+"135 /home/andresol/tellstick-net/tcpip/ICMP.c
+[v _ICMPProcess `(v  1 e 0 0 ]
+"140 /home/andresol/tellstick-net/tcpip/IP.c
+[v _IPGetHeader `(E208  1 e 1 0 ]
+"255
+[v _IPPutHeader `(us  1 e 2 0 ]
+"300
+[v _IPSetRxBuffer `(v  1 e 0 0 ]
+"307
+[v _SwapIPHeader `(v  1 s 0 _SwapIPHeader ]
+"94 /home/andresol/tellstick-net/tcpip/Reboot.c
+[v _RebootTask `(v  1 e 0 0 ]
+"105 /home/andresol/tellstick-net/tcpip/StackTsk.c
+[v _StackInit `(v  1 e 0 0 ]
+"202
+[v _StackTask `(v  1 e 0 0 ]
+"409
+[v _StackApplications `(v  1 e 0 0 ]
+"295 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _SyncTCBStub `(v  1 s 0 _SyncTCBStub ]
+"326
+[v _SyncTCB `(v  1 s 0 _SyncTCB ]
+"370
+[v _TCPInit `(v  1 e 0 0 ]
+"822
+[v _TCPDisconnect `(v  1 e 0 0 ]
+"2346
+[v _TCPTick `(v  1 e 0 0 ]
+"2804
+[v _TCPProcess `(E208  1 e 1 0 ]
+"2921
+[v _SendTCP `(v  1 s 0 _SendTCP ]
+"3209
+[v _FindMatchingSocket `(E208  1 s 1 _FindMatchingSocket ]
+"3390
+[v _SwapTCPHeader `(v  1 s 0 _SwapTCPHeader ]
+"3424
+[v _CloseSocket `(v  1 s 0 _CloseSocket ]
+"3506
+[v _GetMaxSegSizeOption `(us  1 s 2 _GetMaxSegSizeOption ]
+"3599
+[v _HandleTCPSeg `(v  1 s 0 _HandleTCPSeg ]
+"4531
+[v _TCPRAMCopy `(v  1 s 0 _TCPRAMCopy ]
+"95 /home/andresol/tellstick-net/tcpip/Tick.c
+[v _TickInit `(v  1 e 0 0 ]
+"156
+[v _GetTickCopy `(v  1 s 0 _GetTickCopy ]
+"260
+[v _TickGet `(ul  1 e 4 0 ]
+"290
+[v _TickGetDiv256 `(ul  1 e 4 0 ]
+"391
+[v _TickUpdate `(v  1 e 0 0 ]
+"168 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPInit `(v  1 e 0 0 ]
+"242
+[v _UDPOpenEx `(uc  1 e 1 0 ]
+"341
+[v _UDPTask `(v  1 e 0 0 ]
+"623
+[v _UDPClose `(v  1 e 0 0 ]
+"657
+[v _UDPSetTxBuffer `(v  1 e 0 0 ]
+"687
+[v _UDPSetRxBuffer `(v  1 e 0 0 ]
+"721
+[v _UDPIsPutReady `(us  1 e 2 0 ]
+"760
+[v _UDPPut `(E3956  1 e 1 0 ]
+"801
+[v _UDPPutArray `(us  1 e 2 0 ]
+"848
+[v _UDPPutROMArray `(us  1 e 2 0 ]
+"892
+[v _UDPPutString `(*.Muc  1 e 2 0 ]
+"926
+[v _UDPPutROMString `(*.MDCuc  1 e 2 0 ]
+"959
+[v _UDPFlush `(v  1 e 0 0 ]
+"1054
+[v _UDPIsGetReady `(us  1 e 2 0 ]
+"1093
+[v _UDPGet `(E3956  1 e 1 0 ]
+"1133
+[v _UDPGetArray `(us  1 e 2 0 ]
+"1177
+[v _UDPDiscard `(v  1 e 0 0 ]
+"1220
+[v _UDPProcess `(E208  1 e 1 0 ]
+"1309
+[v _FindMatchingSocket `(uc  1 s 1 _FindMatchingSocket ]
+"1569 /usr/hitech/picc-18/pro/9.66/include/pic18.h
+[v __delay `(v  1 e 0 0 ]
+"5 /usr/hitech/picc-18/pro/9.66/sources/lldiv.c
+[v ___lldiv `(ul  1 e 4 0 ]
+"10 /usr/hitech/picc-18/pro/9.66/sources/memcpy.c
+[v _memcpy `(*.Mv  1 e 2 0 ]
+"10 /usr/hitech/picc-18/pro/9.66/sources/memset.c
+[v _memset `(*.Mv  1 e 2 0 ]
+"10 /usr/hitech/picc-18/pro/9.66/sources/strcat.c
+[v _strcat `(*.Muc  1 e 2 0 ]
+"5 /usr/hitech/picc-18/pro/9.66/sources/strchr.c
+[v _strchr `(*.Muc  1 e 2 0 ]
+"5 /usr/hitech/picc-18/pro/9.66/sources/strcmp.c
+[v _strcmp `(i  1 e 2 0 ]
+"5 /usr/hitech/picc-18/pro/9.66/sources/strlen.c
+[v _strlen `(ui  1 e 2 0 ]
+"3 /usr/hitech/picc-18/pro/9.66/sources/wmul.c
+[v ___wmul `(ui  1 e 2 0 ]
+"16 plib/i2c/i2c1eeap.c
+[v _EEAckPolling1 `(uc  1 e 1 0 ]
+"18 plib/i2c/i2c1eebw.c
+[v _EEByteWrite1 `(uc  1 e 1 0 ]
+"17 plib/i2c/i2c1eerr.c
+[v _EERandomRead1 `(ui  1 e 2 0 ]
+"13 plib/i2c/i2c1writ.c
+[v _WriteI2C1 `(uc  1 e 1 0 ]
+"31 /hitech/products/compilers/pic18/pro/9.66/dist/linux/include/peripheral/psupport.h
+[v _SEN_x `Vb  1 e 0 @32296 ]
+"32
+[v _RSEN_x `Vb  1 e 0 @32297 ]
+"33
+[v _PEN_x `Vb  1 e 0 @32298 ]
+"34
+[v _RCEN_x `Vb  1 e 0 @32299 ]
+"35
+[v _ACKEN_x `Vb  1 e 0 @32300 ]
+"36
+[v _ACKDT_x `Vb  1 e 0 @32301 ]
+"37
+[v _ACKSTAT_x `Vb  1 e 0 @32302 ]
+"43
+[v _WCOL_x `Vb  1 e 0 @32311 ]
+"166
+[v _BF_x `Vb  1 e 0 @32312 ]
+"171
+[v _R_W_x `Vb  1 e 0 @32314 ]
+"1989 /hitech/products/compilers/pic18/pro/9.66/dist/linux/include/pic18f67j60.h
+[v _BCL1IF `Vb  1 e 0 @32011 ]
+"2807
+[v _SSP1BUF `Vuc  1 e 1 @4041 ]
+"24 /home/andresol/tellstick-net/firmware/common.h
+[v _config `S299  1 e 37 @219 ]
+"15 /home/andresol/tellstick-net/firmware/discovery.c
+[v _remoteNode `S245  1 e 10 @483 ]
+"23
+[v F5297 `E5292  1 s 1 @1743 ]
+"25
+[v F5298 `uc  1 s 1 @1701 ]
+"22 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _state `E5348  1 s 1 @1760 ]
+"24
+[v _buffer `[200]uc  1 s 200 @512 ]
+"25
+[v _bufferP `uc  1 s 1 @511 ]
+"26
+[v _hashStartP `uc  1 s 1 @1739 ]
+"27
+[v _signature `[20]uc  1 s 20 @1224 ]
+"28
+[v _signature2 `[20]uc  1 s 20 @1500 ]
+"29
+[v _PRIVATE_KEY `DC[1]uc  1 s 1 _PRIVATE_KEY ]
+"208
+[v F5406 `S406  1 s 89 @1536 ]
+"229
+[v F5411 `uc  1 s 1 @1774 ]
+"12 /home/andresol/tellstick-net/firmware/localaccess.c
+[v _localSocket `uc  1 e 1 @1690 ]
+"18
+[v F5333 `E5330  1 s 1 @1752 ]
+"28 /home/andresol/tellstick-net/firmware/pwm.c
+[v _txd `S817  1 e 9 @1812 ]
+"29
+[v _rxd `S817  1 e 9 @1803 ]
+"15 /home/andresol/tellstick-net/firmware/send.c
+[v _FACTOR `DCi  1 e 2 0 ]
+"16
+[v _times `[4]ui  1 e 8 @1775 ]
+"18
+[v _sendPacket `[200]uc  1 e 200 @1280 ]
+"82 /home/andresol/tellstick-net/firmware/TCPIPConfig.h
+[v _TCPSocketInitializer `DC[1]S3796  1 e 6 0 ]
+"21 /home/andresol/tellstick-net/firmware/tellsticknet.c
+[v _localPort `us  1 s 2 @1705 ]
+"22
+[v _s `uc  1 s 1 @1844 ]
+"23
+[v _remote `S245  1 s 10 @1254 ]
+"63
+[v F5377 `[20]uc  1 s 20 @1645 ]
+[v F5375 `[20]uc  1 s 20 @1480 ]
+"171
+[v F5391 `[20]uc  1 s 20 @1625 ]
+"25 /home/andresol/tellstick-net/firmware/transmit_arctech.c
+[v _house `l  1 s 4 @505 ]
+"26
+[v _method `i  1 s 2 @1736 ]
+[v _unit `i  1 s 2 @1722 ]
+"17 /home/andresol/tellstick-net/rf/hasta.c
+[v _hastastate `E3934  1 s 1 @1713 ]
+"40
+[v _bytecount `uc  1 s 1 @1699 ]
+"41
+[v _hastabyte `uc  1 s 1 @1709 ]
+"42
+[v _hastadata `ul  1 e 4 @1671 ]
+"43
+[v _mask `ul  1 e 4 @1825 ]
+"44
+[v _prepulse `uc  1 s 1 @1679 ]
+"45
+[v _pulsecount `ui  1 s 2 @1734 ]
+"46
+[v _totalhastadata `ul  1 e 4 @1273 ]
+"13 /home/andresol/tellstick-net/rf/mandolyn.c
+[v _MODEL `[20]uc  1 e 20 @1783 ]
+"12 /home/andresol/tellstick-net/rf/oregon.c
+[v _state `E3935  1 s 1 @1742 ]
+"20
+[v _byteCnt `uc  1 s 1 @1749 ]
+"21
+[v _bitCnt `uc  1 s 1 @1714 ]
+"22
+[v _totByteCnt `uc  1 s 1 @1745 ]
+"23
+[v _byteLength `i  1 e 2 @1833 ]
+"34
+[v F3947 `b  1 s 0 @0 ]
+"74
+[v F3952 `uc  1 s 1 @1746 ]
+"95
+[v F3955 `uc  1 s 1 @1711 ]
+"96
+[v F3956 `ui  1 s 2 @1686 ]
+"97
+[v F3957 `i  1 s 2 @1277 ]
+"98
+[v F3958 `uc  1 s 1 @1747 ]
+"99
+[v F3959 `[8]uc  1 s 8 @1520 ]
+"13 /home/andresol/tellstick-net/rf/oregonv3.c
+[v _state `E3935  1 s 1 @1756 ]
+"22
+[v _halfTime `ui  1 s 2 @1532 ]
+"23
+[v _preambleSyncCount `uc  1 s 1 @1718 ]
+"24
+[v _byteCntV3 `uc  1 s 1 @1719 ]
+"25
+[v _nibblePositionV3 `uc  1 s 1 @1717 ]
+"59
+[v F3952 `uc  1 s 1 @1755 ]
+"90
+[v F3955 `ui  1 s 2 @1684 ]
+"91
+[v F3956 `i  1 s 2 @509 ]
+"92
+[v F3957 `c  1 s 1 @1835 ]
+"93
+[v F3958 `[9]uc  1 s 9 @1264 ]
+"94
+[v F3959 `uc  1 s 1 @1727 ]
+"19 /home/andresol/tellstick-net/rf/receive.c
+[v _data `V[512]uc  1 e 512 @712 ]
+"20
+[v _dataP `Vus  1 s 2 @1677 ]
+"26
+[v F3862 `uc  1 s 1 @1751 ]
+[v F3863 `uc  1 s 1 @1758 ]
+"27
+[v F3864 `uc  1 s 1 @1748 ]
+[v F3865 `uc  1 s 1 @1738 ]
+"127
+[v F3879 `us  1 s 2 @1528 ]
+"128
+[v F3880 `uc  1 s 1 @1836 ]
+"129
+[v F3882 `s  1 s 2 @1831 ]
+[v F3881 `s  1 s 2 @1829 ]
+"130
+[v F3883 `uc  1 s 1 @1675 ]
+[v F3884 `uc  1 s 1 @1837 ]
+"131
+[v F3885 `uc  1 s 1 @1279 ]
+[v F3886 `uc  1 s 1 @1700 ]
+"133
+[v F3888 `uc  1 s 1 @1744 ]
+"5 /home/andresol/tellstick-net/rf/transmit.c
+[v _rfNextTime `Vuc  1 e 1 @1716 ]
+"6
+[v _rfCurrentTime `Vuc  1 e 1 @1715 ]
+"7
+[v _rfNewTime `Vb  1 e 0 @1 ]
+[v _rfNextIsZero `Vb  1 e 0 @2 ]
+"79 /home/andresol/tellstick-net/tcpip/ARP.c
+[v _Cache `S245  1 s 10 @473 ]
+"415
+[v F5286 `S245  1 s 10 @1244 ]
+"423
+[v F5290 `E5287  1 s 1 @1740 ]
+"139 /home/andresol/tellstick-net/tcpip/DHCP.c
+[v _DHCPClientInitializedOnce `E208  1 e 1 @1750 ]
+"184
+[v _DHCPClient `S2999  1 s 40 @68 ]
+"71 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _MySocket `uc  1 s 1 @1841 ]
+"72
+[v _DNSHostName `*.buc  1 s 2 @1707 ]
+"73
+[v _DNSHostNameROM `*.dDCuc  1 s 2 @1730 ]
+"74
+[v _RecordType `uc  1 s 1 @1757 ]
+"75
+[v _ResolvedInfo `S245  1 s 10 @435 ]
+"87
+[v _Flags `S2767  1 s 1 @1710 ]
+"100
+[v _smDNS `E5288  1 s 1 @1845 ]
+"349
+[v F5325 `ul  1 s 4 @1667 ]
+"350
+[v F5326 `S66  1 s 2 @1682 ]
+"351
+[v F5327 `uc  1 s 1 @1754 ]
+"352
+[v F5328 `uc  1 s 1 @1753 ]
+"98 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _NextPacketLocation `S66  1 s 2 @1703 ]
+"99
+[v _CurrentPacketLocation `S66  1 s 2 @1688 ]
+"111
+[v _flags `S3419  1 s 1 @1676 ]
+"112
+[v _wTXWatchdog `us  1 s 2 @1724 ]
+"114
+[v _wRXPolarityTimer `us  1 s 2 @1720 ]
+"122
+[v _errataTempL `uc  1 s 1 @3710 ]
+"123
+[v _errataTempH `uc  1 s 1 @3711 ]
+"883
+[v F5345 `S107  1 s 4 @1691 ]
+"85 /home/andresol/tellstick-net/tcpip/Hashes.c
+[v _lastBlock `[64]uc  1 e 64 @371 ]
+"62 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _dwLFSRRandSeed `ul  1 s 4 @1821 ]
+"1304
+[v _toRotate `S107  1 e 4 @499 ]
+"101 /home/andresol/tellstick-net/tcpip/IP.c
+[v __Identifier `us  1 s 2 @1732 ]
+"102
+[v _IPHeaderLen `uc  1 s 1 @1702 ]
+"95 /home/andresol/tellstick-net/tcpip/Reboot.c
+[v F5277 `uc  1 s 1 @1838 ]
+"78 /home/andresol/tellstick-net/tcpip/StackTsk.c
+[v _smStack `E5275  1 s 1 @1759 ]
+"255
+[v F5292 `E208  1 s 1 @1741 ]
+"202 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _NextPort `us  1 s 2 @1728 ]
+"219
+[v _TCBStubs `S3861  1 s 28 @445 ]
+"246
+[v _MyTCB `S3944  1 s 39 @29 ]
+"247
+[v _hCurrentTCP `uc  1 s 1 @1843 ]
+"252
+[v _SYNQueue `[3]S3961  1 s 60 @159 ]
+"290
+[v _MyTCBStub `S3861  1 s 28 @1 ]
+"327
+[v F5357 `uc  1 s 1 @1839 ]
+"990
+[v F5395 `S3987  1 s 12 @1761 ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S121  1 e 51 @108 ]
+"104 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPSocketInfo `[5]S260  1 e 115 @256 ]
+"105
+[v _UDPTxCount `us  1 e 2 @1530 ]
+"64 /home/andresol/tellstick-net/tcpip/Tick.c
+[v _dwInternalTicks `Vul  1 s 4 @1695 ]
+"67
+[v _vTickReading `[6]uc  1 s 6 @493 ]
+"113 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _activeUDPSocket `uc  1 e 1 @1712 ]
+"116
+[v _UDPRxCount `us  1 e 2 @1665 ]
+"117
+[v _LastPutSocket `uc  1 s 1 @1840 ]
+"118
+[v _wPutOffset `us  1 s 2 @503 ]
+"119
+[v _wGetOffset `us  1 s 2 @1534 ]
+"126
+[v _Flags `S3227  1 s 1 @1726 ]
+"129
+[v _SocketWithRxData `uc  1 s 1 @1842 ]
+"247
+[v F5295 `us  1 s 2 @1680 ]
+"103 /usr/hitech/picc-18/pro/9.66/include/legacy/ppic18f67j60.h
+[v _RC3 `VNb  1 e 0 @31763 ]
+"104
+[v _RC4 `VNb  1 e 0 @31764 ]
+"114
+[v _RB4 `VNb  1 e 0 @31756 ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S27  1 e 1 @1773 ]
+"124 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MAADR5 `Vuc  1 e 1 @3712 ]
+"128
+[v _MAADR6 `Vuc  1 e 1 @3713 ]
+"132
+[v _MAADR3 `Vuc  1 e 1 @3714 ]
+"136
+[v _MAADR4 `Vuc  1 e 1 @3715 ]
+"140
+[v _MAADR1 `Vuc  1 e 1 @3716 ]
+"144
+[v _MAADR2 `Vuc  1 e 1 @3717 ]
+"160
+[v _MISTATbits `S3708  1 e 1 @3722 ]
+"189
+[v _MACON1 `Vuc  1 e 1 @3744 ]
+"205
+[v _MACON3 `Vuc  1 e 1 @3746 ]
+"233
+[v _MACON4 `Vuc  1 e 1 @3747 ]
+"246
+[v _MABBIPG `Vuc  1 e 1 @3748 ]
+"269
+[v _MAIPGL `Vuc  1 e 1 @3750 ]
+"278
+[v _MAIPGH `Vuc  1 e 1 @3751 ]
+"291
+[v _MAMXFLL `Vuc  1 e 1 @3754 ]
+"295
+[v _MAMXFLH `Vuc  1 e 1 @3755 ]
+"302
+[v _MICMD `Vuc  1 e 1 @3762 ]
+"314
+[v _MIREGADR `Vuc  1 e 1 @3764 ]
+"324
+[v _MIWRL `Vuc  1 e 1 @3766 ]
+"328
+[v _MIWRH `Vuc  1 e 1 @3767 ]
+"336
+[v _MIRDL `Vuc  1 e 1 @3768 ]
+"340
+[v _MIRDH `Vuc  1 e 1 @3769 ]
+"464
+[v _EPKTCNT `Vuc  1 e 1 @3801 ]
+"482
+[v _EWRPT `Vui  1 e 2 @3810 ]
+"499
+[v _ETXST `Vui  1 e 2 @3812 ]
+"516
+[v _ETXND `Vui  1 e 2 @3814 ]
+"533
+[v _ERXST `Vui  1 e 2 @3816 ]
+"550
+[v _ERXND `Vui  1 e 2 @3818 ]
+"554
+[v _ERXRDPTL `Vuc  1 e 1 @3820 ]
+"558
+[v _ERXRDPTH `Vuc  1 e 1 @3821 ]
+"567
+[v _ERXRDPT `Vui  1 e 2 @3820 ]
+"584
+[v _ERXWRPT `Vui  1 e 2 @3822 ]
+"601
+[v _EDMAST `Vui  1 e 2 @3824 ]
+"618
+[v _EDMAND `Vui  1 e 2 @3826 ]
+"635
+[v _EDMADST `Vui  1 e 2 @3828 ]
+"692
+[v _ESTATbits `S3446  1 e 1 @3837 ]
+"707
+[v _ECON2bits `S3433  1 e 1 @3838 ]
+"732
+[v _EIRbits `S3446  1 e 1 @3936 ]
+"1031
+[v _TMR4ON `Vb  1 e 0 @31666 ]
+"1032
+[v _T4CKPS0 `Vb  1 e 0 @31664 ]
+"1033
+[v _T4CKPS1 `Vb  1 e 0 @31665 ]
+"1034
+[v _T4OUTPS0 `Vb  1 e 0 @31667 ]
+"1035
+[v _T4OUTPS1 `Vb  1 e 0 @31668 ]
+"1036
+[v _T4OUTPS2 `Vb  1 e 0 @31669 ]
+"1037
+[v _T4OUTPS3 `Vb  1 e 0 @31670 ]
+"1056
+[v _PR4 `Vuc  1 e 1 @3959 ]
+"1060
+[v _TMR4 `Vuc  1 e 1 @3960 ]
+"1110
+[v _ERDPTL `Vuc  1 e 1 @3962 ]
+"1114
+[v _ERDPTH `Vuc  1 e 1 @3963 ]
+"1123
+[v _ERDPT `Vui  1 e 2 @3962 ]
+"1165
+[v _PORTA `Vuc  1 e 1 @3968 ]
+"1209
+[v _PORTB `Vuc  1 e 1 @3969 ]
+"1260
+[v _PORTC `Vuc  1 e 1 @3970 ]
+"1347
+[v _PORTD `Vuc  1 e 1 @3971 ]
+"1373
+[v _PORTE `Vuc  1 e 1 @3972 ]
+"1393
+[v _PORTF `Vuc  1 e 1 @3973 ]
+"1474
+[v _LATA4 `Vb  1 e 0 @31820 ]
+"1557
+[v _LATE1 `Vb  1 e 0 @31849 ]
+"1576
+[v _LATF1 `Vb  1 e 0 @31857 ]
+"1577
+[v _LATF2 `Vb  1 e 0 @31858 ]
+"1608
+[v _TRISA `Vuc  1 e 1 @3986 ]
+"1615
+[v _TRISA4 `Vb  1 e 0 @31892 ]
+"1643
+[v _TRISB `Vuc  1 e 1 @3987 ]
+"1650
+[v _TRISB4 `Vb  1 e 0 @31900 ]
+"1686
+[v _TRISC `Vuc  1 e 1 @3988 ]
+"1692
+[v _TRISC3 `Vb  1 e 0 @31907 ]
+"1693
+[v _TRISC4 `Vb  1 e 0 @31908 ]
+"1729
+[v _TRISD `Vuc  1 e 1 @3989 ]
+"1752
+[v _TRISE `Vuc  1 e 1 @3990 ]
+"1756
+[v _TRISE1 `Vb  1 e 0 @31921 ]
+"1787
+[v _TRISF `Vuc  1 e 1 @3991 ]
+"1790
+[v _TRISF1 `Vb  1 e 0 @31929 ]
+"1791
+[v _TRISF2 `Vb  1 e 0 @31930 ]
+"1828
+[v _TRISG `Vuc  1 e 1 @3992 ]
+"1845
+[v _OSCTUNE `Vuc  1 e 1 @3995 ]
+"1864
+[v _TMR1IE `Vb  1 e 0 @31976 ]
+"1865
+[v _TMR2IE `Vb  1 e 0 @31977 ]
+"1895
+[v _TMR1IF `Vb  1 e 0 @31984 ]
+"1896
+[v _TMR2IF `Vb  1 e 0 @31985 ]
+"1930
+[v _TMR2IP `Vb  1 e 0 @31993 ]
+"1961
+[v _TMR3IE `Vb  1 e 0 @32001 ]
+"1988
+[v _TMR3IF `Vb  1 e 0 @32009 ]
+"2015
+[v _TMR3IP `Vb  1 e 0 @32017 ]
+"2044
+[v _TMR4IE `Vb  1 e 0 @32027 ]
+"2060
+[v _TMR4IF `Vb  1 e 0 @32035 ]
+"2076
+[v _TMR4IP `Vb  1 e 0 @32043 ]
+"2240
+[v _TMR3ON `Vb  1 e 0 @32136 ]
+"2247
+[v _T3CKPS0 `Vb  1 e 0 @32140 ]
+"2248
+[v _T3CKPS1 `Vb  1 e 0 @32141 ]
+"2275
+[v _TMR3L `Vuc  1 e 1 @4018 ]
+"2279
+[v _TMR3H `Vuc  1 e 1 @4019 ]
+"2436
+[v _CCP2CON `Vuc  1 e 1 @4026 ]
+"2441
+[v _CCP2M2 `Vb  1 e 0 @32210 ]
+"2442
+[v _CCP2M3 `Vb  1 e 0 @32211 ]
+"2443
+[v _DC2B0 `Vb  1 e 0 @32212 ]
+"2444
+[v _DC2B1 `Vb  1 e 0 @32213 ]
+"2445
+[v _P2M0 `Vb  1 e 0 @32214 ]
+"2446
+[v _P2M1 `Vb  1 e 0 @32215 ]
+"2474
+[v _CCPR2L `Vuc  1 e 1 @4027 ]
+"2485
+[v _CCP1CON `Vuc  1 e 1 @4029 ]
+"2490
+[v _CCP1M2 `Vb  1 e 0 @32234 ]
+"2491
+[v _CCP1M3 `Vb  1 e 0 @32235 ]
+"2492
+[v _DC1B0 `Vb  1 e 0 @32236 ]
+"2493
+[v _DC1B1 `Vb  1 e 0 @32237 ]
+"2494
+[v _P1M0 `Vb  1 e 0 @32238 ]
+"2495
+[v _P1M1 `Vb  1 e 0 @32239 ]
+"2523
+[v _CCPR1L `Vuc  1 e 1 @4030 ]
+"2534
+[v _ADCON2 `Vuc  1 e 1 @4032 ]
+"2561
+[v _ADCON1 `Vuc  1 e 1 @4033 ]
+"2585
+[v _ADCON0 `Vuc  1 e 1 @4034 ]
+"2631
+[v _ADCON0bits `S1807  1 e 1 @4034 ]
+"2646
+[v _SSP1CON2 `Vuc  1 e 1 @4037 ]
+"2688
+[v _SSP1CON1 `Vuc  1 e 1 @4038 ]
+"2716
+[v _SSP1STAT `Vuc  1 e 1 @4039 ]
+"2803
+[v _SSPADD `Vuc  1 e 1 @4040 ]
+"2814
+[v _TMR2ON `Vb  1 e 0 @32338 ]
+"2816
+[v _T2CKPS1 `Vb  1 e 0 @32337 ]
+"2817
+[v _T2OUTPS0 `Vb  1 e 0 @32339 ]
+"2818
+[v _T2OUTPS1 `Vb  1 e 0 @32340 ]
+"2819
+[v _T2OUTPS2 `Vb  1 e 0 @32341 ]
+"2820
+[v _T2OUTPS3 `Vb  1 e 0 @32342 ]
+"2839
+[v _PR2 `Vuc  1 e 1 @4043 ]
+"2849
+[v _TMR1ON `Vb  1 e 0 @32360 ]
+"2850
+[v _TMR1CS `Vb  1 e 0 @32361 ]
+"2856
+[v _T1CKPS0 `Vb  1 e 0 @32364 ]
+"2857
+[v _T1CKPS1 `Vb  1 e 0 @32365 ]
+"2884
+[v _TMR1L `Vuc  1 e 1 @4046 ]
+"2888
+[v _TMR1H `Vuc  1 e 1 @4047 ]
+"2925
+[v _RCONbits `S711  1 e 1 @4048 ]
+"2930
+[v _SWDTEN `Vb  1 e 0 @32392 ]
+"2960
+[v _ECON1bits `S3549  1 e 1 @4050 ]
+"2984
+[v _T0CON `Vuc  1 e 1 @4053 ]
+"3012
+[v _TMR0L `Vuc  1 e 1 @4054 ]
+"3016
+[v _TMR0H `Vuc  1 e 1 @4055 ]
+"3238
+[v _INTCON2bits `S2452  1 e 1 @4081 ]
+"3241
+[v _INTCON `Vuc  1 e 1 @4082 ]
+"3253
+[v _GIEL `Vb  1 e 0 @32662 ]
+"3254
+[v _GIEH `Vb  1 e 0 @32663 ]
+"3315
+[v _INTCONbits `S677  1 e 1 @4082 ]
+"3319
+[v _PRODL `Vuc  1 e 1 @4083 ]
+"3323
+[v _PRODH `Vuc  1 e 1 @4084 ]
+"3432
+"601
+"1003
+"977
+"110 /home/andresol/tellstick-net/firmware/main.c
+[v _main `(i  1 e 2 0 ]
+{
+"111
+[v _t `ul  1 a 4 0 ]
+"168
+} 4
+"95 /home/andresol/tellstick-net/tcpip/Tick.c
+[v _TickInit `(v  1 e 0 0 ]
+{
+"133
+} 0
+"66 /home/andresol/tellstick-net/firmware/main.c
+[v _initWDT `(v  1 e 0 0 ]
+{
+"68
+} 0
+"17 /home/andresol/tellstick-net/firmware/discovery.c
+[v _discoveryTask `(v  1 e 0 0 ]
+{
+"26
+[v _i `uc  1 a 1 0 ]
+"86
+} 1
+"126 /home/andresol/tellstick-net/rf/receive.c
+[v _rfReceiveTask `(v  1 e 0 0 ]
+{
+"132
+[v _found `uc  1 a 1 0 ]
+"205
+[v _matched `uc  1 a 1 1 ]
+"196
+[v _dist `i  1 a 2 2 ]
+"219
+} 4
+"409 /home/andresol/tellstick-net/tcpip/StackTsk.c
+[v _StackApplications `(v  1 e 0 0 ]
+{
+"469
+} 0
+"105
+[v _StackInit `(v  1 e 0 0 ]
+{
+"179
+} 0
+"14 /home/andresol/tellstick-net/firmware/localaccess.c
+[v _localAccessTask `(v  1 e 0 0 ]
+{
+"20
+[v _ch `uc  1 a 1 0 ]
+"50
+} 1
+"57 /home/andresol/tellstick-net/firmware/main.c
+[v _initInterrupts `(v  1 e 0 0 ]
+{
+"64
+} 0
+"31 /home/andresol/tellstick-net/firmware/pwm.c
+[v _initPwm `(v  1 e 0 0 ]
+{
+"82
+} 0
+"24 /home/andresol/tellstick-net/firmware/rf.c
+[v _initReceiver `(v  1 e 0 0 ]
+{
+"49
+} 0
+"70 /home/andresol/tellstick-net/firmware/main.c
+[v _initAppConfig `(v  1 s 0 _initAppConfig ]
+{
+"108
+} 0
+"51 /home/andresol/tellstick-net/firmware/rf.c
+[v _initTransmitter `(v  1 e 0 0 ]
+{
+"68
+} 0
+"202 /home/andresol/tellstick-net/tcpip/StackTsk.c
+[v _StackTask `(v  1 e 0 0 ]
+{
+"205
+[v _cFrameType `uc  1 a 1 0 ]
+"206
+[v _cIPFrameType `uc  1 a 1 1 ]
+"203
+[v _dataCount `us  1 a 2 2 ]
+"204
+[v _tempLocalIP `S107  1 a 4 4 ]
+"256
+[v _bCurrentLinkState `E208  1 a 1 8 ]
+"391
+} 9
+"2804 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _TCPProcess `(E208  1 e 1 0 ]
+{
+"2809
+[v _optionsSize `uc  1 a 1 0 ]
+"2807
+[v _checksum1 `S66  1 a 2 1 ]
+"2808
+[v _checksum2 `S66  1 a 2 3 ]
+"2806
+[v _pseudoHeader `S3282  1 a 12 5 ]
+"2805
+[v _TCPHeader `S4020  1 a 20 17 ]
+"2804
+[v _remote `*.bS245  1 p 2 0 ]
+[v _localIP `*.bS107  1 p 2 2 ]
+[v _len `us  1 p 2 4 ]
+"2894
+} 37
+"135 /home/andresol/tellstick-net/tcpip/ICMP.c
+[v _ICMPProcess `(v  1 e 0 0 ]
+{
+"136
+[v _dwVal `S107  1 a 4 0 ]
+"135
+[v _remote `*.bS245  1 p 2 0 ]
+[v _len `us  1 p 2 2 ]
+"203
+} 4
+"94 /home/andresol/tellstick-net/tcpip/Reboot.c
+[v _RebootTask `(v  1 e 0 0 ]
+{
+"101
+[v _BootloaderAddress `S2660  1 a 12 0 ]
+"138
+[v _wvPROD `S66  1 a 2 12 ]
+"146
+} 14
+"1220 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPProcess `(E208  1 e 1 0 ]
+{
+"1222
+[v _s `uc  1 a 1 0 ]
+"1224
+[v _checksums `S107  1 a 4 1 ]
+"1221
+[v _h `S3247  1 a 8 5 ]
+"1223
+[v _pseudoHeader `S3282  1 a 12 13 ]
+"1220
+[v _remoteNode `*.bS245  1 p 2 0 ]
+[v _localIP `*.bS107  1 p 2 2 ]
+[v _len `us  1 p 2 4 ]
+"1280
+} 25
+"140 /home/andresol/tellstick-net/tcpip/IP.c
+[v _IPGetHeader `(E208  1 e 1 0 ]
+{
+"141
+[v _CalcChecksum `S66  1 a 2 0 ]
+"142
+[v _header `S2077  1 a 20 2 ]
+"140
+[v _localIP `*.bS107  1 p 2 0 ]
+[v _remote `*.bS245  1 p 2 2 ]
+[v _protocol `*.buc  1 p 2 4 ]
+[v _len `*.bus  1 p 2 6 ]
+"229
+} 22
+"2346 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _TCPTick `(v  1 e 0 0 ]
+{
+"2349
+[v _bCloseSocket `E208  1 a 1 0 ]
+"2347
+[v _hTCP `uc  1 a 1 1 ]
+"2348
+[v _bRetransmit `E208  1 a 1 2 ]
+"2350
+[v _vFlags `uc  1 a 1 3 ]
+"2351
+[v _w `us  1 a 2 4 ]
+"2534
+[v _ipResolvedDNSIP `S107  1 a 4 6 ]
+"2776
+} 10
+"375 /home/andresol/tellstick-net/tcpip/DHCP.c
+[v _DHCPIsBound `(E3956  1 e 1 0 ]
+{
+[v _vInterface `uc  1 p 1 0 ]
+"378
+} 0
+"474
+[v _DHCPTask `(v  1 e 0 0 ]
+{
+"475
+[v _i `uc  1 a 1 0 ]
+"721
+} 1
+"413 /home/andresol/tellstick-net/tcpip/ARP.c
+[v _ARPProcess `(E208  1 e 1 0 ]
+{
+"414
+[v _packet `S1697  1 a 28 0 ]
+"533
+} 28
+"430 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACGetHeader `(E208  1 e 1 0 ]
+{
+"431
+[v _header `S3654  1 a 20 0 ]
+"430
+[v _remote `*.bS119  1 p 2 0 ]
+[v _type `*.buc  1 p 2 2 ]
+"527
+} 20
+"341 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPTask `(v  1 e 0 0 ]
+{
+"342
+[v _ss `uc  1 a 1 0 ]
+"371
+[v _ipResolvedDNSIP `S107  1 a 4 1 ]
+"439
+} 5
+"22 /home/andresol/tellstick-net/rf/x10.c
+[v _parseX10 `(uc  1 e 1 0 ]
+{
+"28
+[v _mask `ul  1 a 4 0 ]
+"23
+[v _code `ul  1 a 4 4 ]
+"29
+[v _i `i  1 a 2 8 ]
+"30
+[v _b1 `uc  1 a 1 10 ]
+"31
+[v _b2 `uc  1 a 1 11 ]
+"22
+[v _scanP `us  1 p 2 0 ]
+[v _scanBit `uc  1 p 1 2 ]
+"58
+} 12
+"27 /home/andresol/tellstick-net/rf/mandolyn.c
+[v _parseMandolyn `(uc  1 e 1 0 ]
+{
+"29
+[v _preamble `uc  1 a 1 0 ]
+"28
+[v _B `us  1 a 2 1 ]
+[v _P `us  1 a 2 3 ]
+"30
+[v _data `ul  1 a 4 5 ]
+"31
+[v _mask `ul  1 a 4 9 ]
+"38
+[v _i `i  1 a 2 13 ]
+"49
+[v _i `i  1 a 2 15 ]
+"39
+[v _b `uc  1 a 1 17 ]
+"50
+[v _b `uc  1 a 1 18 ]
+"27
+[v _scanP `us  1 p 2 0 ]
+[v _scanBit `uc  1 p 1 2 ]
+"69
+} 19
+"20 /home/andresol/tellstick-net/rf/everflourish.c
+[v _parseEverFlourish `(uc  1 e 1 0 ]
+{
+"22
+[v _data `ul  1 a 4 0 ]
+"23
+[v _mask `ul  1 a 4 4 ]
+"26
+[v _i `i  1 a 2 8 ]
+"27
+[v _b1 `uc  1 a 1 10 ]
+"28
+[v _b2 `uc  1 a 1 11 ]
+"29
+[v _b3 `uc  1 a 1 12 ]
+"30
+[v _b4 `uc  1 a 1 13 ]
+"20
+[v _scanP `us  1 p 2 0 ]
+[v _scanBit `uc  1 p 1 2 ]
+"49
+} 14
+"170 /home/andresol/tellstick-net/firmware/tellsticknet.c
+[v _handleMessage `(v  1 e 0 0 ]
+{
+"171
+[v _name `[20]uc  1 a 20 0 ]
+"188
+} 20
+"892 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPPutString `(*.Muc  1 e 2 0 ]
+{
+[v _strData `*.buc  1 p 2 0 ]
+"894
+} 0
+"926
+[v _UDPPutROMString `(*.MDCuc  1 e 2 0 ]
+{
+[v _strData `*.dDCuc  1 p 2 0 ]
+"928
+} 0
+"32 /home/andresol/tellstick-net/rf/fineoffset.c
+[v _parseFineOffset `(uc  1 e 1 0 ]
+{
+"35
+[v _lastbyte `uc  1 a 1 0 ]
+"54
+[v _crc `us  1 a 2 1 ]
+"33
+[v _buffer `[5]uc  1 a 5 3 ]
+"36
+[v _i `i  1 a 2 8 ]
+"55
+[v _j `i  1 a 2 10 ]
+"37
+[v _byte `uc  1 a 1 12 ]
+"38
+[v _j `i  1 a 2 13 ]
+"39
+[v _b `uc  1 a 1 15 ]
+"32
+[v _scanP `us  1 p 2 0 ]
+[v _scanBit `uc  1 p 1 2 ]
+"68
+} 16
+"59 /home/andresol/tellstick-net/rf/hasta.c
+[v _streamHasta `(v  1 e 0 0 ]
+{
+"190
+[v _temptotalhastadata `ul  1 a 4 0 ]
+"203
+[v _hastachecksum `ul  1 a 4 4 ]
+"204
+[v _temphastadata `ul  1 a 4 8 ]
+"205
+[v _temptotalhastadata `ul  1 a 4 12 ]
+"59
+[v _level `uc  1 p 1 0 ]
+[v _count `uc  1 p 1 1 ]
+"220
+} 16
+"87 /home/andresol/tellstick-net/rf/oregonv3.c
+[v _streamOregonV3 `(v  1 e 0 0 ]
+{
+[v _level `uc  1 p 1 0 ]
+[v _count `uc  1 p 1 1 ]
+"217
+} 0
+"94 /home/andresol/tellstick-net/rf/oregon.c
+[v _streamOregon `(v  1 e 0 0 ]
+{
+[v _level `uc  1 p 1 0 ]
+[v _count `uc  1 p 1 1 ]
+"178
+} 0
+"29 /home/andresol/tellstick-net/rf/arctech.c
+[v _parseArcTechCodeSwitch `(uc  1 e 1 0 ]
+{
+"32
+[v _mask `ul  1 a 4 0 ]
+"31
+[v _data `ul  1 a 4 4 ]
+"37
+[v _i `i  1 a 2 8 ]
+"38
+[v _b1 `uc  1 a 1 10 ]
+"39
+[v _b2 `uc  1 a 1 11 ]
+"40
+[v _b3 `uc  1 a 1 12 ]
+"41
+[v _b4 `uc  1 a 1 13 ]
+"29
+[v _scanP `us  1 p 2 0 ]
+[v _scanBit `uc  1 p 1 2 ]
+"67
+} 14
+"69
+[v _parseArcTechSelflearning `(uc  1 e 1 0 ]
+{
+"72
+[v _finished `ui  1 a 2 0 ]
+"73
+[v _i `i  1 a 2 2 ]
+"71
+[v _mask `ul  1 a 4 4 ]
+"70
+[v _data `ul  1 a 4 8 ]
+"79
+[v _b1 `uc  1 a 1 12 ]
+"80
+[v _b2 `uc  1 a 1 13 ]
+"81
+[v _b3 `uc  1 a 1 14 ]
+"82
+[v _b4 `uc  1 a 1 15 ]
+"69
+[v _scanP `us  1 p 2 0 ]
+[v _scanBit `uc  1 p 1 2 ]
+"124
+} 16
+"113 /home/andresol/tellstick-net/rf/receive.c
+[v _calculateDistance `(i  1 e 2 0 ]
+{
+[v _start `s  1 p 2 0 ]
+[v _stop `s  1 p 2 2 ]
+"121
+} 0
+"146 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACInit `(v  1 e 0 0 ]
+{
+"233
+} 0
+"36 /home/andresol/tellstick-net/firmware/eeprom.c
+[v _loadEEPROM `(v  1 e 0 0 ]
+{
+"40
+[v _i `uc  1 a 1 0 ]
+"36
+[v _ptr `*.buc  1 p 2 0 ]
+[v _size `ui  1 p 2 2 ]
+"44
+} 1
+"20
+[v _initEEPROM `(v  1 e 0 0 ]
+{
+"25
+} 0
+"370 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _TCPInit `(v  1 e 0 0 ]
+{
+"372
+[v _vSocketsAllocated `uc  1 a 1 0 ]
+"375
+[v _vMedium `uc  1 a 1 1 ]
+"371
+[v _i `uc  1 a 1 2 ]
+"374
+[v _ptrBaseAddress `us  1 a 2 3 ]
+"373
+[v _wRXSize `us  1 a 2 5 ]
+[v _wTXSize `us  1 a 2 7 ]
+"377
+[v _wCurrentETHAddress `us  1 a 2 9 ]
+"463
+} 11
+"168 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPInit `(v  1 e 0 0 ]
+{
+"169
+[v _s `uc  1 a 1 0 ]
+"176
+} 1
+"374 /home/andresol/tellstick-net/tcpip/ARP.c
+[v _ARPInit `(v  1 e 0 0 ]
+{
+"383
+} 0
+"278 /home/andresol/tellstick-net/tcpip/DHCP.c
+[v _DHCPDisable `(v  1 e 0 0 ]
+{
+[v _vInterface `uc  1 p 1 0 ]
+"288
+} 0
+"216
+[v _DHCPInit `(v  1 e 0 0 ]
+{
+"217
+[v _i `uc  1 a 1 0 ]
+"216
+[v _vInterface `uc  1 p 1 0 ]
+"245
+} 1
+"27 /home/andresol/tellstick-net/firmware/message.c
+[v _rfMessageBeginRaw `(v  1 e 0 0 ]
+{
+"34
+} 0
+"25 /home/andresol/tellstick-net/rf/oregon.c
+[v _clearOregon `(v  1 e 0 0 ]
+{
+"31
+} 0
+"72
+[v _oregonByte `(i  1 e 2 0 ]
+{
+"73
+[v _b1 `c  1 a 1 0 ]
+"72
+[v _level `uc  1 p 1 0 ]
+[v _count `uc  1 p 1 1 ]
+"92
+} 1
+"74 /home/andresol/tellstick-net/firmware/message.c
+[v _rfMessageAddString `(v  1 e 0 0 ]
+{
+[v _key `*.dDCuc  1 p 2 0 ]
+[v _value `*.mDCuc  1 p 2 2 ]
+"79
+} 0
+"36
+[v _rfMessageEnd `(v  1 e 0 0 ]
+{
+[v _type `uc  1 p 1 0 ]
+"43
+} 0
+"81
+[v _rfMessageAddHexString `(v  1 e 0 0 ]
+{
+[v _key `*.dDCuc  1 p 2 0 ]
+[v _value `*.bDCuc  1 p 2 2 ]
+[v _length `DCuc  1 p 1 4 ]
+"90
+} 0
+"52
+[v _rfMessageAddLong `(v  1 e 0 0 ]
+{
+[v _key `*.dDCuc  1 p 2 0 ]
+[v _value `ul  1 p 4 2 ]
+"72
+} 0
+"170 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _DNSBeginUsage `(E208  1 e 1 0 ]
+{
+"176
+} 0
+"760 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACCalcRxChecksum `(us  1 e 2 0 ]
+{
+"762
+[v _RDSave `us  1 a 2 0 ]
+"761
+[v _temp `us  1 a 2 2 ]
+"760
+[v _offset `us  1 p 2 0 ]
+[v _len `us  1 p 2 2 ]
+"777
+} 4
+"348 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _DNSIsResolved `(E208  1 e 1 0 ]
+{
+"353
+[v _i `uc  1 a 1 0 ]
+"354
+[v _w `S66  1 a 2 1 ]
+"356
+[v _DNSAnswerHeader `S2794  1 a 10 3 ]
+"355
+[v _DNSHeader `S2787  1 a 12 13 ]
+"348
+[v _HostIP `*.bS107  1 p 2 0 ]
+"627
+} 25
+"252
+[v _DNSResolve `(v  1 e 0 0 ]
+{
+[v _Hostname `*.buc  1 p 2 0 ]
+[v _Type `uc  1 p 1 2 ]
+"266
+} 0
+"3209 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _FindMatchingSocket `(E208  1 s 1 _FindMatchingSocket ]
+{
+"3211
+[v _partialMatch `uc  1 a 1 0 ]
+"3210
+[v _hTCP `uc  1 a 1 1 ]
+"3212
+[v _hash `us  1 a 2 2 ]
+"3303
+[v _wQueueInsertPos `us  1 a 2 4 ]
+"3209
+[v _h `*.bS4020  1 p 2 0 ]
+[v _remote `*.bS245  1 p 2 2 ]
+"3366
+} 6
+"304 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _DNSResolveROM `(v  1 e 0 0 ]
+{
+[v _Hostname `*.dDCuc  1 p 2 0 ]
+[v _Type `uc  1 p 1 2 ]
+"318
+} 0
+"1309 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _FindMatchingSocket `(uc  1 s 1 _FindMatchingSocket ]
+{
+"1311
+[v _partialMatch `uc  1 a 1 0 ]
+"1310
+[v _s `uc  1 a 1 1 ]
+"1312
+[v _p `*.bS260  1 a 2 2 ]
+"1309
+[v _h `*.bS3247  1 p 2 0 ]
+[v _remoteNode `*.bS245  1 p 2 2 ]
+[v _localIP `*.bS107  1 p 2 4 ]
+"1362
+} 4
+"3599 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _HandleTCPSeg `(v  1 s 0 _HandleTCPSeg ]
+{
+"3609
+[v _bSegmentAcceptable `E208  1 a 1 0 ]
+"3605
+[v _localHeaderFlags `uc  1 a 1 1 ]
+"3610
+[v _wNewWindow `us  1 a 2 2 ]
+"3604
+[v _wFreeSpace `us  1 a 2 4 ]
+"3608
+[v _wSegmentLength `us  1 a 2 6 ]
+"3603
+[v _wMissingBytes `us  1 a 2 8 ]
+"3601
+[v _wTemp `us  1 a 2 10 ]
+"3607
+[v _localSeqNumber `ul  1 a 4 12 ]
+"3600
+[v _dwTemp `ul  1 a 4 16 ]
+"3602
+[v _lMissingBytes `l  1 a 4 20 ]
+"3606
+[v _localAckNumber `ul  1 a 4 24 ]
+"3599
+[v _h `*.bS4020  1 p 2 0 ]
+[v _len `us  1 p 2 2 ]
+"4282
+} 28
+"27 /home/andresol/tellstick-net/rf/oregonv3.c
+[v _clearOregonV3 `(v  1 e 0 0 ]
+{
+"33
+} 0
+"15 /home/andresol/tellstick-net/rf/mandolyn.c
+[v _mandolynBit `(uc  1 e 1 0 ]
+{
+"20
+[v _b2 `uc  1 a 1 0 ]
+"16
+[v _b1 `uc  1 a 1 1 ]
+"15
+[v _scanP `*.bus  1 p 2 0 ]
+[v _scanBit `*.buc  1 p 2 2 ]
+"25
+} 2
+"212 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _GenerateRandomDWORD `(ul  1 e 4 0 ]
+{
+"213
+[v _vBitCount `uc  1 a 1 0 ]
+"214
+[v _w `us  1 a 2 1 ]
+[v _wLastValue `us  1 a 2 3 ]
+[v _wTime `us  1 a 2 5 ]
+"215
+[v _dwTotalTime `ul  1 a 4 7 ]
+"220
+[v _randomResult `S1908  1 a 4 11 ]
+"224
+[v _ADCON0Save `uc  1 a 1 15 ]
+[v _ADCON2Save `uc  1 a 1 16 ]
+"225
+[v _T0CONSave `uc  1 a 1 17 ]
+[v _TMR0HSave `uc  1 a 1 18 ]
+[v _TMR0LSave `uc  1 a 1 19 ]
+"368
+} 20
+"4 /home/andresol/tellstick-net/rf/crc.c
+[v _calculateCrc8 `(uc  1 e 1 0 ]
+{
+"6
+[v _onebit `i  1 a 2 0 ]
+"5
+[v _i `ui  1 a 2 2 ]
+"4
+[v _crc `uc  1 p 1 0 ]
+[v _c `DCuc  1 p 1 1 ]
+[v _polynom `uc  1 p 1 2 ]
+"20
+} 4
+"9 /home/andresol/tellstick-net/rf/everflourish.c
+[v _everflourishBit `(uc  1 e 1 0 ]
+{
+[v _b1 `uc  1 p 1 0 ]
+[v _b2 `uc  1 p 1 1 ]
+[v _b3 `uc  1 p 1 2 ]
+[v _b4 `uc  1 p 1 3 ]
+"18
+} 0
+"58 /home/andresol/tellstick-net/firmware/tellsticknet.c
+[v _send `(v  1 e 0 0 ]
+{
+"59
+[v _pause `uc  1 a 1 0 ]
+"60
+[v _repeats `uc  1 a 1 1 ]
+"63
+[v _model `[20]uc  1 a 20 2 ]
+[v _protocol `[20]uc  1 a 20 22 ]
+"97
+[v _i `uc  1 a 1 42 ]
+"100
+[v _j `uc  1 a 1 43 ]
+"105
+} 44
+"25
+[v _registerListener `(v  1 e 0 0 ]
+{
+"34
+} 0
+"10 /home/andresol/tellstick-net/rf/x10.c
+[v _x10Bit `(uc  1 e 1 0 ]
+{
+[v _b1 `uc  1 p 1 0 ]
+[v _b2 `uc  1 p 1 1 ]
+"20
+} 0
+"17 plib/i2c/i2c1eerr.c
+[v _EERandomRead1 `(ui  1 e 2 0 ]
+{
+[v _control `uc  1 p 1 0 ]
+[v _address `uc  1 p 1 1 ]
+"86
+} 0
+"48 /home/andresol/tellstick-net/rf/hasta.c
+[v _clearHasta `(v  1 e 0 0 ]
+{
+"57
+} 0
+"125 /home/andresol/tellstick-net/firmware/tellsticknet.c
+[v _setIp `(v  1 e 0 0 ]
+{
+"126
+[v _dns1 `S107  1 a 4 0 ]
+[v _dns2 `S107  1 a 4 4 ]
+[v _gateway `S107  1 a 4 8 ]
+[v _netmask `S107  1 a 4 12 ]
+[v _ip `S107  1 a 4 16 ]
+"168
+} 20
+"57 /home/andresol/tellstick-net/rf/oregonv3.c
+[v _oregonByteV3 `(i  1 e 2 0 ]
+{
+"58
+[v _b1 `c  1 a 1 0 ]
+"57
+[v _level `uc  1 p 1 0 ]
+[v _count `uc  1 p 1 1 ]
+"85
+} 1
+"107 /home/andresol/tellstick-net/firmware/tellsticknet.c
+[v _saveIp `(v  1 e 0 0 ]
+{
+"123
+} 0
+"9 /home/andresol/tellstick-net/rf/arctech.c
+[v _arctechCodeSwitchBit `(uc  1 e 1 0 ]
+{
+[v _b1 `uc  1 p 1 0 ]
+[v _b2 `uc  1 p 1 1 ]
+[v _b3 `uc  1 p 1 2 ]
+[v _b4 `uc  1 p 1 3 ]
+"17
+} 0
+"18 /home/andresol/tellstick-net/rf/fineoffset.c
+[v _fineOffsetBit `(uc  1 e 1 0 ]
+{
+"19
+[v _b1 `uc  1 a 1 0 ]
+"20
+[v _b2 `uc  1 a 1 1 ]
+"18
+[v _scanP `*.bus  1 p 2 0 ]
+[v _scanBit `*.buc  1 p 2 2 ]
+"30
+} 2
+"1289 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _WritePHYReg `(v  1 e 0 0 ]
+{
+"1290
+[v _GIESave `uc  1 a 1 0 ]
+"1289
+[v _Register `uc  1 p 1 0 ]
+[v _Data `us  1 p 2 1 ]
+"1329
+} 1
+"19 /home/andresol/tellstick-net/rf/arctech.c
+[v _arctechSelflearningBit `(uc  1 e 1 0 ]
+{
+[v _b1 `uc  1 p 1 0 ]
+[v _b2 `uc  1 p 1 1 ]
+[v _b3 `uc  1 p 1 2 ]
+[v _b4 `uc  1 p 1 3 ]
+"27
+} 0
+"256 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACIsLinked `(E3956  1 e 1 0 ]
+{
+"263
+} 0
+"742 /home/andresol/tellstick-net/tcpip/DHCP.c
+[v __DHCPReceive `(uc  1 s 1 __DHCPReceive ]
+{
+"782
+[v _lbDone `E208  1 a 1 0 ]
+"781
+[v _type `uc  1 a 1 1 ]
+"780
+[v _j `uc  1 a 1 2 ]
+"779
+[v _v `uc  1 a 1 3 ]
+"780
+[v _i `uc  1 a 1 4 ]
+"783
+[v _tempServerID `ul  1 a 4 5 ]
+"1037
+} 9
+"1060
+[v __DHCPSend `(v  1 s 0 __DHCPSend ]
+{
+"1061
+[v _i `uc  1 a 1 0 ]
+"1062
+[v _MyIP `S107  1 a 4 1 ]
+"1064
+[v _s `ul  1 a 4 5 ]
+"1060
+[v _messageType `uc  1 p 1 0 ]
+[v _bRenewing `E208  1 p 1 1 ]
+"1175
+} 9
+"822 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _TCPDisconnect `(v  1 e 0 0 ]
+{
+[v _hTCP `uc  1 p 1 0 ]
+"926
+} 0
+"94 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMAppendHashString `(v  1 e 0 0 ]
+{
+[v _key `*.dDCuc  1 p 2 0 ]
+[v _value `*.mDCuc  1 p 2 2 ]
+"97
+} 0
+"120
+[v _LMAppendHashInt `(v  1 e 0 0 ]
+{
+[v _key `*.dDCuc  1 p 2 0 ]
+[v _value `ul  1 p 4 2 ]
+"123
+} 0
+"36 /home/andresol/tellstick-net/firmware/tellsticknet.c
+[v _sendToLocalListeners `(v  1 e 0 0 ]
+{
+"37
+[v _len `i  1 a 2 0 ]
+"38
+[v _b `*.buc  1 a 2 2 ]
+"37
+[v _i `i  1 a 2 4 ]
+"56
+} 6
+"125 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMEndHash `(v  1 e 0 0 ]
+{
+"127
+} 0
+"99
+[v _LMAppendHashHexString `(v  1 e 0 0 ]
+{
+"100
+[v _i `uc  1 a 1 0 ]
+"99
+[v _key `*.dDCuc  1 p 2 0 ]
+[v _value `*.bDCuc  1 p 2 2 ]
+[v _length `DCuc  1 p 1 4 ]
+"118
+} 1
+"33 /home/andresol/tellstick-net/rf/oregon.c
+[v _oregonBit `(c  1 e 1 0 ]
+{
+[v _level `uc  1 p 1 0 ]
+[v _count `uc  1 p 1 1 ]
+"70
+} 0
+"3424 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _CloseSocket `(v  1 s 0 _CloseSocket ]
+{
+"3475
+} 1
+"295
+[v _SyncTCBStub `(v  1 s 0 _SyncTCBStub ]
+{
+[v _hTCP `uc  1 p 1 0 ]
+"312
+} 0
+"90 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMStartHash `(v  1 e 0 0 ]
+{
+"92
+} 0
+"38
+[v _LMClear `(v  1 e 0 0 ]
+{
+"42
+} 0
+"1177 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPDiscard `(v  1 e 0 0 ]
+{
+"1185
+} 0
+"31 /home/andresol/tellstick-net/rf/transmit.c
+[v _rfSend `(v  1 e 0 0 ]
+{
+"40
+[v _i `us  1 a 2 0 ]
+"31
+[v _string `*.bDCuc  1 p 2 0 ]
+"57
+} 2
+"97 /home/andresol/tellstick-net/firmware/transmit_arctech.c
+[v _sendArctechSelflearning `(v  1 e 0 0 ]
+{
+"112
+[v _i `uc  1 a 1 0 ]
+"115
+[v _j `uc  1 a 1 1 ]
+"120
+} 2
+"174 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMEnterHash `(E4014  1 e 1 0 ]
+{
+"181
+} 0
+"27 /home/andresol/tellstick-net/firmware/eeprom.c
+[v _saveEEPROM `(v  1 e 0 0 ]
+{
+"28
+[v _i `uc  1 a 1 0 ]
+"27
+[v _ptr `*.buc  1 p 2 0 ]
+[v _size `ui  1 p 2 2 ]
+"34
+} 1
+"313 /home/andresol/tellstick-net/tcpip/DHCP.c
+[v _DHCPEnable `(v  1 e 0 0 ]
+{
+[v _vInterface `uc  1 p 1 0 ]
+"321
+} 0
+"1247 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _ReadPHYReg `(S3615  1 e 2 0 ]
+{
+"1248
+[v _Result `S3615  1 a 2 0 ]
+"1247
+[v _Register `uc  1 p 1 0 ]
+"1267
+} 2
+"35 /home/andresol/tellstick-net/rf/oregonv3.c
+[v _oregonBitV3 `(c  1 e 1 0 ]
+{
+[v _level `uc  1 p 1 0 ]
+[v _count `uc  1 p 1 1 ]
+"55
+} 0
+"1054 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPIsGetReady `(us  1 e 2 0 ]
+{
+[v _s `uc  1 p 1 0 ]
+"1068
+} 0
+"130 /home/andresol/tellstick-net/firmware/pwm.c
+[v _setRXPulses `(v  1 e 0 0 ]
+{
+[v _count `uc  1 p 1 0 ]
+"132
+} 0
+"100 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _LFSRSeedRand `(ul  1 e 4 0 ]
+{
+"102
+[v _i `uc  1 a 1 0 ]
+"101
+[v _dwOldSeed `ul  1 a 4 1 ]
+"100
+[v _dwSeed `ul  1 p 4 0 ]
+"122
+} 5
+"5 /usr/hitech/picc-18/pro/9.66/sources/lldiv.c
+[v ___lldiv `(ul  1 e 4 0 ]
+{
+"7
+[v _counter `uc  1 a 1 0 ]
+"6
+[v _quotient `ul  1 a 4 1 ]
+"5
+[v _dividend `ul  1 p 4 0 ]
+[v _divisor `ul  1 p 4 4 ]
+"26
+} 5
+"96 /home/andresol/tellstick-net/rf/receive.c
+[v _rfCountSimilar `(uc  1 e 1 0 ]
+{
+"98
+[v _test `uc  1 a 1 0 ]
+"97
+[v _count `uc  1 a 1 1 ]
+"96
+[v _scanP `*.bus  1 p 2 0 ]
+[v _scanBit `*.buc  1 p 2 2 ]
+"111
+} 2
+"649 /home/andresol/tellstick-net/tcpip/ARP.c
+[v _ARPIsResolved `(E208  1 e 1 0 ]
+{
+[v _IPAddr `*.bS107  1 p 2 0 ]
+[v _MACAddr `*.bS119  1 p 2 2 ]
+"657
+} 0
+"2921 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _SendTCP `(v  1 s 0 _SendTCP ]
+{
+"2922
+[v _wVal `S66  1 a 2 0 ]
+"2926
+[v _len `us  1 a 2 2 ]
+"2924
+[v _options `S4050  1 a 4 4 ]
+"2925
+[v _pseudoHeader `S3282  1 a 12 8 ]
+"2923
+[v _header `S4020  1 a 20 20 ]
+"2921
+[v _vTCPFlags `uc  1 p 1 0 ]
+[v _vSendFlags `uc  1 p 1 1 ]
+"3182
+} 40
+"3 /usr/hitech/picc-18/pro/9.66/sources/wmul.c
+[v ___wmul `(ui  1 e 2 0 ]
+{
+"4
+[v _product `ui  1 a 2 0 ]
+"3
+[v _multiplier `ui  1 p 2 0 ]
+[v _multiplicand `ui  1 p 2 2 ]
+"13
+} 2
+"650 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _DNSPutString `(v  1 s 0 _DNSPutString ]
+{
+"653
+[v _Len `uc  1 a 1 0 ]
+"652
+[v _i `uc  1 a 1 1 ]
+"651
+[v _RightPtr `*.buc  1 a 2 2 ]
+"650
+[v _String `*.buc  1 p 2 0 ]
+"676
+} 4
+"207
+[v _DNSEndUsage `(E208  1 e 1 0 ]
+{
+"217
+} 0
+"703
+[v _DNSPutROMString `(v  1 s 0 _DNSPutROMString ]
+{
+"706
+[v _Len `uc  1 a 1 0 ]
+"705
+[v _i `uc  1 a 1 1 ]
+"704
+[v _RightPtr `*.dDCuc  1 a 2 2 ]
+"703
+[v _String `*.dDCuc  1 p 2 0 ]
+"729
+} 4
+"541 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _ROMStringToIPAddress `(E208  1 e 1 0 ]
+{
+"543
+[v _charLen `uc  1 a 1 0 ]
+[v _currentOctet `uc  1 a 1 1 ]
+[v _i `uc  1 a 1 2 ]
+"542
+[v _dwVal `S107  1 a 4 3 ]
+"541
+[v _str `*.dDCuc  1 p 2 0 ]
+[v _IPAddress `*.bS107  1 p 2 2 ]
+"609
+} 7
+"566 /home/andresol/tellstick-net/tcpip/ARP.c
+[v _ARPResolve `(v  1 e 0 0 ]
+{
+"567
+[v _packet `S1697  1 a 28 2 ]
+"566
+[v _IPAddr `*.bS107  1 p 2 0 ]
+"607
+} 30
+"757 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _DNSDiscardName `(v  1 s 0 _DNSDiscardName ]
+{
+"758
+[v _i `uc  1 a 1 0 ]
+"781
+} 1
+"3506 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _GetMaxSegSizeOption `(us  1 s 2 _GetMaxSegSizeOption ]
+{
+"3508
+[v _vOption `uc  1 a 1 0 ]
+"3507
+[v _vOptionsBytes `uc  1 a 1 1 ]
+"3509
+[v _wMSS `us  1 a 2 2 ]
+"3572
+} 4
+"444 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _StringToIPAddress `(E208  1 e 1 0 ]
+{
+"446
+[v _charLen `uc  1 a 1 0 ]
+[v _currentOctet `uc  1 a 1 1 ]
+[v _i `uc  1 a 1 2 ]
+"445
+[v _dwVal `S107  1 a 4 3 ]
+"444
+[v _str `*.buc  1 p 2 0 ]
+[v _IPAddress `*.bS107  1 p 2 2 ]
+"512
+} 7
+"70 /home/andresol/tellstick-net/firmware/rf.c
+[v _rfStartTransmit `(v  1 e 0 0 ]
+{
+"73
+} 0
+"18 plib/i2c/i2c1eebw.c
+[v _EEByteWrite1 `(uc  1 e 1 0 ]
+{
+[v _control `uc  1 p 1 0 ]
+[v _address `uc  1 p 1 1 ]
+[v _data `uc  1 p 1 2 ]
+"69
+} 0
+"3390 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _SwapTCPHeader `(v  1 s 0 _SwapTCPHeader ]
+{
+[v _header `*.bS4020  1 p 2 0 ]
+"3398
+} 0
+"687 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPSetRxBuffer `(v  1 e 0 0 ]
+{
+[v _wOffset `us  1 p 2 0 ]
+"690
+} 0
+"623
+[v _UDPClose `(v  1 e 0 0 ]
+{
+[v _s `uc  1 p 1 0 ]
+"630
+} 0
+"848
+[v _UDPPutROMArray `(us  1 e 2 0 ]
+{
+"849
+[v _wTemp `us  1 a 2 0 ]
+"848
+[v _cData `*.dDCuc  1 p 2 0 ]
+[v _wDataLen `us  1 p 2 2 ]
+"863
+} 2
+"285 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMContent `(*.Muc  1 e 2 0 ]
+{
+"287
+} 0
+"76 /home/andresol/tellstick-net/rf/receive.c
+[v _rfRetreatBit `(v  1 e 0 0 ]
+{
+[v _scanP `*.bus  1 p 2 0 ]
+[v _scanBit `*.buc  1 p 2 2 ]
+"86
+} 0
+"183 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMFindHashString `(E4014  1 e 1 0 ]
+{
+"184
+[v _k `[12]uc  1 a 12 0 ]
+"183
+[v _key `*.dDCuc  1 p 2 0 ]
+"205
+} 12
+"158 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _LFSRRand `(us  1 e 2 0 ]
+{
+"159
+[v _i `uc  1 a 1 0 ]
+"169
+} 1
+"242 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPOpenEx `(uc  1 e 1 0 ]
+{
+"243
+[v _s `uc  1 a 1 0 ]
+"244
+[v _p `*.bS260  1 a 2 1 ]
+"242
+[v _remoteHost `ul  1 p 4 0 ]
+[v _remoteHostType `uc  1 p 1 4 ]
+[v _localPort `us  1 p 2 5 ]
+[v _remotePort `us  1 p 2 7 ]
+"316
+} 3
+"721
+[v _UDPIsPutReady `(us  1 e 2 0 ]
+{
+[v _s `uc  1 p 1 0 ]
+"735
+} 0
+"320 /home/andresol/tellstick-net/tcpip/ARP.c
+[v _ARPPut `(E208  1 s 1 _ARPPut ]
+{
+[v _packet `*.bS1697  1 p 2 0 ]
+"344
+} 0
+"959 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPFlush `(v  1 e 0 0 ]
+{
+"962
+[v _wUDPLength `us  1 a 2 0 ]
+"961
+[v _p `*.bS260  1 a 2 2 ]
+"960
+[v _h `S3247  1 a 8 4 ]
+"1022
+} 12
+"881 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _CalcIPBufferChecksum `(us  1 e 2 0 ]
+{
+"882
+[v _Start `us  1 a 2 0 ]
+"886
+[v _DataPtr `*.bus  1 a 2 2 ]
+"884
+[v _ChunkLen `us  1 a 2 4 ]
+"883
+[v _Checksum `S107  1 a 4 6 ]
+"885
+[v _DataBuffer `[20]uc  1 a 20 10 ]
+"881
+[v _len `us  1 p 2 0 ]
+"928
+} 30
+"760 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPPut `(E3956  1 e 1 0 ]
+{
+[v _v `uc  1 p 1 0 ]
+"774
+} 0
+"801
+[v _UDPPutArray `(us  1 e 2 0 ]
+{
+"802
+[v _wTemp `us  1 a 2 0 ]
+"801
+[v _cData `*.buc  1 p 2 0 ]
+[v _wDataLen `us  1 p 2 2 ]
+"816
+} 2
+"16 plib/i2c/i2c1eeap.c
+[v _EEAckPolling1 `(uc  1 e 1 0 ]
+{
+[v _control `uc  1 p 1 0 ]
+"49
+} 0
+"1093 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPGet `(E3956  1 e 1 0 ]
+{
+[v _v `*.buc  1 p 2 0 ]
+"1102
+} 0
+"372 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACGetFreeRxSize `(us  1 e 2 0 ]
+{
+"373
+[v _WritePT `S66  1 a 2 0 ]
+[v _ReadPT `S66  1 a 2 2 ]
+"404
+} 4
+"88 /home/andresol/tellstick-net/rf/receive.c
+[v _getBit `(b  1 e 0 0 ]
+{
+"89
+[v _buf `uc  1 a 1 0 ]
+"88
+[v _scanP `s  1 p 2 0 ]
+[v _scanBit `c  1 p 1 2 ]
+"94
+} 1
+"1133 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPGetArray `(us  1 e 2 0 ]
+{
+"1134
+[v _wBytesAvailable `us  1 a 2 0 ]
+"1133
+[v _cData `*.buc  1 p 2 0 ]
+[v _wDataLen `us  1 p 2 2 ]
+"1149
+} 2
+"44 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMAppendString `(v  1 e 0 0 ]
+{
+"46
+[v _lb `uc  1 a 1 0 ]
+"45
+[v _hb `uc  1 a 1 1 ]
+"44
+[v _string `*.mDCuc  1 p 2 0 ]
+"53
+} 2
+"322 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACDiscardRx `(v  1 e 0 0 ]
+{
+"323
+[v _NewRXRDLocation `S66  1 a 2 0 ]
+"352
+} 2
+"55 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMAppendRomString `(v  1 e 0 0 ]
+{
+"57
+[v _lb `uc  1 a 1 0 ]
+"56
+[v _hb `uc  1 a 1 1 ]
+"55
+[v _string `*.dDCuc  1 p 2 0 ]
+"64
+} 2
+"65 /home/andresol/tellstick-net/firmware/transmit_arctech.c
+[v _sendArctechCommand `(v  1 s 0 _sendArctechCommand ]
+{
+"95
+} 0
+"326 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _SyncTCB `(v  1 s 0 _SyncTCB ]
+{
+"341
+} 0
+"75 /home/andresol/tellstick-net/firmware/rf.c
+[v _rfStopTransmit `(v  1 e 0 0 ]
+{
+"79
+} 0
+"134 /home/andresol/tellstick-net/firmware/pwm.c
+[v _setTXPulses `(v  1 e 0 0 ]
+{
+[v _count `uc  1 p 1 0 ]
+"136
+} 0
+"66 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMAppendInt `(v  1 e 0 0 ]
+{
+"67
+[v _i `uc  1 a 1 0 ]
+[v _hex `[8]uc  1 a 8 1 ]
+"66
+[v _value `ul  1 p 4 0 ]
+"88
+} 9
+"5 /usr/hitech/picc-18/pro/9.66/sources/strcmp.c
+[v _strcmp `(i  1 e 2 0 ]
+{
+"6
+[v _r `c  1 a 1 0 ]
+"5
+[v _s1 `*.mDCuc  1 p 2 0 ]
+[v _s2 `*.mDCuc  1 p 2 2 ]
+"11
+} 1
+"4531 /home/andresol/tellstick-net/tcpip/TCP.c
+[v _TCPRAMCopy `(v  1 s 0 _TCPRAMCopy ]
+{
+[v _ptrDest `us  1 p 2 0 ]
+[v _vDestType `uc  1 p 1 2 ]
+[v _ptrSource `us  1 p 2 3 ]
+[v _vSourceType `uc  1 p 1 5 ]
+[v _wLength `us  1 p 2 6 ]
+"4639
+} 0
+"10 /usr/hitech/picc-18/pro/9.66/sources/memset.c
+[v _memset `(*.Mv  1 e 2 0 ]
+{
+"15
+[v _p `*.buc  1 a 2 0 ]
+"10
+[v _p1 `*.bv  1 p 2 0 ]
+[v _c `i  1 p 2 2 ]
+[v _n `ui  1 p 2 4 ]
+"22
+} 2
+"657 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPSetTxBuffer `(v  1 e 0 0 ]
+{
+[v _wOffset `us  1 p 2 0 ]
+"660
+} 0
+"133 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMTakeInt `(ul  1 e 4 0 ]
+{
+"134
+[v _ch `l  1 a 4 0 ]
+[v _retval `l  1 a 4 4 ]
+"148
+} 8
+"150
+[v _LMTakeString `(E4014  1 e 1 0 ]
+{
+"151
+[v _ch `uc  1 a 1 0 ]
+[v _i `uc  1 a 1 1 ]
+[v _length `uc  1 a 1 2 ]
+"150
+[v _instr `*.buc  1 p 2 0 ]
+[v _count `uc  1 p 1 2 ]
+"172
+} 3
+"286 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACIsTxReady `(E208  1 e 1 0 ]
+{
+"299
+} 0
+"13 plib/i2c/i2c1writ.c
+[v _WriteI2C1 `(uc  1 e 1 0 ]
+{
+[v _data_out `uc  1 p 1 0 ]
+"25
+} 0
+"1116 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _swapl `(ul  1 e 4 0 ]
+{
+[v _v `ul  1 p 4 0 ]
+"1128
+} 0
+"10 /usr/hitech/picc-18/pro/9.66/sources/strcat.c
+[v _strcat `(*.Muc  1 e 2 0 ]
+{
+"15
+[v _cp `*.buc  1 a 2 0 ]
+"10
+[v _to `*.buc  1 p 2 0 ]
+[v _from `*.mDCuc  1 p 2 2 ]
+"24
+} 2
+"14 /home/andresol/tellstick-net/firmware/rf.c
+[v _activateReceiver `(v  1 e 0 0 ]
+{
+"17
+} 0
+"31 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMAppendChar `(v  1 e 0 0 ]
+{
+"32
+[v _pos `*.buc  1 a 2 0 ]
+"31
+[v _ch `DCuc  1 p 1 0 ]
+"36
+} 2
+"50 /home/andresol/tellstick-net/firmware/transmit_arctech.c
+[v _sendBits `(v  1 s 0 _sendBits ]
+{
+"52
+[v _i `uc  1 a 1 0 ]
+"51
+[v _mask `uc  1 a 1 1 ]
+"50
+[v _chCode `uc  1 p 1 0 ]
+[v _bits `uc  1 p 1 1 ]
+"63
+} 2
+"19 /home/andresol/tellstick-net/firmware/rf.c
+[v _activateTransmitter `(v  1 e 0 0 ]
+{
+"22
+} 0
+"255 /home/andresol/tellstick-net/tcpip/IP.c
+[v _IPPutHeader `(us  1 e 2 0 ]
+{
+"256
+[v _header `S2077  1 a 20 0 ]
+"255
+[v _remote `*.bS245  1 p 2 0 ]
+[v _protocol `uc  1 p 1 2 ]
+[v _len `us  1 p 2 3 ]
+"281
+} 20
+"5 /usr/hitech/picc-18/pro/9.66/sources/strlen.c
+[v _strlen `(ui  1 e 2 0 ]
+{
+"6
+[v _cp `*.mDCuc  1 a 2 0 ]
+"5
+[v _s `*.mDCuc  1 p 2 0 ]
+"12
+} 2
+"679 /home/andresol/tellstick-net/tcpip/ARP.c
+[v _SwapARPPacket `(v  1 e 0 0 ]
+{
+[v _p `*.bS1697  1 p 2 0 ]
+"683
+} 0
+"300 /home/andresol/tellstick-net/tcpip/IP.c
+[v _IPSetRxBuffer `(v  1 e 0 0 ]
+{
+[v _Offset `us  1 p 2 0 ]
+"302
+} 0
+"1001 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _btohexa_low `(uc  1 e 1 0 ]
+{
+[v _b `uc  1 p 1 0 ]
+"1004
+} 2
+"1212 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACPutROMArray `(v  1 e 0 0 ]
+{
+[v _val `*.dDCuc  1 p 2 0 ]
+[v _len `us  1 p 2 2 ]
+"1226
+} 0
+"975 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _btohexa_high `(uc  1 e 1 0 ]
+{
+[v _b `uc  1 p 1 0 ]
+"978
+} 2
+"39 /home/andresol/tellstick-net/firmware/transmit_arctech.c
+[v _sendZero `(v  1 s 0 _sendZero ]
+{
+"48
+} 0
+"129 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _LMNextIsInt `(E4014  1 e 1 0 ]
+{
+"131
+} 0
+"28 /home/andresol/tellstick-net/firmware/transmit_arctech.c
+[v _sendOne `(v  1 s 0 _sendOne ]
+{
+"37
+} 0
+"731 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACSetReadPtr `(us  1 e 2 0 ]
+{
+"732
+[v _oldVal `us  1 a 2 0 ]
+"731
+[v _address `us  1 p 2 0 ]
+"737
+} 2
+"1109
+[v _MACGetArray `(us  1 e 2 0 ]
+{
+"1110
+[v _w `us  1 a 2 0 ]
+"1109
+[v _val `*.buc  1 p 2 0 ]
+[v _len `us  1 p 2 2 ]
+"1142
+} 2
+"672
+[v _MACSetReadPtrInRx `(v  1 e 0 0 ]
+{
+"673
+[v _ReadPT `S66  1 a 2 0 ]
+"672
+[v _offset `us  1 p 2 0 ]
+"686
+} 2
+"1057
+[v _MACIsMemCopyDone `(E208  1 e 1 0 ]
+{
+"1059
+} 0
+"706
+[v _MACSetWritePtr `(us  1 e 2 0 ]
+{
+"707
+[v _oldVal `us  1 a 2 0 ]
+"706
+[v _address `us  1 p 2 0 ]
+"712
+} 2
+"5 /usr/hitech/picc-18/pro/9.66/sources/strchr.c
+[v _strchr `(*.Muc  1 e 2 0 ]
+{
+[v _ptr `*.bDCuc  1 p 2 0 ]
+[v _chr `i  1 p 2 2 ]
+"11
+} 0
+"955 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACMemCopyAsync `(v  1 e 0 0 ]
+{
+"958
+[v _UpdateReadPointer `E208  1 a 1 0 ]
+"957
+[v _UpdateWritePointer `E208  1 a 1 1 ]
+"956
+[v _ReadSave `S66  1 a 2 2 ]
+[v _WriteSave `S66  1 a 2 4 ]
+"955
+[v _destAddr `us  1 p 2 0 ]
+[v _sourceAddr `us  1 p 2 2 ]
+[v _len `us  1 p 2 4 ]
+"1016
+} 6
+"601
+[v _MACFlush `(v  1 e 0 0 ]
+{
+"610
+[v _i `Vuc  1 a 1 0 ]
+"646
+} 1
+"10 /usr/hitech/picc-18/pro/9.66/sources/memcpy.c
+[v _memcpy `(*.Mv  1 e 2 0 ]
+{
+"15
+[v _d `*.buc  1 a 2 0 ]
+"17
+[v _s `*.bDCuc  1 a 2 2 ]
+"10
+[v _d1 `*.bv  1 p 2 0 ]
+[v _s1 `*.bDCv  1 p 2 2 ]
+[v _n `ui  1 p 2 4 ]
+"24
+} 4
+"18 /home/andresol/tellstick-net/firmware/common.c
+[v _hexToByte `(uc  1 e 1 0 ]
+{
+[v _hex `uc  1 p 1 0 ]
+"60
+} 0
+"555 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACPutHeader `(v  1 e 0 0 ]
+{
+[v _remote `*.bS119  1 p 2 0 ]
+[v _type `uc  1 p 1 2 ]
+[v _dataLen `us  1 p 2 3 ]
+"575
+} 0
+"1158 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _CalcIPChecksum `(us  1 e 2 0 ]
+{
+"1159
+[v _i `us  1 a 2 0 ]
+"1160
+[v _val `*.bus  1 a 2 2 ]
+"1165
+[v _sum `S1960  1 a 4 4 ]
+"1158
+[v _buffer `*.buc  1 p 2 0 ]
+[v _count `us  1 p 2 2 ]
+"1188
+} 8
+"307 /home/andresol/tellstick-net/tcpip/IP.c
+[v _SwapIPHeader `(v  1 s 0 _SwapIPHeader ]
+{
+[v _h `*.bS2077  1 p 2 0 ]
+"311
+} 0
+"1087 /home/andresol/tellstick-net/tcpip/Helpers.c
+[v _swaps `(us  1 e 2 0 ]
+{
+"1089
+[v _b `uc  1 a 1 0 ]
+"1088
+[v _t `S66  1 a 2 1 ]
+"1087
+[v _v `us  1 p 2 0 ]
+"1097
+} 3
+"1162 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACPut `(v  1 e 0 0 ]
+{
+[v _val `uc  1 p 1 0 ]
+"1173
+} 0
+"1195
+[v _MACPutArray `(v  1 e 0 0 ]
+{
+[v _val `*.buc  1 p 2 0 ]
+[v _len `us  1 p 2 2 ]
+"1209
+} 0
+"1080
+[v _MACGet `(uc  1 e 1 0 ]
+{
+"1087
+} 0
+"260 /home/andresol/tellstick-net/tcpip/Tick.c
+[v _TickGet `(ul  1 e 4 0 ]
+{
+"263
+} 0
+"290
+[v _TickGetDiv256 `(ul  1 e 4 0 ]
+{
+"291
+[v _dw `ul  1 a 4 0 ]
+"300
+} 4
+"156
+[v _GetTickCopy `(v  1 s 0 _GetTickCopy ]
+{
+"232
+} 0
+"31 /home/andresol/tellstick-net/firmware/main.c
+[v _LowISR `IL(v  1 e 0 0 ]
+{
+"39
+} 0
+"84 /home/andresol/tellstick-net/firmware/pwm.c
+[v _pwmUpdate `(v  1 e 0 0 ]
+{
+"121
+} 0
+"391 /home/andresol/tellstick-net/tcpip/Tick.c
+[v _TickUpdate `(v  1 e 0 0 ]
+{
+"400
+} 0
+"260
+[v _TickGet `(ul  1 e 4 0 ]
+{
+"263
+} 0
+"156
+[v _GetTickCopy `(v  1 s 0 _GetTickCopy ]
+{
+"232
+} 0
+"41 /home/andresol/tellstick-net/firmware/main.c
+[v _HighISR `I(v  1 e 0 0 ]
+{
+"55
+} 0
+"9 /home/andresol/tellstick-net/rf/transmit.c
+[v _rfTransmitUpdate `(v  1 e 0 0 ]
+{
+"29
+} 0
+"25 /home/andresol/tellstick-net/rf/receive.c
+[v _rfReceiveUpdate `(v  1 e 0 0 ]
+{
+[v _antenna `uc  1 p 1 0 ]
+"61
+} 0

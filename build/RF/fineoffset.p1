@@ -1,0 +1,182 @@
+Version 3.2 HI-TECH Software Intermediate Code
+"3 /home/andresol/tellstick-net/rf/receive.h
+[v _rfCountSimilar `(uc 0 ef2`*us`*uc ]
+"8 /home/andresol/tellstick-net/rf/receive.h
+[v _rfRetreatBit `(v 0 ef2`*us`*uc ]
+"1 /home/andresol/tellstick-net/rf/crc.h
+[v _calculateCrc8 `(uc 0 ef3`uc`Cuc`uc ]
+"3 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageBeginRaw `(v 0 ef ]
+"8 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddString `(v 0 ef2`*Cuc`*Cuc ]
+"9 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddHexString `(v 0 ef3`*Cuc`*Cuc`Cuc ]
+"4 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageEnd `(v 0 ef1`uc ]
+"18 /home/andresol/tellstick-net/rf/fineoffset.c
+[v _fineOffsetBit `(uc 1 ef2`*us`*uc ]
+{
+[e :U _fineOffsetBit ]
+[v _scanP `*us 1 r1 ]
+[v _scanBit `*uc 1 r2 ]
+[f ]
+"19
+[v _b1 `uc 1 a ]
+[e = _b1 ( _rfCountSimilar (2 , _scanP _scanBit ]
+"20
+[v _b2 `uc 1 a ]
+[e = _b2 ( _rfCountSimilar (2 , _scanP _scanBit ]
+"22
+[e $ ! && > -> _b1 `i -> 13 `i > -> _b2 `i -> 13 `i 7  ]
+{
+"23
+[e ) -> -> 0 `i `uc ]
+[e $UE 6  ]
+"24
+}
+[e :U 7 ]
+"25
+[e $ ! && < -> _b1 `i -> 11 `i > -> _b2 `i -> 13 `i 8  ]
+{
+"26
+[e ) -> -> 1 `i `uc ]
+[e $UE 6  ]
+"27
+}
+[e :U 8 ]
+"29
+[e ) -> -> 2 `i `uc ]
+[e $UE 6  ]
+"30
+[e :UE 6 ]
+}
+"32
+[v _parseFineOffset `(uc 1 ef2`us`uc ]
+{
+[e :U _parseFineOffset ]
+[v _scanP `us 1 r1 ]
+[v _scanBit `uc 1 r2 ]
+[f ]
+"33
+[v _buffer `uc -> 5 `i a ]
+"34
+[e ( _rfRetreatBit (2 , &U _scanP &U _scanBit ]
+"35
+[v _lastbyte `uc 1 a ]
+[e = _lastbyte -> -> 0 `i `uc ]
+"36
+{
+[v _i `i 1 a ]
+[e = _i - -> 5 `i -> 1 `i ]
+[e $ >= _i -> 0 `i 10  ]
+[e $U 11  ]
+[e :U 10 ]
+{
+"37
+[v _byte `uc 1 a ]
+[e = _byte -> -> 0 `i `uc ]
+"38
+{
+[v _j `i 1 a ]
+[e = _j -> 0 `i ]
+[e $ < _j -> 8 `i 13  ]
+[e $U 14  ]
+[e :U 13 ]
+{
+"39
+[v _b `uc 1 a ]
+[e = _b ( _fineOffsetBit (2 , &U _scanP &U _scanBit ]
+"40
+[e $ ! == -> _b `i -> 2 `i 16  ]
+{
+"41
+[e ) -> -> 0 `i `uc ]
+[e $UE 9  ]
+"42
+}
+[e :U 16 ]
+"43
+[e $ ! != -> _b `i -> -> -> 0 `i `uc `i 17  ]
+{
+"44
+[e =| _byte -> << -> 1 `i _j `uc ]
+"45
+}
+[e :U 17 ]
+"46
+}
+"38
+[e =+ _j -> 1 `i ]
+[e $ < _j -> 8 `i 13  ]
+[e :U 14 ]
+"46
+}
+"47
+[e $ ! == _i - -> 5 `i -> 1 `i 18  ]
+{
+"48
+[e = _lastbyte _byte ]
+"49
+}
+[e :U 18 ]
+"51
+[e = *U + &U _buffer * -> -> _i `ui `ux -> -> # *U &U _buffer `ui `ux _byte ]
+"52
+}
+"36
+[e =- _i -> 1 `i ]
+[e $ >= _i -> 0 `i 10  ]
+[e :U 11 ]
+"52
+}
+"54
+[v _crc `us 1 a ]
+[e = _crc -> -> 0 `i `us ]
+"55
+{
+[v _j `i 1 a ]
+[e = _j -> 0 `i ]
+[e $ < _j - -> 5 `i -> 1 `i 19  ]
+[e $U 20  ]
+[e :U 19 ]
+{
+"56
+[e = _crc -> ( _calculateCrc8 (3 , , -> _crc `uc *U + &U _buffer * -> -> _j `ui `ux -> -> # *U &U _buffer `ui `ux -> -> 305 `i `uc `us ]
+"57
+}
+"55
+[e ++ _j -> 1 `i ]
+[e $ < _j - -> 5 `i -> 1 `i 19  ]
+[e :U 20 ]
+"57
+}
+"59
+[e $ ! != -> _crc `ui -> _lastbyte `ui 22  ]
+{
+"60
+[e ) -> -> 0 `i `uc ]
+[e $UE 9  ]
+"61
+}
+[e :U 22 ]
+"62
+[e ( _rfMessageBeginRaw ..  ]
+"63
+[e ( _rfMessageAddString (2 , :s 1C :s 2C ]
+"64
+[e ( _rfMessageAddString (2 , :s 3C :s 4C ]
+"65
+[e ( _rfMessageAddHexString (3 , , :s 5C -> &U _buffer `*Cuc -> -> 5 `i `uc ]
+"66
+[e ( _rfMessageEnd (1 -> -> 1 `i `uc ]
+"67
+[e ) -> -> 1 `i `uc ]
+[e $UE 9  ]
+"68
+[e :UE 9 ]
+}
+[a 4C 102 105 110 101 111 102 102 115 101 116 0 ]
+[a 1C 99 108 97 115 115 0 ]
+[a 2C 115 101 110 115 111 114 0 ]
+[a 3C 112 114 111 116 111 99 111 108 0 ]
+[a 5C 100 97 116 97 0 ]

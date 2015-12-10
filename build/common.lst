@@ -1,0 +1,70 @@
+     1: //
+     2: // Copyright (C) 2012 Telldus Technologies AB. All rights reserved.
+     3: //
+     4: // Copyright: See COPYING file that comes with this distribution
+     5: //
+     6: //
+     7: 
+     8: #include <htc.h>
+     9: #include "TCPIP Stack/TCPIP.h"
+    10: #include "HardwareProfile.h"
+    11: 
+    12: void delay_ms(int ms) {
+    13:         while(ms--) {
+    14:                 __delay_ms(1);
+    15:         }
+    16: }
+    17: 
+    18: unsigned char hexToByte(unsigned char hex) {
+    19:         switch (hex) {
+    20:                 case '0':
+    21:                         return 0x0;
+    22:                 case '1':
+    23:                         return 0x1;
+    24:                 case '2':
+    25:                         return 0x2;
+    26:                 case '3':
+    27:                         return 0x3;
+    28:                 case '4':
+    29:                         return 0x4;
+    30:                 case '5':
+    31:                         return 0x5;
+    32:                 case '6':
+    33:                         return 0x6;
+    34:                 case '7':
+    35:                         return 0x7;
+    36:                 case '8':
+    37:                         return 0x8;
+    38:                 case '9':
+    39:                         return 0x9;
+    40:                 case 'a':
+    41:                 case 'A':
+    42:                         return 0xA;
+    43:                 case 'b':
+    44:                 case 'B':
+    45:                         return 0xB;
+    46:                 case 'c':
+    47:                 case 'C':
+    48:                         return 0xC;
+    49:                 case 'd':
+    50:                 case 'D':
+    51:                         return 0xD;
+    52:                 case 'e':
+    53:                 case 'E':
+    54:                         return 0xE;
+    55:                 case 'f':
+    56:                 case 'F':
+    57:                         return 0xF;
+    58:         }
+    59:         return 0x0;
+    60: }
+    61: 
+    62: BOOL networkIsBound() {
+    63:         if (DHCPIsBound(0)) {
+    64:                 return TRUE;
+    65:         }
+    66:         if (AppConfig.Flags.bIsDHCPEnabled) {
+    67:                 return FALSE;
+    68:         }
+    69:         return MACIsLinked();
+    70: }

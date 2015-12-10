@@ -1,0 +1,161 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+"1576 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _LATF1 `Vb 0 e@31857 ]
+"1577 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _LATF2 `Vb 0 e@31858 ]
+"1033 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T4CKPS1 `Vb 0 e@31665 ]
+"1032 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T4CKPS0 `Vb 0 e@31664 ]
+"1037 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T4OUTPS3 `Vb 0 e@31670 ]
+"1036 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T4OUTPS2 `Vb 0 e@31669 ]
+"1035 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T4OUTPS1 `Vb 0 e@31668 ]
+"1034 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T4OUTPS0 `Vb 0 e@31667 ]
+"1031 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR4ON `Vb 0 e@31666 ]
+"2060 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR4IF `Vb 0 e@32035 ]
+"1056 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _PR4 `Vuc 0 e@3959 ]
+"2044 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR4IE `Vb 0 e@32027 ]
+"1791 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISF2 `Vb 0 e@31930 ]
+"1650 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISB4 `Vb 0 e@31900 ]
+"2076 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR4IP `Vb 0 e@32043 ]
+"1790 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISF1 `Vb 0 e@31929 ]
+"1615 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISA4 `Vb 0 e@31892 ]
+"1474 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _LATA4 `Vb 0 e@31820 ]
+"2248 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T3CKPS1 `Vb 0 e@32141 ]
+"2247 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T3CKPS0 `Vb 0 e@32140 ]
+"1961 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR3IE `Vb 0 e@32001 ]
+"2015 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR3IP `Vb 0 e@32017 ]
+"2240 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR3ON `Vb 0 e@32136 ]
+"14 /home/andresol/tellstick-net/firmware/rf.c
+[v _activateReceiver `(v 1 ef ]
+{
+[e :U _activateReceiver ]
+[f ]
+"15
+[e = _LATF1 -> -> 0 `i `b ]
+"16
+[e = _LATF2 -> -> 1 `i `b ]
+"17
+[e :UE 322 ]
+}
+"19
+[v _activateTransmitter `(v 1 ef ]
+{
+[e :U _activateTransmitter ]
+[f ]
+"20
+[e = _LATF1 -> -> 1 `i `b ]
+"21
+[e = _LATF2 -> -> 0 `i `b ]
+"22
+[e :UE 323 ]
+}
+"24
+[v _initReceiver `(v 1 ef ]
+{
+[e :U _initReceiver ]
+[f ]
+"26
+[e = _T4CKPS1 -> -> 0 `i `b ]
+"27
+[e = _T4CKPS0 -> -> 0 `i `b ]
+"30
+[e = _T4OUTPS3 -> -> 0 `i `b ]
+"31
+[e = _T4OUTPS2 -> -> 0 `i `b ]
+"32
+[e = _T4OUTPS1 -> -> 1 `i `b ]
+"33
+[e = _T4OUTPS0 -> -> 0 `i `b ]
+"37
+[e = _TMR4ON -> -> 1 `i `b ]
+"38
+[e = _TMR4IF -> -> 0 `i `b ]
+"39
+[e = _PR4 -> -> 255 `i `uc ]
+"40
+[e = _TMR4IE -> -> 1 `i `b ]
+"44
+[e = _TRISF2 -> -> 0 `i `b ]
+"45
+[e = _TRISB4 -> -> 1 `i `b ]
+"48
+[e = _TMR4IP -> -> 1 `i `b ]
+"49
+[e :UE 324 ]
+}
+"51
+[v _initTransmitter `(v 1 ef ]
+{
+[e :U _initTransmitter ]
+[f ]
+"53
+[e = _TRISF1 -> -> 0 `i `b ]
+"56
+[e = _TRISA4 -> -> 0 `i `b ]
+"58
+[e = _LATA4 -> -> 0 `i `b ]
+"62
+[e = _T3CKPS1 -> -> 0 `i `b ]
+"63
+[e = _T3CKPS0 -> -> 0 `i `b ]
+"65
+[e = _TMR3IE -> -> 1 `i `b ]
+"66
+[e = _TMR3IP -> -> 1 `i `b ]
+"67
+[e = _TMR3ON -> -> 0 `i `b ]
+"68
+[e :UE 325 ]
+}
+"70
+[v _rfStartTransmit `(v 1 ef ]
+{
+[e :U _rfStartTransmit ]
+[f ]
+"71
+[e = _TMR4ON -> -> 0 `i `b ]
+"72
+[e ( _activateTransmitter ..  ]
+"73
+[e :UE 326 ]
+}
+"75
+[v _rfStopTransmit `(v 1 ef ]
+{
+[e :U _rfStopTransmit ]
+[f ]
+"76
+[e ( _activateReceiver ..  ]
+"77
+[e = _TMR3ON -> -> 0 `i `b ]
+"78
+[e = _TMR4ON -> -> 1 `i `b ]
+"79
+[e :UE 327 ]
+}

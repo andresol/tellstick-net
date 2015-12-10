@@ -1,0 +1,56 @@
+Version 3.2 HI-TECH Software Intermediate Code
+"4 /home/andresol/tellstick-net/rf/crc.c
+[v _calculateCrc8 `(uc 1 ef3`uc`Cuc`uc ]
+{
+[e :U _calculateCrc8 ]
+[v _crc `uc 1 r1 ]
+[v _c `Cuc 1 r2 ]
+[v _polynom `uc 1 r3 ]
+[f ]
+"5
+[v _i `ui 1 a ]
+"6
+[v _onebit `i 1 a ]
+"8
+{
+[e = _i -> -> 128 `i `ui ]
+[e $ > _i -> -> 0 `i `ui 2  ]
+[e $U 3  ]
+[e :U 2 ]
+{
+"9
+[e = _onebit -> ! ! != & -> _crc `i -> 128 `i -> 0 `i `i ]
+"10
+[e $ ! != & -> _c `ui _i -> -> 0 `i `ui 5  ]
+{
+"11
+[e = _onebit -> ! != _onebit -> 0 `i `i ]
+"12
+}
+[e :U 5 ]
+"13
+[e =<< _crc -> 1 `i ]
+"14
+[e $ ! != _onebit -> 0 `i 6  ]
+{
+"15
+[e =^ _crc _polynom ]
+"16
+}
+[e :U 6 ]
+"17
+}
+"8
+[e =>> _i -> 1 `i ]
+[e $ > _i -> -> 0 `i `ui 2  ]
+[e :U 3 ]
+"17
+}
+"18
+[e =& _crc -> -> 255 `i `uc ]
+"19
+[e ) -> & -> _crc `i -> 255 `i `uc ]
+[e $UE 1  ]
+"20
+[e :UE 1 ]
+}

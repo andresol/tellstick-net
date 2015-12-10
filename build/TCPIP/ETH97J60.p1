@@ -1,0 +1,1227 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+[s S22 `uc 1 `uc 1 ]
+[n S22 . LB HB ]
+[s S23 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S23 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S21 `us 1 `uc -> 2 `i `S22 1 `S23 1 ]
+[n S21 . Val v byte bits ]
+"98 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _NextPacketLocation `S21 1 s ]
+"99 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _CurrentPacketLocation `S21 1 s ]
+[s S391 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :4 `uc 1 ]
+[n S391 . bWasDiscarded bRXPolarityValid bRXPolarityTimerOnTX bRXPolarityAtNextTX filler ]
+[u S390 `uc 1 `S391 1 ]
+[n S390 . v bits ]
+"111 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _flags `S390 1 s ]
+"112 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _wTXWatchdog `us 1 s ]
+"114 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _wRXPolarityTimer `us 1 s ]
+"122 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _errataTempL `uc 1 s@3710 ]
+"123 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _errataTempH `uc 1 s@3711 ]
+"1608 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISA `Vuc 0 e@3986 ]
+[s S84 :5 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S84 . . ETHEN PKTDEC AUTOINC ]
+[u S83 `S84 1 ]
+[n S83 . . ]
+"707 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ECON2bits `S83 0 e@3838 ]
+"1756 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISE1 `Vb 0 e@31921 ]
+"1557 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _LATE1 `Vb 0 e@31849 ]
+[s S82 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S82 . PHYRDY TXABRT RXBUSY . . . BUFER ]
+[u S81 `S82 1 ]
+[n S81 . . ]
+"692 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ESTATbits `S81 0 e@3837 ]
+"533 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ERXST `Vui 0 e@3816 ]
+"554 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ERXRDPTL `Vuc 0 e@3820 ]
+"558 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ERXRDPTH `Vuc 0 e@3821 ]
+"550 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ERXND `Vui 0 e@3818 ]
+"499 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ETXST `Vui 0 e@3812 ]
+"482 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _EWRPT `Vui 0 e@3810 ]
+"303 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACPut `(v 0 ef1`uc ]
+"189 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MACON1 `Vuc 0 e@3744 ]
+"205 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MACON3 `Vuc 0 e@3746 ]
+"246 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MABBIPG `Vuc 0 e@3748 ]
+"233 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MACON4 `Vuc 0 e@3747 ]
+"269 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MAIPGL `Vuc 0 e@3750 ]
+"278 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MAIPGH `Vuc 0 e@3751 ]
+"291 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MAMXFLL `Vuc 0 e@3754 ]
+"295 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MAMXFLH `Vuc 0 e@3755 ]
+"140 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MAADR1 `Vuc 0 e@3716 ]
+[s S25 `us 1 `us 1 ]
+[n S25 . LW HW ]
+[s S26 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S26 . LB HB UB MB ]
+[s S27 `S21 1 `S21 1 ]
+[n S27 . low high ]
+[s S28 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S28 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S24 `ul 1 `us -> 2 `i `uc -> 4 `i `S25 1 `S26 1 `S27 1 `S28 1 ]
+[n S24 . Val w v word byte wordUnion bits ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S357 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S357 0 e ]
+"144 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MAADR2 `Vuc 0 e@3717 ]
+"132 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MAADR3 `Vuc 0 e@3714 ]
+"136 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MAADR4 `Vuc 0 e@3715 ]
+"124 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MAADR5 `Vuc 0 e@3712 ]
+"128 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MAADR6 `Vuc 0 e@3713 ]
+"177 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _WritePHYReg `(v 0 ef2`uc`us ]
+[s S298 :2 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S298 . . RXEN TXRTS CSUMEN DMAST RXRST TXRST ]
+[u S297 `S298 1 ]
+[n S297 . . ]
+"2960 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ECON1bits `S297 0 e@4050 ]
+[c E208 0 1 .. ]
+[n E208 _BOOL FALSE TRUE  ]
+[s S364 :8 `uc 1 :1 `uc 1 :7 `uc 1 ]
+[n S364 . . PDPXMD . ]
+[s S365 :2 `uc 1 :1 `uc 1 :5 `uc 1 :8 `uc 1 ]
+[n S365 . . LLSTAT . . ]
+[s S366 :4 `uc 1 :1 `uc 1 :3 `uc 1 :1 `uc 1 :5 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S366 . . RXAPDIS . HDLDIS . FRCLNK . ]
+[s S367 :8 `uc 1 :2 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :2 `uc 1 ]
+[n S367 . . . LSTAT COLSTAT RXSTAT TXSTAT . ]
+[s S368 :1 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 :3 `uc 1 :8 `uc 1 ]
+[n S368 . . PGEIE . PLNKIE . . ]
+[s S369 :2 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :3 `uc 1 :8 `uc 1 ]
+[n S369 . . PGIF . PLNKIF . . ]
+[s S370 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :4 `uc 1 ]
+[n S370 . . STRCH LFRQ0 LFRQ1 LBCFG0 LBCFG1 LBCFG2 LBCFG3 LACFG0 LACFG1 LACFG2 LACFG3 . ]
+[s S371 :1 `uc 1 :1 `uc 1 :2 `uc 1 :4 `uc 1 :4 `uc 1 :4 `uc 1 ]
+[n S371 . . STRCH LFRQ LBCFG LACFG . ]
+[u S363 `us 1 `S21 1 `S364 1 `S365 1 `S366 1 `S367 1 `S368 1 `S369 1 `S370 1 `S371 1 ]
+[n S363 . Val VAL PHCON1bits PHSTAT1bits PHCON2bits PHSTAT2bits PHIEbits PHIRbits PHLCONbits PHLCONbits2 ]
+"178 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _ReadPHYReg `(S363 0 ef1`uc ]
+"81 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Tick.h
+[v _TickGet `(ul 0 ef ]
+"305 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACFlush `(v 0 ef ]
+"464 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _EPKTCNT `Vuc 0 e@3801 ]
+"584 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ERXWRPT `Vui 0 e@3822 ]
+"567 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ERXRDPT `Vui 0 e@3820 ]
+[s S362 `us 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S362 . ByteCount PreviouslyIgnored RXDCPreviouslySeen CarrierPreviouslySeen CodeViolation CRCError LengthCheckError LengthOutOfRange ReceiveOk Multicast Broadcast DribbleNibble ControlFrame PauseControlFrame UnsupportedOpcode VLANType Zero ]
+[u S361 `uc -> 4 `i `S362 1 ]
+[n S361 . v bits ]
+[s S389 `us 1 `S361 1 `S355 1 `S355 1 `S21 1 ]
+[n S389 . NextPacketPointer StatusVector DestMACAddr SourceMACAddr Type ]
+"82 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Tick.h
+[v _TickGetDiv256 `(ul 0 ef ]
+"1123 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ERDPT `Vui 0 e@3962 ]
+"295 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACGetArray `(us 0 ef2`*uc`us ]
+"104 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _swaps `(us 0 ef1`us ]
+[s S20 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S20 . b0 b1 b2 b3 b4 b5 b6 b7 ]
+[u S19 `uc 1 `S20 1 ]
+[n S19 . Val bits ]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _memcpy `(*v 0 ef3`*v`*Cv`ui ]
+[s S372 `S355 1 `S355 1 `S21 1 ]
+[n S372 . DestMACAddr SourceMACAddr Type ]
+"516 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ETXND `Vui 0 e@3814 ]
+"304 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACPutArray `(v 0 ef2`*uc`us ]
+[s S86 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S86 . RXERIF TXERIF . TXIF LINKIF DMAIF PKTIF ]
+[u S85 `S86 1 ]
+[n S85 . . ]
+"732 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _EIRbits `S85 0 e@3936 ]
+"1110 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ERDPTL `Vuc 0 e@3962 ]
+"1114 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ERDPTH `Vuc 0 e@3963 ]
+"108 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _CalcIPBufferChecksum `(us 0 ef1`us ]
+"294 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACGet `(uc 0 ef ]
+"601 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _EDMAST `Vui 0 e@3824 ]
+"635 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _EDMADST `Vui 0 e@3828 ]
+"618 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _EDMAND `Vui 0 e@3826 ]
+"314 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MIREGADR `Vuc 0 e@3764 ]
+"302 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MICMD `Vuc 0 e@3762 ]
+[s S34 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S34 . BUSY SCAN NVALID . ]
+[u S33 `S34 1 ]
+[n S33 . . ]
+"160 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MISTATbits `S33 0 e@3722 ]
+"336 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MIRDL `Vuc 0 e@3768 ]
+"340 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MIRDH `Vuc 0 e@3769 ]
+"3241 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _INTCON `Vuc 0 e@4082 ]
+"146 /home/andresol/tellstick-net/tcpip/ETH97J60.c
+[v _MACInit `(v 1 ef ]
+{
+[e :U _MACInit ]
+[f ]
+"147
+[v _i `uc 1 a ]
+"149
+[e =& _TRISA -> -> 252 `i `uc ]
+"150
+[e = . . _ECON2bits 0 1 -> -> 1 `i `uc ]
+"155
+[e = _TRISE1 -> -> 0 `i `b ]
+"156
+[e = _LATE1 -> -> 0 `i `b ]
+"160
+[e $U 393  ]
+[e :U 394 ]
+[e :U 393 ]
+[e $ ! != -> . . _ESTATbits 0 0 `i -> -> -> 0 `i `Vuc `i 394  ]
+[e :U 395 ]
+"164
+[e = . _flags 0 -> -> 0 `i `uc ]
+"165
+[e = . . _flags 1 0 -> -> 1 `i `uc ]
+"166
+[e = . _NextPacketLocation 0 -> -> 0 `ul `us ]
+"167
+[e = _ERXST -> -> 0 `ul `ui ]
+"168
+[e = _ERXRDPTL -> & | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul -> -> -> 255 `i `l `ul `uc ]
+"169
+[e = _ERXRDPTH -> & >> | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul -> 8 `i -> -> -> 255 `i `l `ul `uc ]
+"170
+[e = _ERXND -> | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul `ui ]
+"171
+[e = _ETXST -> - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul `ui ]
+"174
+[e = _EWRPT -> - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul `ui ]
+"175
+[e ( _MACPut (1 -> -> 0 `i `uc ]
+"184
+[e = _MACON1 -> | | << -> 1 `i -> 3 `i << -> 1 `i -> 2 `i -> 1 `i `uc ]
+[; NOP ;#
+"191
+[e = _MACON3 -> | | << -> 1 `i -> 5 `i << -> 1 `i -> 4 `i << -> 1 `i -> 1 `i `uc ]
+[; NOP ;#
+"192
+[e = _MABBIPG -> -> 18 `i `uc ]
+[; NOP ;#
+"198
+[e = _MACON4 -> << -> 1 `i -> 6 `i `uc ]
+[; NOP ;#
+"203
+[e = _MAIPGL -> -> 18 `i `uc ]
+[; NOP ;#
+"204
+[e = _MAIPGH -> -> 12 `i `uc ]
+[; NOP ;#
+"207
+[e = _MAMXFLL -> & + + + + -> 6 `i -> 6 `i -> 2 `i -> 1500 `i -> 4 `i -> 255 `i `uc ]
+[; NOP ;#
+"208
+[e = _MAMXFLH -> & >> + + + + -> 6 `i -> 6 `i -> 2 `i -> 1500 `i -> 4 `i -> 8 `i -> 255 `i `uc ]
+[; NOP ;#
+"211
+[e = _MAADR1 *U + &U . . _AppConfig 9 0 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _AppConfig 9 0 `ui `ux ]
+[; NOP ;#
+"212
+[e = _MAADR2 *U + &U . . _AppConfig 9 0 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _AppConfig 9 0 `ui `ux ]
+[; NOP ;#
+"213
+[e = _MAADR3 *U + &U . . _AppConfig 9 0 * -> -> -> 2 `i `ui `ux -> -> # *U &U . . _AppConfig 9 0 `ui `ux ]
+[; NOP ;#
+"214
+[e = _MAADR4 *U + &U . . _AppConfig 9 0 * -> -> -> 3 `i `ui `ux -> -> # *U &U . . _AppConfig 9 0 `ui `ux ]
+[; NOP ;#
+"215
+[e = _MAADR5 *U + &U . . _AppConfig 9 0 * -> -> -> 4 `i `ui `ux -> -> # *U &U . . _AppConfig 9 0 `ui `ux ]
+[; NOP ;#
+"216
+[e = _MAADR6 *U + &U . . _AppConfig 9 0 * -> -> -> 5 `i `ui `ux -> -> # *U &U . . _AppConfig 9 0 `ui `ux ]
+[; NOP ;#
+"219
+[e ( _WritePHYReg (2 , -> -> 16 `i `uc -> | << -> 1 `ul -> 8 `i << -> 1 `ul -> 4 `i `us ]
+"222
+[e ( _WritePHYReg (2 , -> -> 20 `i `uc -> -> 13426 `i `us ]
+"228
+[e ( _WritePHYReg (2 , -> -> 0 `i `uc -> -> 0 `i `us ]
+"232
+[e = . . _ECON1bits 0 1 -> -> 1 `i `uc ]
+"233
+[e :UE 392 ]
+}
+"256
+[v _MACIsLinked `(E208 1 ef ]
+{
+[e :U _MACIsLinked ]
+[f ]
+"262
+[e ) -> . . ( _ReadPHYReg (1 -> -> 1 `i `uc 3 1 `E208 ]
+[e $UE 396  ]
+"263
+[e :UE 396 ]
+}
+"286
+[v _MACIsTxReady `(E208 1 ef ]
+{
+[e :U _MACIsTxReady ]
+[f ]
+"287
+[e $ ! ! != -> . . _ECON1bits 0 2 `i -> -> -> 0 `i `Vuc `i 398  ]
+"288
+[e ) . `E208 1 ]
+[e $UE 397  ]
+[e :U 398 ]
+"292
+[e $ ! >= -> - -> -> ( _TickGet ..  `us `ui -> _wTXWatchdog `ui `ul / * -> 3 `ul / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul -> 1000 `ul 399  ]
+"293
+{
+"294
+[e = . . _ECON1bits 0 2 -> -> 0 `i `uc ]
+"295
+[e ( _MACFlush ..  ]
+"296
+}
+[e :U 399 ]
+"298
+[e ) . `E208 0 ]
+[e $UE 397  ]
+"299
+[e :UE 397 ]
+}
+"322
+[v _MACDiscardRx `(v 1 ef ]
+{
+[e :U _MACDiscardRx ]
+[f ]
+"323
+[v _NewRXRDLocation `S21 1 a ]
+"326
+[e $ ! != -> . . _flags 1 0 `i -> -> -> 0 `i `uc `i 401  ]
+"327
+[e $UE 400  ]
+[e :U 401 ]
+"328
+[e = . . _flags 1 0 -> -> 1 `i `uc ]
+"334
+[e = . _NewRXRDLocation 0 -> - -> . _NextPacketLocation 0 `ui -> -> 1 `i `ui `us ]
+"338
+[e $ ! || < -> . _NewRXRDLocation 0 `ul -> 0 `ul > -> . _NewRXRDLocation 0 `ul | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul 402  ]
+"340
+{
+"341
+[e = . _NewRXRDLocation 0 -> | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul `us ]
+"342
+}
+[e :U 402 ]
+"345
+[e = . . _ECON2bits 0 2 -> -> 1 `i `uc ]
+"350
+[e = _ERXRDPTL *U + &U . _NewRXRDLocation 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _NewRXRDLocation 1 `ui `ux ]
+"351
+[e = _ERXRDPTH *U + &U . _NewRXRDLocation 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . _NewRXRDLocation 1 `ui `ux ]
+"352
+[e :UE 400 ]
+}
+"372
+[v _MACGetFreeRxSize `(us 1 ef ]
+{
+[e :U _MACGetFreeRxSize ]
+[f ]
+"373
+[v _ReadPT `S21 1 a ]
+[v _WritePT `S21 1 a ]
+"379
+[e :U 406 ]
+{
+"381
+[e = *U + &U . _ReadPT 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _ReadPT 1 `ui `ux _EPKTCNT ]
+"383
+[e = . _WritePT 0 -> _ERXWRPT `us ]
+"384
+}
+[e $ != -> _EPKTCNT `i -> *U + &U . _ReadPT 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _ReadPT 1 `ui `ux `i 406  ]
+[e :U 405 ]
+"387
+[e = . _ReadPT 0 -> _ERXRDPT `us ]
+"392
+[e $ ! > -> . _WritePT 0 `ui -> . _ReadPT 0 `ui 407  ]
+"393
+{
+"394
+[e ) -> - - | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul -> 0 `ul -> - -> . _WritePT 0 `ui -> . _ReadPT 0 `ui `ul `us ]
+[e $UE 403  ]
+"395
+}
+[e $U 408  ]
+"396
+[e :U 407 ]
+[e $ ! == -> . _WritePT 0 `ui -> . _ReadPT 0 `ui 409  ]
+"397
+{
+"398
+[e ) -> - + - | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul -> 0 `ul -> 1 `ul -> -> -> 1 `i `l `ul `us ]
+[e $UE 403  ]
+"399
+}
+[e $U 410  ]
+"400
+[e :U 409 ]
+"401
+{
+"402
+[e ) -> - - -> . _ReadPT 0 `ui -> . _WritePT 0 `ui -> -> 1 `i `ui `us ]
+[e $UE 403  ]
+"403
+}
+[e :U 410 ]
+[e :U 408 ]
+"404
+[e :UE 403 ]
+}
+"430
+[v _MACGetHeader `(E208 1 ef2`*S355`*uc ]
+{
+[e :U _MACGetHeader ]
+[v _remote `*S355 1 r1 ]
+[v _type `*uc 1 r2 ]
+[f ]
+"431
+[v _header `S389 1 a ]
+"434
+[e $ ! == -> _EPKTCNT `ui -> 0 `ui 412  ]
+"435
+{
+"439
+{
+"441
+[e $ ! > - -> -> ( _TickGetDiv256 ..  `us `ui -> _wRXPolarityTimer `ui -> -> / / * / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul -> -> -> 3 `i `l `ul -> -> -> 7 `i `l `ul -> -> -> 256 `i `l `ul `us `ui 413  ]
+"442
+{
+"447
+[e $ ! != -> . . ( _ReadPHYReg (1 -> -> 17 `i `uc 5 2 `i -> -> -> 0 `i `uc `i 414  ]
+"448
+{
+"451
+[e $ ! ! != -> . . _flags 1 1 `i -> -> -> 0 `i `uc `i 415  ]
+"452
+{
+"454
+[e =^ _LATE1 -> -> 1 `i `b ]
+"455
+}
+[e :U 415 ]
+"456
+}
+[e $U 416  ]
+"457
+[e :U 414 ]
+"458
+{
+"459
+[e = . . _flags 1 1 -> -> 0 `i `uc ]
+"460
+[e = . . _flags 1 3 -> -> 0 `i `uc ]
+"461
+[e = _LATE1 -> -> 0 `i `b ]
+"462
+}
+[e :U 416 ]
+"465
+[e = _wRXPolarityTimer -> ( _TickGetDiv256 ..  `us ]
+"466
+[e = . . _flags 1 2 -> -> 0 `i `uc ]
+"467
+}
+[e :U 413 ]
+"468
+}
+"471
+[e ) . `E208 0 ]
+[e $UE 411  ]
+"472
+}
+[e :U 412 ]
+"476
+[e = . . _flags 1 1 -> -> 1 `i `uc ]
+"479
+[e $ ! == -> . . _flags 1 0 `ui -> 0 `ui 417  ]
+"480
+{
+"481
+[e ( _MACDiscardRx ..  ]
+"482
+[e ) . `E208 0 ]
+[e $UE 411  ]
+"483
+}
+[e :U 417 ]
+"485
+[e = . _CurrentPacketLocation 0 . _NextPacketLocation 0 ]
+"488
+[e = _ERDPT -> . _CurrentPacketLocation 0 `ui ]
+"491
+[e ( _MACGetArray (2 , -> &U _header `*uc -> -> # _header `ui `us ]
+"495
+[e = . . _header 4 0 ( _swaps (1 . . _header 4 0 ]
+"503
+[e $ ! || || || || || > -> . _header 0 `ul | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul != -> . . *U -> &U . _header 0 `*S19 1 0 `i -> -> -> 0 `i `uc `i != -> . . . _header 1 1 16 `i -> -> -> 0 `i `uc `i != -> . . . _header 1 1 5 `i -> -> -> 0 `i `uc `i > -> . . . _header 1 1 0 `ui -> 1518 `ui ! != -> . . . _header 1 1 8 `i -> -> -> 0 `i `uc `i 418  ]
+"504
+{
+"505
+[; RESET ;#
+"506
+}
+[e :U 418 ]
+"509
+[e = . _NextPacketLocation 0 . _header 0 ]
+"514
+[e ( _memcpy (3 , , -> &U . *U _remote 0 `*v -> -> &U . . _header 3 0 `*v `*Cv -> # *U _remote `ui ]
+"517
+[e = *U _type -> -> 255 `ui `uc ]
+"519
+[e $ ! && == -> *U + &U . . _header 4 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _header 4 1 `ui `ux `ui -> 8 `ui || == -> *U + &U . . _header 4 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _header 4 1 `ui `ux `ui -> 0 `ui == -> *U + &U . . _header 4 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _header 4 1 `ui `ux `ui -> 6 `ui 419  ]
+"520
+{
+"521
+[e = *U _type *U + &U . . _header 4 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _header 4 1 `ui `ux ]
+"522
+}
+[e :U 419 ]
+"525
+[e = . . _flags 1 0 -> -> 0 `i `uc ]
+"526
+[e ) . `E208 1 ]
+[e $UE 411  ]
+"527
+[e :UE 411 ]
+}
+"555
+[v _MACPutHeader `(v 1 ef3`*S355`uc`us ]
+{
+[e :U _MACPutHeader ]
+[v _remote `*S355 1 r1 ]
+[v _type `uc 1 r2 ]
+[v _dataLen `us 1 r3 ]
+[f ]
+"557
+[e = _EWRPT -> + - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> -> -> 1 `i `l `ul `ui ]
+"560
+[e =+ _dataLen -> + -> -> -> # `S372 `ui `us `ul - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul `us ]
+"563
+[e = _ETXND -> _dataLen `ui ]
+"567
+[e ( _MACPutArray (2 , -> _remote `*uc -> -> # *U _remote `ui `us ]
+"570
+[e ( _MACPutArray (2 , -> &U . _AppConfig 9 `*uc -> -> # . _AppConfig 9 `ui `us ]
+"573
+[e ( _MACPut (1 -> -> 8 `i `uc ]
+"574
+[e ( _MACPut (1 -> ? == -> _type `ui -> 0 `ui : -> 0 `ui -> 6 `ui `uc ]
+"575
+[e :UE 420 ]
+}
+"601
+[v _MACFlush `(v 1 ef ]
+{
+[e :U _MACFlush ]
+[f ]
+"605
+[e = . . _ECON1bits 0 6 -> -> 1 `i `uc ]
+"606
+[e = . . _ECON1bits 0 6 -> -> 0 `i `uc ]
+"610
+{
+[v _i `Vuc 1 a ]
+[e = _i -> -> 8 `i `uc ]
+[e $U 422  ]
+[e :U 423 ]
+[e :U 422 ]
+[e $ != -> -- _i -> -> 1 `i `uc `i -> -> -> 0 `i `Vuc `i 423  ]
+[e :U 424 ]
+}
+"611
+[e = . . _EIRbits 0 1 -> -> 0 `i `uc ]
+"617
+{
+"620
+[e $ ! ! != -> . . _flags 1 1 `i -> -> -> 0 `i `uc `i 425  ]
+"621
+{
+"624
+[e $ ! ! != -> . . _flags 1 2 `i -> -> -> 0 `i `uc `i 426  ]
+"625
+{
+"627
+[e = _wRXPolarityTimer -> ( _TickGetDiv256 ..  `us ]
+"628
+[e = . . _flags 1 2 -> -> 1 `i `uc ]
+"629
+[e $ ! != -> . . _flags 1 3 `i -> -> -> 0 `i `uc `i 427  ]
+"630
+[e = _LATE1 -> -> 1 `i `b ]
+[e $U 428  ]
+"631
+[e :U 427 ]
+"632
+[e = _LATE1 -> -> 0 `i `b ]
+[e :U 428 ]
+"633
+[e =^ . . _flags 1 3 -> -> 1 `i `uc ]
+"634
+}
+[e :U 426 ]
+"635
+}
+[e :U 425 ]
+"636
+}
+"644
+[e = . . _ECON1bits 0 2 -> -> 1 `i `uc ]
+"645
+[e = _wTXWatchdog -> ( _TickGet ..  `us ]
+"646
+[e :UE 421 ]
+}
+"672
+[v _MACSetReadPtrInRx `(v 1 ef1`us ]
+{
+[e :U _MACSetReadPtrInRx ]
+[v _offset `us 1 r1 ]
+[f ]
+"673
+[v _ReadPT `S21 1 a ]
+"677
+[e = . _ReadPT 0 -> + + -> . _CurrentPacketLocation 0 `ui -> # `S389 `ui -> _offset `ui `us ]
+"680
+[e $ ! > -> . _ReadPT 0 `ul | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul 430  ]
+"681
+[e =- . _ReadPT 0 -> + - | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul -> 0 `ul -> 1 `ul `us ]
+[e :U 430 ]
+"684
+[e = _ERDPTL *U + &U . _ReadPT 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _ReadPT 1 `ui `ux ]
+"685
+[e = _ERDPTH *U + &U . _ReadPT 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . _ReadPT 1 `ui `ux ]
+"686
+[e :UE 429 ]
+}
+"706
+[v _MACSetWritePtr `(us 1 ef1`us ]
+{
+[e :U _MACSetWritePtr ]
+[v _address `us 1 r1 ]
+[f ]
+"707
+[v _oldVal `us 1 a ]
+"709
+[e = _oldVal -> _EWRPT `us ]
+"710
+[e = _EWRPT -> _address `ui ]
+"711
+[e ) _oldVal ]
+[e $UE 431  ]
+"712
+[e :UE 431 ]
+}
+"731
+[v _MACSetReadPtr `(us 1 ef1`us ]
+{
+[e :U _MACSetReadPtr ]
+[v _address `us 1 r1 ]
+[f ]
+"732
+[v _oldVal `us 1 a ]
+"734
+[e = _oldVal -> _ERDPT `us ]
+"735
+[e = _ERDPT -> _address `ui ]
+"736
+[e ) _oldVal ]
+[e $UE 432  ]
+"737
+[e :UE 432 ]
+}
+"760
+[v _MACCalcRxChecksum `(us 1 ef2`us`us ]
+{
+[e :U _MACCalcRxChecksum ]
+[v _offset `us 1 r1 ]
+[v _len `us 1 r2 ]
+[f ]
+"761
+[v _temp `us 1 a ]
+"762
+[v _RDSave `us 1 a ]
+"765
+[e = _temp -> + + -> . _CurrentPacketLocation 0 `ui -> # `S389 `ui -> _offset `ui `us ]
+"766
+[e $ ! > -> _temp `ul | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul 434  ]
+"767
+{
+"768
+[e =- _temp -> + - | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul -> 0 `ul -> 1 `ul `us ]
+"769
+}
+[e :U 434 ]
+"771
+[e = _RDSave -> _ERDPT `us ]
+"772
+[e = _ERDPT -> _temp `ui ]
+"773
+[e = _temp ( _CalcIPBufferChecksum (1 _len ]
+"774
+[e = _ERDPT -> _RDSave `ui ]
+"776
+[e ) _temp ]
+[e $UE 433  ]
+"777
+[e :UE 433 ]
+}
+"881
+[v _CalcIPBufferChecksum `(us 1 ef1`us ]
+{
+[e :U _CalcIPBufferChecksum ]
+[v _len `us 1 r1 ]
+[f ]
+"882
+[v _Start `us 1 a ]
+"883
+[v _Checksum `S24 1 a ]
+[v F5345 `S24 1 s ]
+[i F5345
+:U ..
+:U ..
+-> 0 `ul
+..
+..
+]
+[e = _Checksum F5345 ]
+"884
+[v _ChunkLen `us 1 a ]
+"885
+[v _DataBuffer `uc -> 20 `i a ]
+"886
+[v _DataPtr `*us 1 a ]
+"889
+[e = _Start -> _ERDPT `us ]
+"891
+[e $U 436  ]
+[e :U 437 ]
+"892
+{
+"895
+[e = _ChunkLen -> ? > -> _len `ui -> # _DataBuffer `ui : -> # _DataBuffer `ui -> _len `ui `us ]
+"896
+[e ( _MACGetArray (2 , &U _DataBuffer _ChunkLen ]
+"898
+[e =- _len _ChunkLen ]
+"901
+[e $ ! != -> . . *U -> &U _ChunkLen `*S21 3 0 `i -> -> -> 0 `i `uc `i 439  ]
+"902
+{
+"903
+[e = *U + &U _DataBuffer * -> _ChunkLen `ux -> -> # *U &U _DataBuffer `ui `ux -> -> 0 `i `uc ]
+"904
+[e ++ _ChunkLen -> -> 1 `i `us ]
+"905
+}
+[e :U 439 ]
+"908
+[e = _DataPtr -> &U *U + &U _DataBuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _DataBuffer `ui `ux `*us ]
+"909
+[e $U 440  ]
+[e :U 441 ]
+"910
+{
+"911
+[e =+ . _Checksum 0 -> *U ++ _DataPtr * -> -> 1 `i `x -> -> # *U _DataPtr `i `x `ul ]
+"912
+[e =- _ChunkLen -> -> 2 `i `us ]
+"913
+}
+[e :U 440 ]
+"909
+[e $ != -> _ChunkLen `ui -> -> -> 0 `i `us `ui 441  ]
+[e :U 442 ]
+"914
+}
+[e :U 436 ]
+"891
+[e $ != -> _len `ui -> -> -> 0 `i `us `ui 437  ]
+[e :U 438 ]
+"917
+[e = _ERDPT -> _Start `ui ]
+"920
+[e = . _Checksum 0 + -> *U + &U . _Checksum 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _Checksum 1 `ui `ux `ul -> *U + &U . _Checksum 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . _Checksum 1 `ui `ux `ul ]
+"924
+[e =+ *U + &U . _Checksum 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _Checksum 1 `ui `ux *U + &U . _Checksum 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . _Checksum 1 `ui `ux ]
+"927
+[e ) -> ~ -> *U + &U . _Checksum 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _Checksum 1 `ui `ux `ui `us ]
+[e $UE 435  ]
+"928
+[e :UE 435 ]
+}
+"955
+[v _MACMemCopyAsync `(v 1 ef3`us`us`us ]
+{
+[e :U _MACMemCopyAsync ]
+[v _destAddr `us 1 r1 ]
+[v _sourceAddr `us 1 r2 ]
+[v _len `us 1 r3 ]
+[f ]
+"956
+[v _ReadSave `S21 1 a ]
+[v _WriteSave `S21 1 a ]
+"957
+[v _UpdateWritePointer `E208 1 a ]
+[e = _UpdateWritePointer . `E208 0 ]
+"958
+[v _UpdateReadPointer `E208 1 a ]
+[e = _UpdateReadPointer . `E208 0 ]
+"960
+[e $ ! == -> _destAddr `ui -> -> -U -> 1 `i `us `ui 444  ]
+"961
+{
+"962
+[e = _UpdateWritePointer . `E208 1 ]
+"963
+[e = _destAddr -> _EWRPT `us ]
+"964
+}
+[e :U 444 ]
+"965
+[e $ ! == -> _sourceAddr `ui -> -> -U -> 1 `i `us `ui 445  ]
+"966
+{
+"967
+[e = _UpdateReadPointer . `E208 1 ]
+"968
+[e = _sourceAddr -> _ERDPT `us ]
+"969
+}
+[e :U 445 ]
+"973
+[e $ ! <= -> _len `ui -> 1 `ui 446  ]
+"974
+{
+"975
+[e = . _ReadSave 0 -> _ERDPT `us ]
+"976
+[e = . _WriteSave 0 -> _EWRPT `us ]
+"977
+[e = _ERDPT -> _sourceAddr `ui ]
+"978
+[e = _EWRPT -> _destAddr `ui ]
+"979
+[e $U 447  ]
+[e :U 448 ]
+"980
+[e ( _MACPut (1 ( _MACGet ..  ]
+[e :U 447 ]
+"979
+[e $ != -> -- _len -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 448  ]
+[e :U 449 ]
+"981
+[e $ ! ! != -> _UpdateReadPointer `i -> -> -> 0 `i `E208 `i 450  ]
+"982
+{
+"983
+[e = _ERDPT -> . _ReadSave 0 `ui ]
+"984
+}
+[e :U 450 ]
+"985
+[e $ ! ! != -> _UpdateWritePointer `i -> -> -> 0 `i `E208 `i 451  ]
+"986
+{
+"987
+[e = _EWRPT -> . _WriteSave 0 `ui ]
+"988
+}
+[e :U 451 ]
+"989
+}
+[e $U 452  ]
+"990
+[e :U 446 ]
+"991
+{
+"992
+[e $ ! != -> _UpdateWritePointer `i -> -> -> 0 `i `E208 `i 453  ]
+"993
+{
+"994
+[e = . _WriteSave 0 -> + -> _destAddr `ui -> _len `ui `us ]
+"995
+[e = _EWRPT -> . _WriteSave 0 `ui ]
+"996
+}
+[e :U 453 ]
+"997
+[e =+ _len -> - -> _sourceAddr `ui -> -> 1 `i `ui `us ]
+"998
+[e $U 454  ]
+[e :U 455 ]
+[e :U 454 ]
+[e $ != -> . . _ECON1bits 0 4 `i -> -> -> 0 `i `Vuc `i 455  ]
+[e :U 456 ]
+"999
+[e = _EDMAST -> _sourceAddr `ui ]
+"1000
+[e = _EDMADST -> _destAddr `ui ]
+"1001
+[e $ ! && <= -> _sourceAddr `ul | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul > -> _len `ul | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul 457  ]
+"1002
+[e =- _len -> + - | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul -> 0 `ul -> 1 `ul `us ]
+[e :U 457 ]
+"1003
+[e = _EDMAND -> _len `ui ]
+"1004
+[e = . . _ECON1bits 0 3 -> -> 0 `i `uc ]
+"1005
+[e = . . _ECON1bits 0 4 -> -> 1 `i `uc ]
+"1006
+[e $U 458  ]
+[e :U 459 ]
+[e :U 458 ]
+[e $ != -> . . _ECON1bits 0 4 `i -> -> -> 0 `i `Vuc `i 459  ]
+[e :U 460 ]
+"1008
+[e $ ! != -> _UpdateReadPointer `i -> -> -> 0 `i `E208 `i 461  ]
+"1009
+{
+"1010
+[e ++ _len -> -> 1 `i `us ]
+"1011
+[e $ ! && <= -> _sourceAddr `ul | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul > -> _len `ul | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul 462  ]
+"1012
+[e =- _len -> + - | - - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 2 `ul -> 1 `ul -> 0 `ul -> 1 `ul `us ]
+[e :U 462 ]
+"1013
+[e = _ERDPT -> _len `ui ]
+"1014
+}
+[e :U 461 ]
+"1015
+}
+[e :U 452 ]
+"1016
+[e :UE 443 ]
+}
+"1057
+[v _MACIsMemCopyDone `(E208 1 ef ]
+{
+[e :U _MACIsMemCopyDone ]
+[f ]
+"1058
+[e ) -> -> ! != -> . . _ECON1bits 0 4 `i -> -> -> 0 `i `Vuc `i `i `E208 ]
+[e $UE 463  ]
+"1059
+[e :UE 463 ]
+}
+"1080
+[v _MACGet `(uc 1 ef ]
+{
+[e :U _MACGet ]
+[f ]
+"1082
+[; movff	0xF61, _errataTempL ;#
+"1083
+[e ) _errataTempL ]
+[e $UE 464  ]
+"1087
+[e :UE 464 ]
+}
+"1109
+[v _MACGetArray `(us 1 ef2`*uc`us ]
+{
+[e :U _MACGetArray ]
+[v _val `*uc 1 r1 ]
+[v _len `us 1 r2 ]
+[f ]
+"1110
+[v _w `us 1 a ]
+"1112
+[e = _w _len ]
+"1113
+[e $ ! != _val -> -> 0 `i `*uc 466  ]
+"1114
+{
+"1115
+[e $U 467  ]
+[e :U 468 ]
+"1116
+{
+"1118
+[; movff	0xF61, _errataTempL ;#
+"1119
+[e = *U ++ _val * -> -> 1 `i `x -> -> # *U _val `i `x _errataTempL ]
+"1123
+}
+[e :U 467 ]
+"1115
+[e $ != -> -- _w -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 468  ]
+[e :U 469 ]
+"1124
+}
+[e $U 470  ]
+"1125
+[e :U 466 ]
+"1126
+{
+"1127
+[e $U 471  ]
+[e :U 472 ]
+"1128
+{
+"1130
+{
+"1131
+[; movff	0xF61, _errataTempL ;#
+"1132
+}
+"1138
+}
+[e :U 471 ]
+"1127
+[e $ != -> -- _w -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 472  ]
+[e :U 473 ]
+"1139
+}
+[e :U 470 ]
+"1141
+[e ) _len ]
+[e $UE 465  ]
+"1142
+[e :UE 465 ]
+}
+"1162
+[v _MACPut `(v 1 ef1`uc ]
+{
+[e :U _MACPut ]
+[v _val `uc 1 r1 ]
+[f ]
+"1167
+[e = _errataTempL _val ]
+"1168
+[; movff	_errataTempL, 0xF61 ;#
+"1173
+[e :UE 474 ]
+}
+"1195
+[v _MACPutArray `(v 1 ef2`*uc`us ]
+{
+[e :U _MACPutArray ]
+[v _val `*uc 1 r1 ]
+[v _len `us 1 r2 ]
+[f ]
+"1196
+[e $U 476  ]
+[e :U 477 ]
+"1197
+{
+"1202
+[e = _errataTempL *U ++ _val * -> -> 1 `i `x -> -> # *U _val `i `x ]
+"1203
+[; movff	_errataTempL, 0xF61 ;#
+"1208
+}
+[e :U 476 ]
+"1196
+[e $ != -> -- _len -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 477  ]
+[e :U 478 ]
+"1209
+[e :UE 475 ]
+}
+"1212
+[v _MACPutROMArray `(v 1 ef2`*Cuc`us ]
+{
+[e :U _MACPutROMArray ]
+[v _val `*Cuc 1 r1 ]
+[v _len `us 1 r2 ]
+[f ]
+"1213
+[e $U 480  ]
+[e :U 481 ]
+"1214
+{
+"1219
+[e = _errataTempL *U ++ _val * -> -> 1 `i `x -> -> # *U _val `i `x ]
+"1220
+[; movff	_errataTempL, 0xF61 ;#
+"1225
+}
+[e :U 480 ]
+"1213
+[e $ != -> -- _len -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 481  ]
+[e :U 482 ]
+"1226
+[e :UE 479 ]
+}
+"1247
+[v _ReadPHYReg `(S363 1 ef1`uc ]
+{
+[e :U _ReadPHYReg ]
+[v _Register `uc 1 r1 ]
+[f ]
+"1248
+[v _Result `S363 1 a ]
+"1251
+[e = _MIREGADR _Register ]
+[; NOP ;#
+"1252
+[e = _MICMD -> -> 1 `i `uc ]
+[; NOP ;#
+"1256
+[e $U 484  ]
+[e :U 485 ]
+[e :U 484 ]
+[e $ != -> . . _MISTATbits 0 0 `i -> -> -> 0 `i `Vuc `i 485  ]
+[e :U 486 ]
+"1259
+[e = _MICMD -> -> 0 `i `uc ]
+[; NOP ;#
+"1262
+[e = *U + &U . . _Result 1 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _Result 1 1 `ui `ux _MIRDL ]
+"1263
+[; NOP ;#
+"1264
+[e = *U + &U . . _Result 1 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _Result 1 1 `ui `ux _MIRDH ]
+"1266
+[e ) _Result ]
+[e $UE 483  ]
+"1267
+[e :UE 483 ]
+}
+"1289
+[v _WritePHYReg `(v 1 ef2`uc`us ]
+{
+[e :U _WritePHYReg ]
+[v _Register `uc 1 r1 ]
+[v _Data `us 1 r2 ]
+[f ]
+"1290
+[v _GIESave `uc 1 a ]
+"1293
+[e = _MIREGADR _Register ]
+"1306
+[e = _errataTempL *U + -> &U _Data `*uc * -> -> 0 `i `x -> -> # *U -> &U _Data `*uc `i `x ]
+"1307
+[e = _errataTempH *U + -> &U _Data `*uc * -> -> 1 `i `x -> -> # *U -> &U _Data `*uc `i `x ]
+"1308
+[e = _GIESave -> & -> _INTCON `i -> 192 `i `uc ]
+"1309
+[e =& _INTCON -> -> 63 `i `uc ]
+"1310
+[; movff	_errataTempL, 0xEB6 ;#
+"1311
+[; nop ;#
+"1312
+[; movff	_errataTempH, 0xEB7 ;#
+"1324
+[e =| _INTCON _GIESave ]
+"1328
+[e $U 488  ]
+[e :U 489 ]
+[e :U 488 ]
+[e $ != -> . . _MISTATbits 0 0 `i -> -> -> 0 `i `Vuc `i 489  ]
+[e :U 490 ]
+"1329
+[e :UE 487 ]
+}
+"1356
+[v _MACPowerDown `(v 1 ef ]
+{
+[e :U _MACPowerDown ]
+[f ]
+"1358
+[e = . . _ECON1bits 0 1 -> -> 0 `i `uc ]
+"1362
+[e $U 492  ]
+[e :U 493 ]
+[e :U 492 ]
+[e $ != -> . . _ESTATbits 0 2 `i -> -> -> 0 `i `Vuc `i 493  ]
+[e :U 494 ]
+"1365
+[e $U 495  ]
+[e :U 496 ]
+[e :U 495 ]
+[e $ != -> . . _ECON1bits 0 2 `i -> -> -> 0 `i `Vuc `i 496  ]
+[e :U 497 ]
+"1368
+[e = . . _ECON2bits 0 1 -> -> 0 `i `uc ]
+"1369
+[e :UE 491 ]
+}
+"1393
+[v _MACPowerUp `(v 1 ef ]
+{
+[e :U _MACPowerUp ]
+[f ]
+"1395
+[e = . . _ECON2bits 0 1 -> -> 1 `i `uc ]
+"1398
+[e $U 499  ]
+[e :U 500 ]
+"1401
+[e = . . _ECON1bits 0 1 -> -> 1 `i `uc ]
+[e :U 499 ]
+"1398
+[e $ ! != -> . . _ESTATbits 0 0 `i -> -> -> 0 `i `Vuc `i 500  ]
+[e :U 501 ]
+"1402
+[e :UE 498 ]
+}

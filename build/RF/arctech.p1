@@ -1,0 +1,337 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+"8 /home/andresol/tellstick-net/rf/receive.h
+[v _rfRetreatBit `(v 0 ef2`*us`*uc ]
+"3 /home/andresol/tellstick-net/rf/receive.h
+[v _rfCountSimilar `(uc 0 ef2`*us`*uc ]
+"3 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageBeginRaw `(v 0 ef ]
+"8 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddString `(v 0 ef2`*Cuc`*Cuc ]
+"7 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddLong `(v 0 ef2`*Cuc`ul ]
+"4 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageEnd `(v 0 ef1`uc ]
+"9 /home/andresol/tellstick-net/rf/arctech.c
+[v _arctechCodeSwitchBit `(uc 1 ef4`uc`uc`uc`uc ]
+{
+[e :U _arctechCodeSwitchBit ]
+[v _b1 `uc 1 r1 ]
+[v _b2 `uc 1 r2 ]
+[v _b3 `uc 1 r3 ]
+[v _b4 `uc 1 r4 ]
+[f ]
+"10
+[e $ ! && && && > -> _b1 `i -> 15 `i < -> _b2 `i -> 10 `i > -> _b3 `i -> 15 `i < -> _b4 `i -> 10 `i 324  ]
+{
+"11
+[e ) -> -> 0 `i `uc ]
+[e $UE 323  ]
+"12
+}
+[e :U 324 ]
+"13
+[e $ ! && && && < -> _b1 `i -> 10 `i > -> _b2 `i -> 15 `i > -> _b3 `i -> 15 `i < -> _b4 `i -> 10 `i 325  ]
+{
+"14
+[e ) -> -> 1 `i `uc ]
+[e $UE 323  ]
+"15
+}
+[e :U 325 ]
+"16
+[e ) -> -> 2 `i `uc ]
+[e $UE 323  ]
+"17
+[e :UE 323 ]
+}
+"19
+[v _arctechSelflearningBit `(uc 1 ef4`uc`uc`uc`uc ]
+{
+[e :U _arctechSelflearningBit ]
+[v _b1 `uc 1 r1 ]
+[v _b2 `uc 1 r2 ]
+[v _b3 `uc 1 r3 ]
+[v _b4 `uc 1 r4 ]
+[f ]
+"20
+[e $ ! && && && > -> _b1 `i -> 15 `i < -> _b2 `i -> 10 `i < -> _b3 `i -> 10 `i < -> _b4 `i -> 10 `i 327  ]
+{
+"21
+[e ) -> -> 0 `i `uc ]
+[e $UE 326  ]
+"22
+}
+[e :U 327 ]
+"23
+[e $ ! && && && < -> _b1 `i -> 10 `i < -> _b2 `i -> 10 `i > -> _b3 `i -> 15 `i < -> _b4 `i -> 10 `i 328  ]
+{
+"24
+[e ) -> -> 1 `i `uc ]
+[e $UE 326  ]
+"25
+}
+[e :U 328 ]
+"26
+[e ) -> -> 2 `i `uc ]
+[e $UE 326  ]
+"27
+[e :UE 326 ]
+}
+"29
+[v _parseArcTechCodeSwitch `(uc 1 ef2`us`uc ]
+{
+[e :U _parseArcTechCodeSwitch ]
+[v _scanP `us 1 r1 ]
+[v _scanBit `uc 1 r2 ]
+[f ]
+"31
+[v _data `ul 1 a ]
+[e = _data -> -> -> 0 `i `l `ul ]
+"32
+[v _mask `ul 1 a ]
+[e = _mask -> -> -> 1 `i `l `ul ]
+"34
+[e ( _rfRetreatBit (2 , &U _scanP &U _scanBit ]
+"35
+[e ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"37
+{
+[v _i `i 1 a ]
+[e = _i -> 0 `i ]
+[e $ < _i -> 12 `i 330  ]
+[e $U 331  ]
+[e :U 330 ]
+{
+"38
+[v _b1 `uc 1 a ]
+[e = _b1 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"39
+[v _b2 `uc 1 a ]
+[e = _b2 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"40
+[v _b3 `uc 1 a ]
+[e = _b3 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"41
+[v _b4 `uc 1 a ]
+[e = _b4 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"42
+[e =<< _data -> 1 `i ]
+"43
+[e $U 334  ]
+{
+"44
+[e :U 335 ]
+"45
+[e $U 333  ]
+"46
+[e :U 336 ]
+"47
+[e =| _data -> -> -> 1 `i `l `ul ]
+"48
+[e $U 333  ]
+"49
+[e :U 337 ]
+"50
+[e ) -> -> 0 `i `uc ]
+[e $UE 329  ]
+"51
+}
+[e $U 333  ]
+"43
+[e :U 334 ]
+[e [\ ( _arctechCodeSwitchBit (4 , , , _b1 _b2 _b3 _b4 , $ -> -> 0 `i `uc 335
+ , $ -> -> 1 `i `uc 336
+ , $ -> -> 2 `i `uc 337
+ 333 ]
+"51
+[e :U 333 ]
+"53
+}
+"37
+[e =+ _i -> 1 `i ]
+[e $ < _i -> 12 `i 330  ]
+[e :U 331 ]
+"53
+}
+"55
+[e $ ! == _data -> -> -> 0 `i `l `ul 338  ]
+{
+"57
+[e ) -> -> 0 `i `uc ]
+[e $UE 329  ]
+"58
+}
+[e :U 338 ]
+"60
+[e ( _rfMessageBeginRaw ..  ]
+"61
+[e ( _rfMessageAddString (2 , :s 1C :s 2C ]
+"62
+[e ( _rfMessageAddString (2 , :s 3C :s 4C ]
+"63
+[e ( _rfMessageAddLong (2 , :s 5C _data ]
+"64
+[e ( _rfMessageEnd (1 -> -> 2 `i `uc ]
+"66
+[e ) -> -> 1 `i `uc ]
+[e $UE 329  ]
+"67
+[e :UE 329 ]
+}
+"69
+[v _parseArcTechSelflearning `(uc 1 ef2`us`uc ]
+{
+[e :U _parseArcTechSelflearning ]
+[v _scanP `us 1 r1 ]
+[v _scanBit `uc 1 r2 ]
+[f ]
+"70
+[v _data `ul 1 a ]
+[e = _data -> -> -> 0 `i `l `ul ]
+"71
+[v _mask `ul 1 a ]
+[e = _mask -> -> -> 1 `i `l `ul ]
+"72
+[v _finished `ui 1 a ]
+[e = _finished -> -> 0 `i `ui ]
+"73
+[v _i `i 1 a ]
+[e = _i -> 0 `i ]
+"75
+[e ( _rfRetreatBit (2 , &U _scanP &U _scanBit ]
+"76
+[e ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"78
+{
+[e $ < _i -> 36 `i 340  ]
+[e $U 341  ]
+[e :U 340 ]
+{
+"79
+[v _b1 `uc 1 a ]
+[e = _b1 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"80
+[v _b2 `uc 1 a ]
+[e = _b2 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"81
+[v _b3 `uc 1 a ]
+[e = _b3 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"82
+[v _b4 `uc 1 a ]
+[e = _b4 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"84
+[e $U 344  ]
+{
+"85
+[e :U 345 ]
+"86
+[e $ ! > _i -> 31 `i 346  ]
+{
+"88
+[e = _data >> _data -> 1 `i ]
+"89
+}
+[e :U 346 ]
+"90
+[e $U 343  ]
+"91
+[e :U 347 ]
+"92
+[e $ ! > _i -> 31 `i 348  ]
+{
+"94
+[e = _data >> _data -> 1 `i ]
+"95
+}
+[e :U 348 ]
+"96
+[e =| _data _mask ]
+"97
+[e $U 343  ]
+"98
+[e :U 349 ]
+"99
+[e $ ! >= _i -> 31 `i 350  ]
+{
+"100
+[e = _finished -> -> 1 `i `ui ]
+"101
+[e $U 343  ]
+"102
+}
+[e $U 351  ]
+"103
+[e :U 350 ]
+{
+"104
+[e ) -> -> 0 `i `uc ]
+[e $UE 339  ]
+"105
+}
+[e :U 351 ]
+"106
+}
+[e $U 343  ]
+"84
+[e :U 344 ]
+[e [\ ( _arctechSelflearningBit (4 , , , _b1 _b2 _b3 _b4 , $ -> -> 0 `i `uc 345
+ , $ -> -> 1 `i `uc 347
+ 349 ]
+"106
+[e :U 343 ]
+"108
+[e $ ! != _finished -> -> 0 `i `ui 352  ]
+{
+"109
+[e $U 341  ]
+"110
+}
+[e :U 352 ]
+"111
+[e $ ! < _i -> 31 `i 353  ]
+{
+"112
+[e =<< _mask -> 1 `i ]
+"113
+}
+[e :U 353 ]
+"115
+}
+"78
+[e =+ _i -> 1 `i ]
+[e $ < _i -> 36 `i 340  ]
+[e :U 341 ]
+"115
+}
+"117
+[e ( _rfMessageBeginRaw ..  ]
+"118
+[e ( _rfMessageAddString (2 , :s 6C :s 7C ]
+"119
+[e ( _rfMessageAddString (2 , :s 8C :s 9C ]
+"120
+[e ( _rfMessageAddLong (2 , :s 10C _data ]
+"121
+[e ( _rfMessageEnd (1 -> -> 2 `i `uc ]
+"123
+[e ) -> -> 1 `i `uc ]
+[e $UE 339  ]
+"124
+[e :UE 339 ]
+}
+[a 6C 112 114 111 116 111 99 111 108 0 ]
+[a 1C 112 114 111 116 111 99 111 108 0 ]
+[a 3C 109 111 100 101 108 0 ]
+[a 8C 109 111 100 101 108 0 ]
+[a 4C 99 111 100 101 115 119 105 116 99 104 0 ]
+[a 2C 97 114 99 116 101 99 104 0 ]
+[a 7C 97 114 99 116 101 99 104 0 ]
+[a 9C 115 101 108 102 108 101 97 114 110 105 110 103 0 ]
+[a 10C 100 97 116 97 0 ]
+[a 5C 100 97 116 97 0 ]

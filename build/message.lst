@@ -1,0 +1,90 @@
+     1: //
+     2: // Copyright (C) 2012 Telldus Technologies AB. All rights reserved.
+     3: //
+     4: // Copyright: See COPYING file that comes with this distribution
+     5: //
+     6: //
+     7: 
+     8: #include "message.h"
+     9: 
+    10: #include "TCPIP Stack/TCPIP.h"
+    11: #include "pwm.h"
+    12: #include <htc.h>
+    13: #include <stdio.h>
+    14: #include "common.h"
+    15: #include "livemessage.h"
+    16: #include "tellsticknet.h"
+    17: 
+    18: void rfMessageBegin() {
+    19: #ifdef DEBUG
+    20:         printf("+R");
+    21: #endif
+    22:         LMClear();
+    23:         LMAppendString("Data");
+    24:         LMStartHash();
+    25: }
+    26: 
+    27: void rfMessageBeginRaw() {
+    28: #ifdef DEBUG
+    29:         printf("+RAW");
+    30: #endif
+    31:         LMClear();
+    32:         LMAppendString("RawData");
+    33:         LMStartHash();
+    34: }
+    35: 
+    36: void rfMessageEnd(unsigned char type) {
+    37: #ifdef DEBUG
+    38:         printf("\r\n");
+    39: #endif
+    40:         LMEndHash();
+    41:         sendToLocalListeners();
+    42:         setRXPulses(type);
+    43: }
+    44: 
+    45: void rfMessageAddByte(const char *key, unsigned char value) {
+    46: #ifdef DEBUG
+    47:         printf("%s:%X;", key, value);
+    48: #endif
+    49:         LMAppendHashInt(key, value);
+    50: }
+    51: 
+    52: void rfMessageAddLong(const char *key, unsigned long value) {
+    53:         LMAppendHashInt(key, value);
+    54: #ifdef DEBUG
+    55:         printf("%s:", key);
+    56: 
+    57:         unsigned char first = 1;
+    58:         for(unsigned char i = 0; i < 2*sizeof(value); ++i) {
+    59:                 //Mask (and shift) out the highest nibble
+    60:                 unsigned char nibble = (unsigned char)(value >> (8*sizeof(value)-4)) & 0xF;
+    61: 
+    62:                 if (nibble == 0 && first == 1) {
+    63:                         //Don't send prepending zeroes
+    64:                 } else {
+    65:                         printf("%X", nibble);
+    66:                         first = 0;
+    67:                 }
+    68:                 value <<= 4;
+    69:         }
+    70:         printf(";");
+    71: #endif
+    72: }
+    73: 
+    74: void rfMessageAddString(const char *key, const char *value) {
+    75: #ifdef DEBUG
+    76:         printf("%s:%s;", key, value);
+    77: #endif
+    78:         LMAppendHashString(key, value);
+    79: }
+    80: 
+    81: void rfMessageAddHexString(const char *key, const char *value, const unsigned char length) {
+    82: #ifdef DEBUG
+    83:         printf("%s:", key);
+    84:         for(unsigned char i = 0; i < length; ++i) {
+    85:                 printf("%X", value[i]);
+    86:         }
+    87:         printf(";");
+    88: #endif
+    89:         LMAppendHashHexString(key, value, length);
+    90: }

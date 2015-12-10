@@ -1,0 +1,110 @@
+     1: #include "transmit.h"
+     2: #include "config.h"
+     3: #include <htc.h>
+     4: 
+     5: volatile unsigned char rfNextTime = 0;
+     6: volatile unsigned char rfCurrentTime = 0;
+     7: volatile bit rfNewTime, rfNextIsZero;
+     8: 
+     9: void rfTransmitUpdate() {
+    10: 
+    11:         if (rfCurrentTime == 0) {
+    12:                 rfNewTime = 1;
+    13:                 if (!rfNextTime) {
+    14:                         //next time haven't been calculated yet, try again next time
+    15:                         return;
+    16:                 }
+    17:                 //Load next time
+    18:                 rfCurrentTime = rfNextTime;
+    19:                 rfNextTime = 0;
+    20:                 if (!rfNextIsZero) {
+    21:                         SENDER ^= 1;
+    22:                 } else {
+    23:                         rfNextIsZero = 0;
+    24:                 }
+    25:         }
+    26:         if (rfCurrentTime) {
+    27:                 --rfCurrentTime;
+    28:         }
+    29: }
+    30: 
+    31: void rfSend(const char *string) {
+    32:         rfNextIsZero = 0;
+    33:         rfCurrentTime = 0;
+    34:         rfNewTime = 0;
+    35:         rfNextTime = string[0];
+    36:         TMR3ON=1;
+    37:         while(!rfNewTime);
+    38: 
+    39:         TMR2IE=0; //disable this timer (pvm) to avoid these interrupts during send
+    40:         for(unsigned short i = 1; string[i] != 0; ++i) {
+    41:                 if (string[i] == 1) {
+    42:                         rfNextIsZero = 1;
+    43:                         continue;
+    44:                 }
+    45:                 rfNewTime = 0;
+    46:                 rfNextTime = string[i];
+    47:                 while(!rfNewTime);
+    48:         }
+    49:         TMR2IE=1;
+    50: 
+    51:         //End
+    52:         rfNewTime = 0;
+    53:         while(!rfNewTime);
+    54: 
+    55:         TMR3ON=0;
+    56:         SENDER = 0;
+    57: }
+    58: 
+    59: void rfSendExtended(const char *string) {
+    60:         unsigned char times[4];
+    61:         unsigned char pulses, time;
+    62:         unsigned char *j;
+    63: 
+    64:         for(char i=0; i<4; ++i) {
+    65:                 times[i] = string[i];
+    66:         }
+    67: 
+    68:         j = &string[5];
+    69: 
+    70:         rfNextIsZero = 0;
+    71:         rfCurrentTime = 0;
+    72:         rfNewTime = 0;
+    73: 
+    74:         pulses = string[4];
+    75:         if (pulses == 0) {
+    76:                 //Invalid data
+    77:                 return;
+    78:         }
+    79: 
+    80:         for(; pulses > 0;++j) {
+    81:                 time = (*j);
+    82: 
+    83:                 for(char i=0; i<4; ++i) {
+    84:                         unsigned char timePointer = (time & 0b11000000) >> 6;
+    85:                         if (times[timePointer] == 1) {
+    86:                                 rfNextIsZero = 1;
+    87:                         } else {
+    88:                                 rfNextTime = times[timePointer];
+    89:                                 TMR3ON=1;
+    90:                                 while(!rfNewTime);
+    91:                                 rfNewTime = 0;
+    92:                         }
+    93: 
+    94:                         time <<= 2;
+    95: 
+    96:                         --pulses;
+    97:                         if (pulses == 0) {
+    98:                                 break;
+    99:                         }
+   100:                 }
+   101:         }
+   102: 
+   103:         //End
+   104:         rfNewTime = 0;
+   105:         while(!rfNewTime);
+   106: 
+   107:         TMR3ON=0;
+   108:         SENDER = 0;
+   109: 
+   110: }

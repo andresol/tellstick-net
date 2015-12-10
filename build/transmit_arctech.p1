@@ -1,0 +1,271 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+"25 /home/andresol/tellstick-net/firmware/transmit_arctech.c
+[v _house `l 1 s ]
+"26 /home/andresol/tellstick-net/firmware/transmit_arctech.c
+[v _unit `i 1 s ]
+"26 /home/andresol/tellstick-net/firmware/transmit_arctech.c
+[v _method `i 1 s ]
+"1474 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _LATA4 `Vb 0 e@31820 ]
+"1569 /usr/hitech/picc-18/pro/9.66/include/pic18.h
+[v __delay `(v 0 ef1`ul ]
+[p i __delay ]
+[c E3956 0 1 .. ]
+[n E3956 _BOOL FALSE TRUE  ]
+"25 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMFindHashString `(E3956 0 ef1`*Cuc ]
+"22 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMTakeInt `(ul 0 ef ]
+"1 /home/andresol/tellstick-net/rf/transmit.h
+[v _rfStartTransmit `(v 0 ef ]
+"12 /home/andresol/tellstick-net/firmware/pwm.h
+[v _setTXPulses `(v 0 ef1`uc ]
+"2 /home/andresol/tellstick-net/rf/transmit.h
+[v _rfStopTransmit `(v 0 ef ]
+[i _house
+"25 /home/andresol/tellstick-net/firmware/transmit_arctech.c
+-> -> 0 `i `l
+]
+[i _unit
+"26
+-> 0 `i
+]
+[i _method
+-> 0 `i
+]
+"28
+[v _sendOne `(v 1 sf ]
+{
+[e :U _sendOne ]
+[f ]
+"29
+[e = _LATA4 -> -> 1 `i `b ]
+"30
+[e ( __delay (1 -> * -> -> 310 `i `d / -> -> 41666667 `ul `d .4000000.0 `ul ]
+"31
+[e = _LATA4 -> -> 0 `i `b ]
+"32
+[e ( __delay (1 -> * -> -> 1510 `i `d / -> -> 41666667 `ul `d .4000000.0 `ul ]
+"33
+[e = _LATA4 -> -> 1 `i `b ]
+"34
+[e ( __delay (1 -> * -> -> 310 `i `d / -> -> 41666667 `ul `d .4000000.0 `ul ]
+"35
+[e = _LATA4 -> -> 0 `i `b ]
+"36
+[e ( __delay (1 -> * -> -> 310 `i `d / -> -> 41666667 `ul `d .4000000.0 `ul ]
+"37
+[e :UE 389 ]
+}
+"39
+[v _sendZero `(v 1 sf ]
+{
+[e :U _sendZero ]
+[f ]
+"40
+[e = _LATA4 -> -> 1 `i `b ]
+"41
+[e ( __delay (1 -> * -> -> 310 `i `d / -> -> 41666667 `ul `d .4000000.0 `ul ]
+"42
+[e = _LATA4 -> -> 0 `i `b ]
+"43
+[e ( __delay (1 -> * -> -> 310 `i `d / -> -> 41666667 `ul `d .4000000.0 `ul ]
+"44
+[e = _LATA4 -> -> 1 `i `b ]
+"45
+[e ( __delay (1 -> * -> -> 310 `i `d / -> -> 41666667 `ul `d .4000000.0 `ul ]
+"46
+[e = _LATA4 -> -> 0 `i `b ]
+"47
+[e ( __delay (1 -> * -> -> 1510 `i `d / -> -> 41666667 `ul `d .4000000.0 `ul ]
+"48
+[e :UE 390 ]
+}
+"50
+[v _sendBits `(v 1 sf2`uc`uc ]
+{
+[e :U _sendBits ]
+[v _chCode `uc 1 r1 ]
+[v _bits `uc 1 r2 ]
+[f ]
+"51
+[v _mask `uc 1 a ]
+[e = _mask -> -> 1 `i `uc ]
+"52
+[v _i `uc 1 a ]
+[e = _i -> -> 0 `i `uc ]
+"54
+[e = _mask -> << -> 1 `i - -> _bits `i -> 1 `i `uc ]
+"55
+{
+[e = _i -> -> 0 `i `uc ]
+[e $U 395  ]
+[e :U 392 ]
+{
+"56
+[e $ ! != & -> _chCode `i -> _mask `i -> 0 `i 396  ]
+{
+"57
+[e ( _sendOne ..  ]
+"58
+}
+[e $U 397  ]
+[e :U 396 ]
+{
+"59
+[e ( _sendZero ..  ]
+"60
+}
+[e :U 397 ]
+"61
+[e = _mask -> >> -> _mask `i -> 1 `i `uc ]
+"62
+}
+"55
+[e =+ _i -> -> 1 `i `uc ]
+[e :U 395 ]
+[e $ < -> _i `i -> _bits `i 392  ]
+[e :U 393 ]
+"62
+}
+"63
+[e :UE 391 ]
+}
+"65
+[v _sendArctechCommand `(v 1 sf ]
+{
+[e :U _sendArctechCommand ]
+[f ]
+"67
+[e = _LATA4 -> -> 1 `i `b ]
+"68
+[e ( __delay (1 -> * -> -> 310 `i `d / -> -> 41666667 `ul `d .4000000.0 `ul ]
+"69
+[e = _LATA4 -> -> 0 `i `b ]
+"70
+[e ( __delay (1 -> * -> -> 3130 `i `d / -> -> 41666667 `ul `d .4000000.0 `ul ]
+"73
+[e ( _sendBits (2 , *U + -> &U _house `*uc * -> -> 3 `i `x -> -> # *U -> &U _house `*uc `i `x -> -> 2 `i `uc ]
+"74
+[e ( _sendBits (2 , *U + -> &U _house `*uc * -> -> 2 `i `x -> -> # *U -> &U _house `*uc `i `x -> -> 8 `i `uc ]
+"75
+[e ( _sendBits (2 , *U + -> &U _house `*uc * -> -> 1 `i `x -> -> # *U -> &U _house `*uc `i `x -> -> 8 `i `uc ]
+"76
+[e ( _sendBits (2 , *U + -> &U _house `*uc * -> -> 0 `i `x -> -> # *U -> &U _house `*uc `i `x -> -> 8 `i `uc ]
+"79
+[e ( _sendZero ..  ]
+"82
+[e $ ! == _method -> 1 `i 399  ]
+{
+"83
+[e ( _sendOne ..  ]
+"84
+}
+[e $U 400  ]
+[e :U 399 ]
+{
+"85
+[e ( _sendZero ..  ]
+"86
+}
+[e :U 400 ]
+"89
+[e ( _sendBits (2 , -> _unit `uc -> -> 4 `i `uc ]
+"92
+[e = _LATA4 -> -> 1 `i `b ]
+"93
+[e ( __delay (1 -> * -> -> 310 `i `d / -> -> 41666667 `ul `d .4000000.0 `ul ]
+"94
+[e = _LATA4 -> -> 0 `i `b ]
+"95
+[e :UE 398 ]
+}
+"97
+[v _sendArctechSelflearning `(v 1 ef ]
+{
+[e :U _sendArctechSelflearning ]
+[f ]
+"98
+[e $ ! ! != -> ( _LMFindHashString (1 :s 1C `i -> -> -> 0 `i `E3956 `i 402  ]
+{
+"99
+[e $UE 401  ]
+"100
+}
+[e :U 402 ]
+"101
+[e = _house -> ( _LMTakeInt ..  `l ]
+"102
+[e $ ! ! != -> ( _LMFindHashString (1 :s 2C `i -> -> -> 0 `i `E3956 `i 403  ]
+{
+"103
+[e $UE 401  ]
+"104
+}
+[e :U 403 ]
+"105
+[e = _unit -> ( _LMTakeInt ..  `i ]
+"106
+[e $ ! ! != -> ( _LMFindHashString (1 :s 3C `i -> -> -> 0 `i `E3956 `i 404  ]
+{
+"107
+[e $UE 401  ]
+"108
+}
+[e :U 404 ]
+"109
+[e = _method -> ( _LMTakeInt ..  `i ]
+"111
+[e ( _rfStartTransmit ..  ]
+"112
+{
+[v _i `uc 1 a ]
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `i -> 10 `i 405  ]
+[e $U 406  ]
+[e :U 405 ]
+{
+"113
+[e ( _setTXPulses (1 -> -> 2 `i `uc ]
+"114
+[e ( _sendArctechCommand ..  ]
+"115
+{
+[v _j `uc 1 a ]
+[e = _j -> -> 0 `i `uc ]
+[e $ < -> _j `i -> 11 `i 408  ]
+[e $U 409  ]
+[e :U 408 ]
+{
+"116
+[e ( __delay (1 -> * -> -> 1 `i `d / -> -> 41666667 `ul `d .4000.0 `ul ]
+"117
+}
+"115
+[e =+ _j -> -> 1 `i `uc ]
+[e $ < -> _j `i -> 11 `i 408  ]
+[e :U 409 ]
+"117
+}
+"118
+}
+"112
+[e =+ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> 10 `i 405  ]
+[e :U 406 ]
+"118
+}
+"119
+[e ( _rfStopTransmit ..  ]
+"120
+[e :UE 401 ]
+}
+[a 2C 117 110 105 116 0 ]
+[a 1C 104 111 117 115 101 0 ]
+[a 3C 109 101 116 104 111 100 0 ]

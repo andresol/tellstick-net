@@ -1,0 +1,124 @@
+     1: #include "arctech.h"
+     2: #include "receive.h"
+     3: #include "message.h"
+     4: #include <htc.h>
+     5: #include <stdio.h>
+     6: 
+     7: #define SIGNAL_LENGTH 31
+     8: 
+     9: unsigned char arctechCodeSwitchBit(UCHAR8 b1, UCHAR8 b2, UCHAR8 b3, UCHAR8 b4) {
+    10:         if (b1 > 15 && b2 < 10 && b3 > 15 && b4 < 10) {
+    11:                 return 0;
+    12:         }
+    13:         if (b1 < 10 && b2 > 15 && b3 > 15 && b4 < 10) {
+    14:                 return 1;
+    15:         }
+    16:         return 2;
+    17: }
+    18: 
+    19: unsigned char arctechSelflearningBit(UCHAR8 b1, UCHAR8 b2, UCHAR8 b3, UCHAR8 b4) {
+    20:         if (b1 > 15 && b2 < 10 && b3 < 10 && b4 < 10) {
+    21:                 return 0;
+    22:         }
+    23:         if (b1 < 10 && b2 < 10 && b3 > 15 && b4 < 10) {
+    24:                 return 1;
+    25:         }
+    26:         return 2;
+    27: }
+    28: 
+    29: char parseArcTechCodeSwitch(unsigned short scanP, unsigned char scanBit) {
+    30: 
+    31:         unsigned long data = 0;
+    32:         unsigned long mask = 1;
+    33:         
+    34:         rfRetreatBit(&scanP, &scanBit);  //retreat one bit
+    35:         rfCountSimilar(&scanP, &scanBit);  //skip last
+    36:         
+    37:         for(int i=0; i < 12; ++i) {
+    38:                 unsigned char b1 = rfCountSimilar(&scanP, &scanBit);
+    39:                 unsigned char b2 = rfCountSimilar(&scanP, &scanBit);
+    40:                 unsigned char b3 = rfCountSimilar(&scanP, &scanBit);
+    41:                 unsigned char b4 = rfCountSimilar(&scanP, &scanBit);
+    42:                 data <<= 1;
+    43:                 switch (arctechCodeSwitchBit(b1,b2,b3,b4)) {
+    44:                         case 0:
+    45:                                 break;
+    46:                         case 1:
+    47:                                 data |= 1;
+    48:                                 break;
+    49:                         case 2:
+    50:                                 return 0;
+    51:                 }
+    52: 
+    53:         }
+    54: 
+    55:         if(data == 0){
+    56:                 //avoid common invalid signals
+    57:                 return 0;
+    58:         }
+    59: 
+    60:         rfMessageBeginRaw();
+    61:         rfMessageAddString("protocol", "arctech");
+    62:         rfMessageAddString("model", "codeswitch");
+    63:         rfMessageAddLong("data", data);
+    64:         rfMessageEnd(2);
+    65: 
+    66:         return 1;
+    67: }
+    68: 
+    69: char parseArcTechSelflearning(unsigned short scanP, unsigned char scanBit) {
+    70:         unsigned long data = 0;
+    71:         unsigned long mask = 1;
+    72:         unsigned int finished = 0;
+    73:         int i = 0;
+    74: 
+    75:         rfRetreatBit(&scanP, &scanBit);
+    76:         rfCountSimilar(&scanP, &scanBit);
+    77: 
+    78:         for(;i < 36; ++i) {
+    79:                 unsigned char b1 = rfCountSimilar(&scanP, &scanBit);
+    80:                 unsigned char b2 = rfCountSimilar(&scanP, &scanBit);
+    81:                 unsigned char b3 = rfCountSimilar(&scanP, &scanBit);
+    82:                 unsigned char b4 = rfCountSimilar(&scanP, &scanBit);
+    83: 
+    84:                 switch(arctechSelflearningBit(b1,b2,b3,b4)) {
+    85:                         case 0:
+    86:                                 if (i > SIGNAL_LENGTH) {
+    87:                                         //only when we have scanned more than 32
+    88:                                         data = data >> 1;
+    89:                                 }
+    90:                                 break;
+    91:                         case 1:
+    92:                                 if (i > SIGNAL_LENGTH) {
+    93:                                         //only when we have scanned more than 32
+    94:                                         data = data >> 1;
+    95:                                 }
+    96:                                 data |= mask;
+    97:                                 break;
+    98:                         default:
+    99:                                 if (i >= SIGNAL_LENGTH) {
+   100:                                         finished = 1;
+   101:                                         break;
+   102:                                 }
+   103:                                 else{
+   104:                                         return 0; //not arctech
+   105:                                 }
+   106:                 }
+   107: 
+   108:                 if (finished) {
+   109:                         break;
+   110:                 }
+   111:                 if (i < SIGNAL_LENGTH) {
+   112:                         mask <<= 1;
+   113:                 }
+   114: 
+   115:         }
+   116: 
+   117:         rfMessageBeginRaw();
+   118:         rfMessageAddString("protocol", "arctech");
+   119:         rfMessageAddString("model", "selflearning");
+   120:         rfMessageAddLong("data", data);
+   121:         rfMessageEnd(2);
+   122: 
+   123:         return 1;
+   124: }

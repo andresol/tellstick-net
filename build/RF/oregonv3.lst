@@ -1,0 +1,217 @@
+     1: #include "oregonv3.h"
+     2: #include "receive.h"
+     3: #include "message.h"
+     4: #include <htc.h>
+     5: #include <stdio.h>
+     6: #include <string.h>
+     7: 
+     8: enum {
+     9:         SM_PREAMBLE = 0,
+    10:         SM_SYNC,
+    11:         SM_PARSE_V3ID,
+    12:         SM_PARSE_PAYLOAD
+    13: } static state = SM_PREAMBLE;
+    14: 
+    15: #define SMALL_PULSEV3(x) (x>=6 && x<=11) //around 7-10 in our case
+    16: #define BIG_PULSEV3(x) (x>=14 && x<=21) //around 16-19 in our case
+    17: #define END_SILENCE(x) (x > 30) //66 really, but everything greater than max pulse length should be ok, right?
+    18: 
+    19: #define MORE_DATA_NEEDED -1
+    20: #define INVALID_DATA -2
+    21: 
+    22: static unsigned int halfTime = 0;
+    23: static unsigned char preambleSyncCount = 0;
+    24: static unsigned char byteCntV3 = 0;
+    25: static unsigned char nibblePositionV3 = 0;
+    26: 
+    27: void clearOregonV3() {
+    28:         state = SM_PREAMBLE;
+    29:         preambleSyncCount = 0;
+    30:         halfTime = 0;
+    31:         byteCntV3 = 0;
+    32:         nibblePositionV3 = 0;
+    33: }
+    34: 
+    35: signed char oregonBitV3(unsigned char level, unsigned char count) {
+    36: 
+    37:         if (BIG_PULSEV3(count)) {
+    38:                 if (halfTime % 2 == 1) {
+    39:                         //odd, this sequency is not allowed in this protocol
+    40:                         return INVALID_DATA;
+    41:                 }
+    42:                 halfTime = halfTime + 2;
+    43:                 //is even
+    44:                 return level;
+    45:         }
+    46:         if (SMALL_PULSEV3(count)) {
+    47:                 halfTime++;
+    48:                 if (halfTime % 2 == 0) {
+    49:                         //is even
+    50:                         return level;
+    51:                 }
+    52:                 return MORE_DATA_NEEDED;
+    53:         }
+    54:         return INVALID_DATA;
+    55: }
+    56: 
+    57: signed int oregonByteV3(unsigned char level, unsigned char count) {
+    58:         signed char b1 = oregonBitV3(level, count);
+    59:         static unsigned char byte = 0;
+    60:         if (byteCntV3 == 0) {
+    61:                 byte = 0; //this need to be reset
+    62:         }
+    63: 
+    64:         if (b1 == INVALID_DATA) {
+    65:                 return INVALID_DATA;
+    66:         } else if (b1 == MORE_DATA_NEEDED) {
+    67:                 return MORE_DATA_NEEDED;
+    68:         }
+    69:         if (nibblePositionV3 == 4){
+    70:                 byte <<= 4;
+    71:                 nibblePositionV3 = 0;
+    72:         }
+    73:         if (b1) {
+    74:                 byte |= (1<<nibblePositionV3);
+    75:         }
+    76: 
+    77:         ++byteCntV3;
+    78:         ++nibblePositionV3;
+    79:         if (byteCntV3 < 8) {
+    80:                 return MORE_DATA_NEEDED;
+    81:         }
+    82:         byteCntV3=0;
+    83:         nibblePositionV3 = 0;
+    84:         return byte;
+    85: }
+    86: 
+    87: void streamOregonV3(unsigned char level, unsigned char count) {
+    88:         //this protocol starts out with 24 bits (6 nibbles) only 1:s
+    89:         //then 4 sync bits (0101)
+    90:         static unsigned int id = 0;
+    91:         static signed int b1;
+    92:         static signed char expectedPayloadLengthV3 = -1;
+    93:         static unsigned char bufferV3[9]; //21 nibbles, -4 for sensor id, stored as bytes
+    94:         static unsigned char bufferCntV3 = 0;
+    95: 
+    96:         if (level) {
+    97:                 count+=1;
+    98:         } else {
+    99:                 count-=1;
+   100:         }
+   101: 
+   102:         switch(state) {
+   103:                 case SM_PREAMBLE:
+   104:                         if (SMALL_PULSEV3(count)) {
+   105:                                 //in preamble
+   106:                                 ++preambleSyncCount;
+   107:                                 break;
+   108:                         }
+   109: 
+   110:                         if (BIG_PULSEV3(count) && preambleSyncCount > 20) {
+   111:                                 state=SM_SYNC;
+   112:                                 preambleSyncCount = 3;
+   113:                                 break;
+   114:                         }
+   115: 
+   116:                         clearOregonV3(); //something is wrong
+   117:                         break;
+   118: 
+   119:                 case SM_SYNC:
+   120:                         if (BIG_PULSEV3(count)){
+   121:                                 --preambleSyncCount;
+   122:                                 if (preambleSyncCount == 0){
+   123:                                         //sync successful (long pulse = opposite vs the previous, i.e. 1010)
+   124:                                         id = 0;
+   125:                                         state=SM_PARSE_V3ID;
+   126:                                 }
+   127:                                 break;
+   128:                         }
+   129:                         clearOregonV3();
+   130:                         break;
+   131: 
+   132:                 case SM_PARSE_V3ID:
+   133:                         b1 = oregonByteV3(level, count);
+   134:                         if (b1 == INVALID_DATA) {
+   135:                                 clearOregonV3();
+   136:                                 break;
+   137:                         } else if (b1 == MORE_DATA_NEEDED) {
+   138:                                 break;
+   139:                         } else {
+   140:                                 if (id == 0) {
+   141:                                         id = b1 << 8;
+   142:                                 } else {
+   143:                                         id |= b1;
+   144:                                         switch (id) {
+   145:                                                 case 0xF824:
+   146:                                                 case 0xF8B4:
+   147:                                                         expectedPayloadLengthV3 = 7; //13 -> 17, but -4 and /2 since id is already parsed, and we are counting bytes, not nibbles (goes for all below too)
+   148:                                                         break;
+   149:                                                 case 0xD874:
+   150:                                                 case 0xC844:
+   151:                                                         expectedPayloadLengthV3 = 5; //10, probably 14, sketchy documentation
+   152:                                                         break;
+   153:                                                 case 0x1984:
+   154:                                                 case 0x1994:
+   155:                                                         expectedPayloadLengthV3 = 8; //15
+   156:                                                         break;
+   157:                                                 case 0x5D60:
+   158:                                                         expectedPayloadLengthV3 = 9; //17 unknown protocol version
+   159:                                                         break;
+   160:                                                 case 0x2914:
+   161:                                                         expectedPayloadLengthV3 = 8; //16
+   162:                                                         break;
+   163:                                                 case 0x2D10:
+   164:                                                         expectedPayloadLengthV3 = 7; //14 probably 18 (sketchy documentation), unknown protocol version
+   165:                                                         break;
+   166:                                                 default:
+   167:                                                         expectedPayloadLengthV3 = -1; //unknown length, may be decoded server side anyways
+   168:                                                         break;
+   169:                                         }
+   170:                                         state = SM_PARSE_PAYLOAD;
+   171:                                         bufferCntV3 = 0;
+   172:                                 }
+   173:                         }
+   174:                         break;
+   175: 
+   176:                 case SM_PARSE_PAYLOAD:
+   177: 
+   178:                         b1 = oregonByteV3(level, count);
+   179:                         if (b1 == INVALID_DATA) {
+   180:                                 if (expectedPayloadLengthV3 < 0 && !level && (halfTime/2) > 55 && END_SILENCE(count)) {
+   181:                                         //invalid data, but it may be the end silence if using default length
+   182:                                         expectedPayloadLengthV3 = 0;
+   183:                                         b1 = 0; //this last part will be ignored in the data parsing anyways
+   184:                                 }
+   185:                                 else{
+   186:                                         clearOregonV3();
+   187:                                         break;
+   188:                                 }
+   189:                         } else if (b1 == MORE_DATA_NEEDED) {
+   190:                                 break;
+   191:                         }
+   192:                         else{
+   193:                                 --expectedPayloadLengthV3;
+   194:                         }
+   195:                         bufferV3[bufferCntV3] = b1;
+   196:                         ++bufferCntV3;
+   197: 
+   198:                         if (expectedPayloadLengthV3 == 0){
+   199:                                 //complete packet
+   200:                                 //whole payload is parsed (if length is known), or unknown length followed by silence
+   201:                                 clearOregonV3();
+   202:                                 rfMessageBeginRaw();
+   203:                                         rfMessageAddString("class", "sensor");
+   204:                                         rfMessageAddString("protocol", "oregon");
+   205:                                         rfMessageAddLong("model", id);
+   206:                                         rfMessageAddHexString("data", bufferV3, bufferCntV3);
+   207:                                 rfMessageEnd(1);
+   208:                                 break;
+   209:                         }
+   210:                         if (halfTime > 400){
+   211:                                 //error, message is crazy too long
+   212:                                 clearOregonV3();
+   213:                                 break;
+   214:                         }
+   215:                         break;
+   216:         }
+   217: }

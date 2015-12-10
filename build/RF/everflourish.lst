@@ -1,0 +1,49 @@
+     1: #include "everflourish.h"
+     2: #include "receive.h"
+     3: #include "message.h"
+     4: #include <stdio.h>
+     5: 
+     6: #define LOWEREVERFLOURISH 13
+     7: #define HIGHEREVERFLOURISH 16
+     8: 
+     9: UCHAR8 everflourishBit(UCHAR8 b1, UCHAR8 b2, UCHAR8 b3, UCHAR8 b4) {
+    10:   
+    11:         if (b1 < LOWEREVERFLOURISH && b2 < LOWEREVERFLOURISH && b3 < LOWEREVERFLOURISH && b4 > HIGHEREVERFLOURISH) {
+    12:                 return 1;
+    13:         }
+    14:         if (b1 < LOWEREVERFLOURISH && b2 > HIGHEREVERFLOURISH && b3 < LOWEREVERFLOURISH && b4 < LOWEREVERFLOURISH) {
+    15:                 return 0;
+    16:         }
+    17:         return 2;
+    18: }
+    19: 
+    20: char parseEverFlourish(unsigned short scanP, unsigned char scanBit) {
+    21:         
+    22:         unsigned long data = 0;
+    23:         unsigned long mask = 1;
+    24:         rfRetreatBit(&scanP, &scanBit); //retreat one bit
+    25:         
+    26:         for(int i=0;i<24;++i){
+    27:                 UCHAR8 b1 = rfCountSimilar(&scanP, &scanBit);
+    28:                 UCHAR8 b2 = rfCountSimilar(&scanP, &scanBit);
+    29:                 UCHAR8 b3 = rfCountSimilar(&scanP, &scanBit);
+    30:                 UCHAR8 b4 = rfCountSimilar(&scanP, &scanBit);
+    31:                 switch(everflourishBit(b1,b2,b3,b4)){
+    32:                         case 0:
+    33:                                 break;
+    34:                         case 1:
+    35:                                 data |= mask;
+    36:                                 break;
+    37:                         default:
+    38:                                 return 0; //not everflourish
+    39:                 }       
+    40:                 mask <<= 1;
+    41:         }
+    42:         
+    43:         rfMessageBeginRaw();
+    44:         rfMessageAddString("protocol", "everflourish");
+    45:         rfMessageAddLong("data", data);
+    46:         rfMessageEnd(2);
+    47:                         
+    48:         return 1;
+    49: }

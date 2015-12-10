@@ -1,0 +1,294 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+"5 /home/andresol/tellstick-net/rf/transmit.c
+[v _rfNextTime `Vuc 1 e ]
+"6 /home/andresol/tellstick-net/rf/transmit.c
+[v _rfCurrentTime `Vuc 1 e ]
+"7 /home/andresol/tellstick-net/rf/transmit.c
+[v _rfNewTime `Vb 1 e ]
+"7 /home/andresol/tellstick-net/rf/transmit.c
+[v _rfNextIsZero `Vb 1 e ]
+"1474 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _LATA4 `Vb 0 e@31820 ]
+"2240 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR3ON `Vb 0 e@32136 ]
+"1865 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR2IE `Vb 0 e@31977 ]
+[i _rfNextTime
+"5 /home/andresol/tellstick-net/rf/transmit.c
+-> -> 0 `i `uc
+]
+[i _rfCurrentTime
+"6
+-> -> 0 `i `uc
+]
+"9
+[v _rfTransmitUpdate `(v 1 ef ]
+{
+[e :U _rfTransmitUpdate ]
+[f ]
+"11
+[e $ ! == -> _rfCurrentTime `i -> 0 `i 323  ]
+{
+"12
+[e = _rfNewTime -> -> 1 `i `b ]
+"13
+[e $ ! ! != -> _rfNextTime `i -> -> -> 0 `i `Vuc `i 324  ]
+{
+"15
+[e $UE 322  ]
+"16
+}
+[e :U 324 ]
+"18
+[e = _rfCurrentTime _rfNextTime ]
+"19
+[e = _rfNextTime -> -> 0 `i `uc ]
+"20
+[e $ ! ! _rfNextIsZero 325  ]
+{
+"21
+[e =^ _LATA4 -> -> 1 `i `b ]
+"22
+}
+[e $U 326  ]
+[e :U 325 ]
+{
+"23
+[e = _rfNextIsZero -> -> 0 `i `b ]
+"24
+}
+[e :U 326 ]
+"25
+}
+[e :U 323 ]
+"26
+[e $ ! != -> _rfCurrentTime `i -> -> -> 0 `i `Vuc `i 327  ]
+{
+"27
+[e =- _rfCurrentTime -> -> 1 `i `uc ]
+"28
+}
+[e :U 327 ]
+"29
+[e :UE 322 ]
+}
+"31
+[v _rfSend `(v 1 ef1`*Cuc ]
+{
+[e :U _rfSend ]
+[v _string `*Cuc 1 r1 ]
+[f ]
+"32
+[e = _rfNextIsZero -> -> 0 `i `b ]
+"33
+[e = _rfCurrentTime -> -> 0 `i `uc ]
+"34
+[e = _rfNewTime -> -> 0 `i `b ]
+"35
+[e = _rfNextTime *U + _string * -> -> 0 `i `x -> -> # *U _string `i `x ]
+"36
+[e = _TMR3ON -> -> 1 `i `b ]
+"37
+[e $U 329  ]
+[e :U 330 ]
+[e :U 329 ]
+[e $ ! _rfNewTime 330  ]
+[e :U 331 ]
+"39
+[e = _TMR2IE -> -> 0 `i `b ]
+"40
+{
+[v _i `us 1 a ]
+[e = _i -> -> 1 `i `us ]
+[e $U 335  ]
+[e :U 332 ]
+{
+"41
+[e $ ! == -> *U + _string * -> _i `ux -> -> # *U _string `ui `ux `i -> 1 `i 336  ]
+{
+"42
+[e = _rfNextIsZero -> -> 1 `i `b ]
+"43
+[e $U 334  ]
+"44
+}
+[e :U 336 ]
+"45
+[e = _rfNewTime -> -> 0 `i `b ]
+"46
+[e = _rfNextTime *U + _string * -> _i `ux -> -> # *U _string `ui `ux ]
+"47
+[e $U 337  ]
+[e :U 338 ]
+[e :U 337 ]
+[e $ ! _rfNewTime 338  ]
+[e :U 339 ]
+"48
+}
+"40
+[e :U 334 ]
+[e =+ _i -> -> 1 `i `us ]
+[e :U 335 ]
+[e $ != -> *U + _string * -> _i `ux -> -> # *U _string `ui `ux `i -> 0 `i 332  ]
+[e :U 333 ]
+"48
+}
+"49
+[e = _TMR2IE -> -> 1 `i `b ]
+"52
+[e = _rfNewTime -> -> 0 `i `b ]
+"53
+[e $U 340  ]
+[e :U 341 ]
+[e :U 340 ]
+[e $ ! _rfNewTime 341  ]
+[e :U 342 ]
+"55
+[e = _TMR3ON -> -> 0 `i `b ]
+"56
+[e = _LATA4 -> -> 0 `i `b ]
+"57
+[e :UE 328 ]
+}
+"59
+[v _rfSendExtended `(v 1 ef1`*Cuc ]
+{
+[e :U _rfSendExtended ]
+[v _string `*Cuc 1 r1 ]
+[f ]
+"60
+[v _times `uc -> 4 `i a ]
+"61
+[v _pulses `uc 1 a ]
+[v _time `uc 1 a ]
+"62
+[v _j `*uc 1 a ]
+"64
+{
+[v _i `uc 1 a ]
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `i -> 4 `i 344  ]
+[e $U 345  ]
+[e :U 344 ]
+{
+"65
+[e = *U + &U _times * -> _i `ux -> -> # *U &U _times `ui `ux *U + _string * -> _i `ux -> -> # *U _string `ui `ux ]
+"66
+}
+"64
+[e =+ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> 4 `i 344  ]
+[e :U 345 ]
+"66
+}
+"68
+[e = _j -> &U *U + _string * -> -> 5 `i `x -> -> # *U _string `i `x `*uc ]
+"70
+[e = _rfNextIsZero -> -> 0 `i `b ]
+"71
+[e = _rfCurrentTime -> -> 0 `i `uc ]
+"72
+[e = _rfNewTime -> -> 0 `i `b ]
+"74
+[e = _pulses *U + _string * -> -> 4 `i `x -> -> # *U _string `i `x ]
+"75
+[e $ ! == -> _pulses `i -> 0 `i 347  ]
+{
+"77
+[e $UE 343  ]
+"78
+}
+[e :U 347 ]
+"80
+{
+[e $ > -> _pulses `i -> 0 `i 348  ]
+[e $U 349  ]
+[e :U 348 ]
+{
+"81
+[e = _time *U _j ]
+"83
+{
+[v _i `uc 1 a ]
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `i -> 4 `i 351  ]
+[e $U 352  ]
+[e :U 351 ]
+{
+"84
+[v _timePointer `uc 1 a ]
+[e = _timePointer -> >> & -> _time `i -> 192 `i -> 6 `i `uc ]
+"85
+[e $ ! == -> *U + &U _times * -> _timePointer `ux -> -> # *U &U _times `ui `ux `i -> 1 `i 354  ]
+{
+"86
+[e = _rfNextIsZero -> -> 1 `i `b ]
+"87
+}
+[e $U 355  ]
+[e :U 354 ]
+{
+"88
+[e = _rfNextTime *U + &U _times * -> _timePointer `ux -> -> # *U &U _times `ui `ux ]
+"89
+[e = _TMR3ON -> -> 1 `i `b ]
+"90
+[e $U 356  ]
+[e :U 357 ]
+[e :U 356 ]
+[e $ ! _rfNewTime 357  ]
+[e :U 358 ]
+"91
+[e = _rfNewTime -> -> 0 `i `b ]
+"92
+}
+[e :U 355 ]
+"94
+[e =<< _time -> 2 `i ]
+"96
+[e =- _pulses -> -> 1 `i `uc ]
+"97
+[e $ ! == -> _pulses `i -> 0 `i 359  ]
+{
+"98
+[e $U 352  ]
+"99
+}
+[e :U 359 ]
+"100
+}
+"83
+[e =+ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> 4 `i 351  ]
+[e :U 352 ]
+"100
+}
+"101
+}
+"80
+[e =+ _j * -> -> 1 `i `x -> -> # *U _j `i `x ]
+[e $ > -> _pulses `i -> 0 `i 348  ]
+[e :U 349 ]
+"101
+}
+"104
+[e = _rfNewTime -> -> 0 `i `b ]
+"105
+[e $U 360  ]
+[e :U 361 ]
+[e :U 360 ]
+[e $ ! _rfNewTime 361  ]
+[e :U 362 ]
+"107
+[e = _TMR3ON -> -> 0 `i `b ]
+"108
+[e = _LATA4 -> -> 0 `i `b ]
+"110
+[e :UE 343 ]
+}

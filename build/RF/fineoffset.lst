@@ -1,0 +1,68 @@
+     1: #include "fineoffset.h"
+     2: #include "crc.h"
+     3: #include "receive.h"
+     4: #include "message.h"
+     5: #include <string.h>
+     6: #include <stdio.h>
+     7: #include <stdlib.h>
+     8: 
+     9: #define SHORT(x) (x<11)
+    10: #define LONG(x) (x>13)
+    11: 
+    12: #define INVALID_DATA 2
+    13: #define DATA_LENGTH 5
+    14: 
+    15: #define CRCINIT 0x00
+    16: #define CRCPOLYNOM 0x131
+    17: 
+    18: unsigned char fineOffsetBit(unsigned short *scanP, unsigned char *scanBit) {
+    19:         UCHAR8 b1 = rfCountSimilar(scanP, scanBit);
+    20:         UCHAR8 b2 = rfCountSimilar(scanP, scanBit);
+    21: 
+    22:         if (LONG(b1) && LONG(b2)) { 
+    23:                 return 0;
+    24:         }
+    25:         if (SHORT(b1) && LONG(b2)) {
+    26:                 return 1;
+    27:         }
+    28: 
+    29:         return INVALID_DATA;
+    30: }
+    31: 
+    32: char parseFineOffset(unsigned short scanP, unsigned char scanBit) {
+    33:         unsigned char buffer[DATA_LENGTH];
+    34:         rfRetreatBit(&scanP, &scanBit); //skip last bit
+    35:         UCHAR8 lastbyte = 0;
+    36:         for(int i=DATA_LENGTH-1; i>=0; --i) {
+    37:                 UCHAR8 byte = 0;
+    38:                 for(int j=0; j<8; ++j){
+    39:                         UCHAR8 b = fineOffsetBit(&scanP, &scanBit);
+    40:                         if (b == INVALID_DATA) {
+    41:                                 return 0;
+    42:                         }
+    43:                         if (b) {
+    44:                                 byte |= (1<<j);
+    45:                         }
+    46:                 }
+    47:                 if( i == (DATA_LENGTH-1)) {
+    48:                         lastbyte = byte;
+    49:                 }
+    50: 
+    51:                 buffer[i] = byte;
+    52:         }
+    53: 
+    54:         unsigned short int crc = CRCINIT;
+    55:         for(int j=0; j<DATA_LENGTH-1; j++){
+    56:                 crc = calculateCrc8(crc, buffer[j], CRCPOLYNOM);
+    57:         }
+    58: 
+    59:         if(crc != lastbyte){
+    60:                 return 0; //checksum did not match
+    61:         }
+    62:         rfMessageBeginRaw();
+    63:                 rfMessageAddString("class", "sensor");
+    64:                 rfMessageAddString("protocol", "fineoffset");
+    65:                 rfMessageAddHexString("data", buffer, DATA_LENGTH);
+    66:         rfMessageEnd(1);
+    67:         return 1;
+    68: }

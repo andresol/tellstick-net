@@ -1,0 +1,247 @@
+     1: #include "receive.h"
+     2: #include "arctech.h"
+     3: #include "everflourish.h"
+     4: #include "fineoffset.h"
+     5: #include "hasta.h"
+     6: #include "mandolyn.h"
+     7: #include "oregon.h"
+     8: #include "oregonv3.h"
+     9: #include "x10.h"
+    10: #include "config.h"
+    11: #include <stdio.h>
+    12: #include <htc.h>
+    13: 
+    14: #define DATA_BYTES 512
+    15: typedef unsigned char UCHAR8;
+    16: #define TRUE 1
+    17: #define FALSE 0
+    18: 
+    19: unsigned char volatile data[DATA_BYTES];
+    20: static volatile unsigned short dataP = 0;
+    21: 
+    22: #define TRIGGER_LEVEL 3
+    23: #define TRIGGER_MASK 0b00000111;
+    24: 
+    25: void rfReceiveUpdate(unsigned char antenna) {
+    26:         static unsigned char buffer = 0, cnt = 0;
+    27:         static unsigned char preFilterBuffer = 0, preFilterCnt=0;
+    28:         
+    29:         //Add bit to our filter buffer.
+    30:         preFilterBuffer <<= 1;
+    31:         if (antenna) {
+    32:                 ++preFilterCnt;
+    33:                 if (preFilterCnt == TRIGGER_LEVEL) {
+    34:                         preFilterBuffer |= TRIGGER_MASK;
+    35:                 } else if (preFilterCnt > TRIGGER_LEVEL) {
+    36:                         preFilterBuffer |= 1;
+    37:                 }
+    38:         } else {
+    39:                 preFilterCnt = 0;
+    40:         }
+    41:         
+    42:         //Copy a value from our filter buffer to our real buffer
+    43:         buffer <<= 1;
+    44:         ++cnt;
+    45:         if (preFilterBuffer & (1<<7)) {
+    46:                 buffer |= 1;
+    47: //              LATC0 = 1;
+    48:         } else {
+    49: //              LATC0 = 0;
+    50:         }
+    51:         if (cnt == 8) {
+    52:                 //Buffer full, copy to our data array
+    53:                 cnt=0;
+    54:                 data[dataP] = buffer;
+    55:                 ++dataP;
+    56:                 if (dataP == DATA_BYTES) {
+    57: //                      LATD2 ^= 1;
+    58:                         dataP = 0;
+    59:                 }
+    60:         }
+    61: }
+    62: /*
+    63: 
+    64: void advanceBit(unsigned short *scanP, unsigned char *scanBit) {
+    65: //      scanBit >>= 1;
+    66: //      if (scanBit == 0) {
+    67: //              scanBit = (1<<7);
+    68: //              ++scanP;
+    69: //              if (scanP == DATA_BYTES) {
+    70: //                      scanP = 0;
+    71: //              }
+    72: //      }
+    73: 
+    74: }*/
+    75: 
+    76: void rfRetreatBit(unsigned short *scanP, unsigned char *scanBit) {
+    77:         (*scanBit) <<= 1;
+    78:                 if ((*scanBit) == 0) {
+    79:                         (*scanBit) = 1;
+    80:                         if ((*scanP) == 0) {
+    81:                                 (*scanP) = DATA_BYTES;
+    82:                         }
+    83:                         --(*scanP);
+    84:                 }
+    85:         
+    86: }
+    87: 
+    88: bit getBit(signed short scanP, signed char scanBit) {
+    89:         unsigned char buf = data[scanP];
+    90:         if (scanBit & buf) {
+    91:                 return 1;
+    92:         }
+    93:         return 0;
+    94: }
+    95: 
+    96: unsigned char rfCountSimilar(unsigned short *scanP, unsigned char *scanBit) {
+    97:         unsigned char count = 0;
+    98:         unsigned char test = getBit(*scanP, *scanBit);
+    99:         while(1) {
+   100:                 ++count;
+   101:                 rfRetreatBit(scanP, scanBit);
+   102:                 if (getBit(*scanP, *scanBit) != test) {
+   103:                         return count;
+   104:                 }
+   105:                 if (count == 255) {
+   106:                         //Overflow
+   107:                         return 0;
+   108:                 }
+   109:         }
+   110:         return 0;
+   111: }
+   112: 
+   113: signed int calculateDistance(signed short start, signed short stop) {
+   114:         if (start == -1) {
+   115:                 return -1;
+   116:         }
+   117:         if (stop >= start) {
+   118:                 return stop-start;
+   119:         }
+   120:         return (DATA_BYTES-start+stop);
+   121: }
+   122: 
+   123: #define REQUIRED_SILENCE 150 //TODO: calibrate
+   124: 
+   125: 
+   126: void rfReceiveTask() {
+   127:         static unsigned short scanP = 0;
+   128:         static unsigned char scanBit = (1<<7);
+   129:         static signed short startSilenceP = -1, stopSilenceP = -13;
+   130:         static unsigned char startSilenceBit = 0, stopSilenceBit = -1;
+   131:         static unsigned unsigned char count0 = 0, count1 = 0;
+   132:         UCHAR8 found = FALSE;
+   133:         static UCHAR8 parsed = FALSE;
+   134:         
+   135:         while(scanP != dataP) {
+   136:                 //Count silence and restart on high
+   137:                 if (getBit(scanP, scanBit)) {
+   138:                         if (count0 > REQUIRED_SILENCE) {
+   139:                                 stopSilenceP = scanP;
+   140:                                 stopSilenceBit = scanBit;
+   141:                         }
+   142:                         if (count0 > 0) {
+   143:                                 streamOregon(0, count0);
+   144:                                 streamOregonV3(0, count0);
+   145:                                 streamHasta(0, count0);
+   146:                         }
+   147:                         ++count1;
+   148:                         count0=0;
+   149:                         parsed = FALSE;
+   150:                 } else {
+   151:                         if (count0 == 0) {
+   152:                                 startSilenceP = scanP;
+   153:                                 startSilenceBit = scanBit;
+   154:                         }
+   155:                         if (count1 > 0) {
+   156:                                 streamOregon(1, count1);
+   157:                                 streamOregonV3(1, count1);
+   158:                                 streamHasta(1, count1);
+   159:                         }
+   160:                         ++count0;
+   161:                         count1=0;
+   162:                 }
+   163: 
+   164:                 //Advance to next bit
+   165:                 scanBit >>= 1;
+   166:                 if (scanBit == 0) {
+   167:                         scanBit = (1<<7);
+   168:                         ++scanP;
+   169:                         if (scanP == DATA_BYTES) {
+   170:                                 scanP = 0;
+   171:                         }
+   172:                 }
+   173:                 
+   174:                 if (stopSilenceP == scanP && stopSilenceBit == scanBit) {
+   175:                         //We have traveled a complete lap around the buffer
+   176:                         stopSilenceP = -1;
+   177: //                      LATD6^=1;
+   178:                 }
+   179:                 
+   180:                 //Start parsing if enough silence detected
+   181:                 if (count0 == REQUIRED_SILENCE) {
+   182: //                      LATD4 = 0;
+   183:                         found = TRUE;
+   184:                         break;
+   185:                 }
+   186:         }
+   187: 
+   188:         if (!found) {
+   189:                 return;
+   190:         }
+   191:         if (parsed) {
+   192:                 return;
+   193:         }
+   194: 
+   195:         //We calculate stopSilence (start of data) until startSilence (end of data)
+   196:         signed int dist = calculateDistance(stopSilenceP, startSilenceP);
+   197: //      printf("%u\r\n", dist);
+   198:         if (dist >= 0 && dist < 50) {
+   199:                 return;
+   200:         }
+   201:         if (dist < 158 || dist > 162) { //TODO: For now, remove later!
+   202: //              printf("%i\r\n", dist );
+   203: //              return 0;
+   204:         }
+   205:         char matched = 0;
+   206:         matched += parseArcTechSelflearning(startSilenceP, startSilenceBit);
+   207:         matched += parseArcTechCodeSwitch(startSilenceP, startSilenceBit);
+   208:         matched += parseFineOffset(startSilenceP, startSilenceBit);
+   209:         //matches += parseSartano(startSilenceP, startSilenceBit);  //will be detected by arctech
+   210:         matched += parseEverFlourish(startSilenceP, startSilenceBit);
+   211:         matched += parseMandolyn(startSilenceP, startSilenceBit);
+   212:         matched += parseX10(startSilenceP, startSilenceBit);
+   213:         parsed = TRUE;
+   214:         if (matched) {
+   215:                 scanP = 0;
+   216:                 dataP = 0;
+   217:         }
+   218:         return;
+   219: }
+   220: 
+   221: #ifdef DEBUG
+   222: 
+   223: void rfDebugPrintPulse(unsigned short scanP, unsigned char scanBit) {
+   224:         unsigned char b = '0';
+   225:         if (getBit(scanP, scanBit)) {
+   226:                 b = '1';
+   227:         }
+   228:         unsigned char len = rfCountSimilar(&scanP, &scanBit);
+   229:         for(unsigned char i = 0; i < len; ++i) {
+   230:                 putch(b);
+   231:         }
+   232: }
+   233: 
+   234: void rfDebugPrintLen(unsigned short P, unsigned char B, unsigned char len) {
+   235:         unsigned short scanP = P, scanBit = B;
+   236:         for(unsigned char i = 0; i < len; ++i) {
+   237:                 if (getBit(scanP, scanBit)) {
+   238:                         printf("1");
+   239:                 } else {
+   240:                         printf("0");
+   241:                 }
+   242:                 rfRetreatBit(&scanP, &scanBit);
+   243:         }
+   244:         printf("\r\n");
+   245: }
+   246: 
+   247: #endif

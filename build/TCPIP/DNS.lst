@@ -1,0 +1,784 @@
+     1: /*********************************************************************
+     2:  *
+     3:  *      Domain Name System (DNS) Client
+     4:  *  Module for Microchip TCP/IP Stack
+     5:  *       -Provides hostname to IP address translation
+     6:  *       -Reference: RFC 1035
+     7:  *
+     8:  *********************************************************************
+     9:  * FileName:        DNS.c
+    10:  * Dependencies:    UDP, ARP, Tick
+    11:  * Processor:       PIC18, PIC24F, PIC24H, dsPIC30F, dsPIC33F, PIC32
+    12:  * Compiler:        Microchip C32 v1.05 or higher
+    13:  *                                      Microchip C30 v3.12 or higher
+    14:  *                                      Microchip C18 v3.30 or higher
+    15:  *                                      HI-TECH PICC-18 PRO 9.63PL2 or higher
+    16:  * Company:         Microchip Technology, Inc.
+    17:  *
+    18:  * Software License Agreement
+    19:  *
+    20:  * Copyright (C) 2002-2009 Microchip Technology Inc.  All rights
+    21:  * reserved.
+    22:  *
+    23:  * Microchip licenses to you the right to use, modify, copy, and
+    24:  * distribute:
+    25:  * (i)  the Software when embedded on a Microchip microcontroller or
+    26:  *      digital signal controller product ("Device") which is
+    27:  *      integrated into Licensee's product; or
+    28:  * (ii) ONLY the Software driver source files ENC28J60.c, ENC28J60.h,
+    29:  *              ENCX24J600.c and ENCX24J600.h ported to a non-Microchip device
+    30:  *              used in conjunction with a Microchip ethernet controller for
+    31:  *              the sole purpose of interfacing with the ethernet controller.
+    32:  *
+    33:  * You should refer to the license agreement accompanying this
+    34:  * Software for additional information regarding your rights and
+    35:  * obligations.
+    36:  *
+    37:  * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT
+    38:  * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+    39:  * LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+    40:  * PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL
+    41:  * MICROCHIP BE LIABLE FOR ANY INCIDENTAL, SPECIAL, INDIRECT OR
+    42:  * CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF
+    43:  * PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES, ANY CLAIMS
+    44:  * BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE
+    45:  * THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION, OR OTHER
+    46:  * SIMILAR COSTS, WHETHER ASSERTED ON THE BASIS OF CONTRACT, TORT
+    47:  * (INCLUDING NEGLIGENCE), BREACH OF WARRANTY, OR OTHERWISE.
+    48:  *
+    49:  *
+    50:  * Author               Date            Comment
+    51:  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    52:  * Howard Schlunder     7/31/06         Original
+    53:  * Howard Schlunder             10/09/06        Added DNSBeginUsage(), DNSEndUsage() 
+    54:  *                                                                      module ownership semaphore
+    55:  * Howard Schlunder             08/28/09        Fixed name compression parsing bug
+    56:  ********************************************************************/
+    57: #define __DNS_C
+    58: 
+    59: #include "TCPIP Stack/TCPIP.h"
+    60: 
+    61: #if defined(STACK_USE_DNS)
+    62: 
+    63: /****************************************************************************
+    64:   Section:
+    65:         Constants and Global Variables
+    66:   ***************************************************************************/
+    67: 
+    68: #define DNS_PORT                53u                                     // Default port for DNS resolutions
+    69: #define DNS_TIMEOUT             (TICK_SECOND*1)         // Elapsed time after which a DNS resolution is considered to have timed out
+    70: 
+    71: static UDP_SOCKET MySocket = INVALID_UDP_SOCKET;        // UDP socket to use for DNS queries
+    72: static BYTE *DNSHostName;                                                       // Host name in RAM to look up
+    73: static ROM BYTE *DNSHostNameROM;                                        // Host name in ROM to look up
+    74: static BYTE RecordType;                                                         // Record type being queried
+    75: static NODE_INFO ResolvedInfo;                                          // Node information about the resolved node
+    76: 
+    77: // Semaphore flags for the DNS module
+    78: static union
+    79: {
+    80:         BYTE Val;
+    81:         struct
+    82:         {
+    83:                 unsigned char DNSInUse          : 1;    // Indicates the DNS module is in use
+    84:                 unsigned char AddressValid      : 1;    // Indicates that the address resolution is valid and complete
+    85:                 unsigned char filler            : 6;
+    86:         } bits;
+    87: } Flags = {0x00};
+    88: 
+    89: // State machine for a DNS query
+    90: static enum
+    91: {
+    92:         DNS_START = 0,                          // Initial state to reset client state variables
+    93:         DNS_ARP_START_RESOLVE,          // Send ARP resolution of DNS server or gateway MAC address
+    94:         DNS_ARP_RESOLVE,                        // Wait for response to ARP request
+    95:         DNS_OPEN_SOCKET,                        // Open UDP socket
+    96:         DNS_QUERY,                                      // Send DNS query to DNS server
+    97:         DNS_GET_RESULT,                         // Wait for response from DNS server
+    98:         DNS_FAIL,                                       // ARP or DNS server not responding
+    99:         DNS_DONE                                        // DNS query is finished
+   100: } smDNS = DNS_DONE;
+   101: 
+   102: // Structure for the DNS header
+   103: typedef struct
+   104: {
+   105:         WORD_VAL TransactionID;
+   106:         WORD_VAL Flags;
+   107:         WORD_VAL Questions;
+   108:         WORD_VAL Answers;
+   109:         WORD_VAL AuthoritativeRecords;
+   110:         WORD_VAL AdditionalRecords;
+   111: } DNS_HEADER;
+   112: 
+   113: typedef struct
+   114: {
+   115:         // Response name is first, but it is variable length and must be retrieved using the DNSDiscardName() function
+   116:         WORD_VAL        ResponseType;
+   117:         WORD_VAL        ResponseClass;
+   118:         DWORD_VAL       ResponseTTL;
+   119:         WORD_VAL        ResponseLen;
+   120: } DNS_ANSWER_HEADER;
+   121: 
+   122: 
+   123: /****************************************************************************
+   124:   Section:
+   125:         Function Prototypes
+   126:   ***************************************************************************/
+   127: 
+   128: static void DNSPutString(BYTE* String);
+   129: static void DNSDiscardName(void);
+   130: 
+   131: #if defined(__18CXX)
+   132:         static void DNSPutROMString(ROM BYTE* String);
+   133: #else
+   134:         // Non-ROM alias for C30/C32
+   135:         #define DNSPutROMString(a)      DNSPutString((BYTE*)a)
+   136: #endif
+   137: 
+   138: 
+   139: /*****************************************************************************
+   140:   Function:
+   141:         BOOL DNSBeginUsage(void)
+   142: 
+   143:   Summary:
+   144:         Claims access to the DNS module.
+   145:         
+   146:   Description:
+   147:         This function acts as a semaphore to obtain usage of the DNS module.
+   148:         Call this function and ensure that it returns TRUE before calling any
+   149:         other DNS APIs.  Call DNSEndUsage when this application no longer 
+   150:         needs the DNS module so that other applications may make use of it.
+   151: 
+   152:   Precondition:
+   153:         Stack is initialized.
+   154: 
+   155:   Parameters:
+   156:         None
+   157: 
+   158:   Return Values:
+   159:         TRUE - No other DNS resolutions are in progress and the calling
+   160:                         application has sucessfully taken ownership of the DNS module
+   161:         FALSE - The DNS module is currently in use.  Yield to the stack and 
+   162:                         attempt this call again later.
+   163:         
+   164:   Remarks:
+   165:         Ensure that DNSEndUsage is always called once your application has
+   166:         obtained control of the DNS module.  If this is not done, the stack
+   167:         will hang for all future applications requiring DNS access.
+   168:   ***************************************************************************/
+   169: BOOL DNSBeginUsage(void)
+   170: {
+   171:         if(Flags.bits.DNSInUse)
+   172:                 return FALSE;
+   173: 
+   174:         Flags.bits.DNSInUse = TRUE;
+   175:         return TRUE;
+   176: }
+   177: 
+   178: 
+   179: /*****************************************************************************
+   180:   Function:
+   181:         BOOL DNSEndUsage(void)
+   182: 
+   183:   Summary:
+   184:         Releases control of the DNS module.
+   185:         
+   186:   Description:
+   187:         This function acts as a semaphore to obtain usage of the DNS module.
+   188:         Call this function when this application no longer needs the DNS 
+   189:         module so that other applications may make use of it.
+   190: 
+   191:   Precondition:
+   192:         DNSBeginUsage returned TRUE on a previous call.
+   193: 
+   194:   Parameters:
+   195:         None
+   196: 
+   197:   Return Values:
+   198:         TRUE - The address to the host name was successfully resolved.
+   199:         FALSE - The DNS failed or the address does not exist.
+   200:         
+   201:   Remarks:
+   202:         Ensure that DNSEndUsage is always called once your application has
+   203:         obtained control of the DNS module.  If this is not done, the stack
+   204:         will hang for all future applications requiring DNS access.
+   205:   ***************************************************************************/
+   206: BOOL DNSEndUsage(void)
+   207: {
+   208:         if(MySocket != INVALID_UDP_SOCKET)
+   209:         {
+   210:                 UDPClose(MySocket);
+   211:                 MySocket = INVALID_UDP_SOCKET;
+   212:         }
+   213:         smDNS = DNS_DONE;
+   214:         Flags.bits.DNSInUse = FALSE;
+   215: 
+   216:         return Flags.bits.AddressValid;
+   217: }
+   218: 
+   219: 
+   220: /*****************************************************************************
+   221:   Function:
+   222:         void DNSResolve(BYTE* Hostname, BYTE Type)
+   223: 
+   224:   Summary:
+   225:         Begins resolution of an address.
+   226:         
+   227:   Description:
+   228:         This function attempts to resolve a host name to an IP address.  When 
+   229:         called, it starts the DNS state machine.  Call DNSIsResolved repeatedly
+   230:         to determine if the resolution is complete.
+   231:         
+   232:         Only one DNS resoultion may be executed at a time.  The Hostname must 
+   233:         not be modified in memory until the resolution is complete.
+   234: 
+   235:   Precondition:
+   236:         DNSBeginUsage returned TRUE on a previous call.
+   237: 
+   238:   Parameters:
+   239:         Hostname - A pointer to the null terminated string specifiying the
+   240:                 host for which to resolve an IP.
+   241:         RecordType - DNS_TYPE_A or DNS_TYPE_MX depending on what type of
+   242:                 record resolution is desired.
+   243: 
+   244:   Returns:
+   245:         None
+   246:         
+   247:   Remarks:
+   248:         This function requires access to one UDP socket.  If none are available,
+   249:         MAX_UDP_SOCKETS may need to be increased.
+   250:   ***************************************************************************/
+   251: void DNSResolve(BYTE* Hostname, BYTE Type)
+   252: {
+   253:         if(StringToIPAddress(Hostname, &ResolvedInfo.IPAddr))
+   254:         {
+   255:                 Flags.bits.AddressValid = TRUE;
+   256:                 smDNS = DNS_DONE;
+   257:         }
+   258:         else
+   259:         {       
+   260:                 DNSHostName = Hostname;
+   261:                 DNSHostNameROM = NULL;
+   262:                 smDNS = DNS_START;
+   263:                 RecordType = Type;
+   264:                 Flags.bits.AddressValid = FALSE;
+   265:         }
+   266: }
+   267: 
+   268: 
+   269: /*****************************************************************************
+   270:   Function:
+   271:         void DNSResolveROM(ROM BYTE* Hostname, BYTE Type)
+   272: 
+   273:   Summary:
+   274:         Begins resolution of an address.
+   275:         
+   276:   Description:
+   277:         This function attempts to resolve a host name to an IP address.  When 
+   278:         called, it starts the DNS state machine.  Call DNSIsResolved repeatedly
+   279:         to determine if the resolution is complete.
+   280:         
+   281:         Only one DNS resoultion may be executed at a time.  The Hostname must 
+   282:         not be modified in memory until the resolution is complete.
+   283: 
+   284:   Precondition:
+   285:         DNSBeginUsage returned TRUE on a previous call.
+   286: 
+   287:   Parameters:
+   288:         Hostname - A pointer to the null terminated string specifiying the
+   289:                 host for which to resolve an IP.
+   290:         RecordType - DNS_TYPE_A or DNS_TYPE_MX depending on what type of
+   291:                 record resolution is desired.
+   292: 
+   293:   Returns:
+   294:         None
+   295:         
+   296:   Remarks:
+   297:         This function requires access to one UDP socket.  If none are available,
+   298:         MAX_UDP_SOCKETS may need to be increased.
+   299:         
+   300:         This function is aliased to DNSResolve on non-PIC18 platforms.
+   301:   ***************************************************************************/
+   302: #if defined(__18CXX)
+   303: void DNSResolveROM(ROM BYTE* Hostname, BYTE Type)
+   304: {
+   305:         if(ROMStringToIPAddress(Hostname, &ResolvedInfo.IPAddr))
+   306:         {
+   307:                 Flags.bits.AddressValid = TRUE;
+   308:                 smDNS = DNS_DONE;
+   309:         }
+   310:         else
+   311:         {       
+   312:                 DNSHostName = NULL;
+   313:                 DNSHostNameROM = Hostname;
+   314:                 smDNS = DNS_START;
+   315:                 RecordType = Type;
+   316:                 Flags.bits.AddressValid = FALSE;
+   317:         }
+   318: }
+   319: #endif
+   320: 
+   321: 
+   322: /*****************************************************************************
+   323:   Function:
+   324:         BOOL DNSIsResolved(IP_ADDR* HostIP)
+   325: 
+   326:   Summary:
+   327:         Determines if the DNS resolution is complete and provides the IP.
+   328:         
+   329:   Description:
+   330:         Call this function to determine if the DNS resolution of an address has
+   331:         been completed.  If so, the resolved address will be provided in HostIP.
+   332: 
+   333:   Precondition:
+   334:         DNSResolve or DNSResolveROM has been called.
+   335: 
+   336:   Parameters:
+   337:         HostIP - A pointer to an IP_ADDR structure in which to store the 
+   338:                 resolved IP address once resolution is complete.
+   339: 
+   340:   Return Values:
+   341:         TRUE - The DNS client has obtained an IP, or the DNS process
+   342:                 has encountered an error.  HostIP will be 0.0.0.0 on error.  Possible 
+   343:                 errors include server timeout (i.e. DNS server not available), hostname 
+   344:                 not in the DNS, or DNS server errors.
+   345:         FALSE - The resolution process is still in progress.
+   346:   ***************************************************************************/
+   347: BOOL DNSIsResolved(IP_ADDR* HostIP)
+   348: {
+   349:         static DWORD            StartTime;
+   350:         static WORD_VAL         SentTransactionID __attribute__((persistent));
+   351:         static BYTE                     vARPAttemptCount;
+   352:         static BYTE                     vDNSAttemptCount;
+   353:         BYTE                            i;
+   354:         WORD_VAL                        w;
+   355:         DNS_HEADER                      DNSHeader;
+   356:         DNS_ANSWER_HEADER       DNSAnswerHeader;
+   357: 
+   358:         switch(smDNS)
+   359:         {
+   360:                 case DNS_START:
+   361:                         vARPAttemptCount = 0;
+   362:                         vDNSAttemptCount = 0;
+   363:                         // No break;
+   364: 
+   365:                 case DNS_ARP_START_RESOLVE:
+   366:                         ARPResolve(&AppConfig.PrimaryDNSServer);
+   367:                         vARPAttemptCount++;
+   368:                         StartTime = TickGet();
+   369:                         smDNS = DNS_ARP_RESOLVE;
+   370:                         break;
+   371: 
+   372:                 case DNS_ARP_RESOLVE:
+   373:                         if(!ARPIsResolved(&AppConfig.PrimaryDNSServer, &ResolvedInfo.MACAddr))
+   374:                         {
+   375:                                 if(TickGet() - StartTime > DNS_TIMEOUT)
+   376:                                         smDNS = (vARPAttemptCount >= 3u) ? DNS_FAIL : DNS_ARP_START_RESOLVE;
+   377:                                 break;
+   378:                         }
+   379:                         ResolvedInfo.IPAddr.Val = AppConfig.PrimaryDNSServer.Val;
+   380:                         smDNS = DNS_OPEN_SOCKET;
+   381:                         // No break: DNS_OPEN_SOCKET is the correct next state
+   382:                 
+   383:                 case DNS_OPEN_SOCKET:
+   384:                         //MySocket = UDPOpen(0, &ResolvedInfo, DNS_PORT);
+   385:                         
+   386:                         MySocket = UDPOpenEx((DWORD)&ResolvedInfo,UDP_OPEN_NODE_INFO,0, DNS_PORT);
+   387:                         if(MySocket == INVALID_UDP_SOCKET)
+   388:                                 break;
+   389: 
+   390:                         smDNS = DNS_QUERY;
+   391:                         // No need to break, we can immediately start resolution
+   392:                         
+   393:                 case DNS_QUERY:
+   394:                         if(!UDPIsPutReady(MySocket))
+   395:                                 break;
+   396:                         
+   397:                         // Put DNS query here
+   398:                         SentTransactionID.Val++;
+   399:                         UDPPut(SentTransactionID.v[1]);// User chosen transaction ID
+   400:                         UDPPut(SentTransactionID.v[0]);
+   401:                         UDPPut(0x01);           // Standard query with recursion
+   402:                         UDPPut(0x00);   
+   403:                         UDPPut(0x00);           // 0x0001 questions
+   404:                         UDPPut(0x01);
+   405:                         UDPPut(0x00);           // 0x0000 answers
+   406:                         UDPPut(0x00);
+   407:                         UDPPut(0x00);           // 0x0000 name server resource records
+   408:                         UDPPut(0x00);
+   409:                         UDPPut(0x00);           // 0x0000 additional records
+   410:                         UDPPut(0x00);
+   411: 
+   412:                         // Put hostname string to resolve
+   413:                         if(DNSHostName)
+   414:                                 DNSPutString(DNSHostName);
+   415:                         else
+   416:                                 DNSPutROMString(DNSHostNameROM);
+   417: 
+   418:                         UDPPut(0x00);           // Type: DNS_TYPE_A A (host address) or DNS_TYPE_MX for mail exchange
+   419:                         UDPPut(RecordType);
+   420:                         UDPPut(0x00);           // Class: IN (Internet)
+   421:                         UDPPut(0x01);
+   422: 
+   423:                         UDPFlush();
+   424:                         StartTime = TickGet();
+   425:                         smDNS = DNS_GET_RESULT;
+   426:                         break;
+   427: 
+   428:                 case DNS_GET_RESULT:
+   429:                         if(!UDPIsGetReady(MySocket))
+   430:                         {
+   431:                                 if(TickGet() - StartTime > DNS_TIMEOUT)
+   432:                                         smDNS = DNS_FAIL;
+   433:                                 break;
+   434:                         }
+   435: 
+   436:                         // Retrieve the DNS header and de-big-endian it
+   437:                         UDPGet(&DNSHeader.TransactionID.v[1]);
+   438:                         UDPGet(&DNSHeader.TransactionID.v[0]);
+   439: 
+   440:                         // Throw this packet away if it isn't in response to our last query
+   441:                         if(DNSHeader.TransactionID.Val != SentTransactionID.Val)
+   442:                         {
+   443:                                 UDPDiscard();
+   444:                                 break;
+   445:                         }
+   446: 
+   447:                         UDPGet(&DNSHeader.Flags.v[1]);
+   448:                         UDPGet(&DNSHeader.Flags.v[0]);
+   449:                         UDPGet(&DNSHeader.Questions.v[1]);
+   450:                         UDPGet(&DNSHeader.Questions.v[0]);
+   451:                         UDPGet(&DNSHeader.Answers.v[1]);
+   452:                         UDPGet(&DNSHeader.Answers.v[0]);
+   453:                         UDPGet(&DNSHeader.AuthoritativeRecords.v[1]);
+   454:                         UDPGet(&DNSHeader.AuthoritativeRecords.v[0]);
+   455:                         UDPGet(&DNSHeader.AdditionalRecords.v[1]);
+   456:                         UDPGet(&DNSHeader.AdditionalRecords.v[0]);
+   457: 
+   458:                         // Remove all questions (queries)
+   459:                         while(DNSHeader.Questions.Val--)
+   460:                         {
+   461:                                 DNSDiscardName();
+   462:                                 UDPGet(&w.v[1]);                // Question type
+   463:                                 UDPGet(&w.v[0]);
+   464:                                 UDPGet(&w.v[1]);                // Question class
+   465:                                 UDPGet(&w.v[0]);
+   466:                         }
+   467:                         
+   468:                         // Scan through answers
+   469:                         while(DNSHeader.Answers.Val--)
+   470:                         {                               
+   471:                                 DNSDiscardName();                                       // Throw away response name
+   472:                                 UDPGet(&DNSAnswerHeader.ResponseType.v[1]);             // Response type
+   473:                                 UDPGet(&DNSAnswerHeader.ResponseType.v[0]);
+   474:                                 UDPGet(&DNSAnswerHeader.ResponseClass.v[1]);    // Response class
+   475:                                 UDPGet(&DNSAnswerHeader.ResponseClass.v[0]);
+   476:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[3]);              // Time to live
+   477:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[2]);
+   478:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[1]);
+   479:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[0]);
+   480:                                 UDPGet(&DNSAnswerHeader.ResponseLen.v[1]);              // Response length
+   481:                                 UDPGet(&DNSAnswerHeader.ResponseLen.v[0]);
+   482: 
+   483:                                 // Make sure that this is a 4 byte IP address, response type A or MX, class 1
+   484:                                 // Check if this is Type A or MX
+   485:                                 if( DNSAnswerHeader.ResponseType.Val    == 0x0001u &&
+   486:                                         DNSAnswerHeader.ResponseClass.Val       == 0x0001u && // Internet class
+   487:                                         DNSAnswerHeader.ResponseLen.Val         == 0x0004u)
+   488:                                 {
+   489:                                         Flags.bits.AddressValid = TRUE;
+   490:                                         UDPGet(&ResolvedInfo.IPAddr.v[0]);
+   491:                                         UDPGet(&ResolvedInfo.IPAddr.v[1]);
+   492:                                         UDPGet(&ResolvedInfo.IPAddr.v[2]);
+   493:                                         UDPGet(&ResolvedInfo.IPAddr.v[3]);
+   494:                                         goto DoneSearchingRecords;
+   495:                                 }
+   496:                                 else
+   497:                                 {
+   498:                                         while(DNSAnswerHeader.ResponseLen.Val--)
+   499:                                         {
+   500:                                                 UDPGet(&i);
+   501:                                         }
+   502:                                 }
+   503:                         }
+   504: 
+   505:                         // Remove all Authoritative Records
+   506:                         while(DNSHeader.AuthoritativeRecords.Val--)
+   507:                         {
+   508:                                 DNSDiscardName();                                       // Throw away response name
+   509:                                 UDPGet(&DNSAnswerHeader.ResponseType.v[1]);             // Response type
+   510:                                 UDPGet(&DNSAnswerHeader.ResponseType.v[0]);
+   511:                                 UDPGet(&DNSAnswerHeader.ResponseClass.v[1]);    // Response class
+   512:                                 UDPGet(&DNSAnswerHeader.ResponseClass.v[0]);
+   513:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[3]);              // Time to live
+   514:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[2]);
+   515:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[1]);
+   516:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[0]);
+   517:                                 UDPGet(&DNSAnswerHeader.ResponseLen.v[1]);              // Response length
+   518:                                 UDPGet(&DNSAnswerHeader.ResponseLen.v[0]);
+   519: 
+   520:                                 // Make sure that this is a 4 byte IP address, response type A or MX, class 1
+   521:                                 // Check if this is Type A
+   522:                                 if( DNSAnswerHeader.ResponseType.Val    == 0x0001u &&
+   523:                                         DNSAnswerHeader.ResponseClass.Val       == 0x0001u && // Internet class
+   524:                                         DNSAnswerHeader.ResponseLen.Val         == 0x0004u)
+   525:                                 {
+   526:                                         Flags.bits.AddressValid = TRUE;
+   527:                                         UDPGet(&ResolvedInfo.IPAddr.v[0]);
+   528:                                         UDPGet(&ResolvedInfo.IPAddr.v[1]);
+   529:                                         UDPGet(&ResolvedInfo.IPAddr.v[2]);
+   530:                                         UDPGet(&ResolvedInfo.IPAddr.v[3]);
+   531:                                         goto DoneSearchingRecords;
+   532:                                 }
+   533:                                 else
+   534:                                 {
+   535:                                         while(DNSAnswerHeader.ResponseLen.Val--)
+   536:                                         {
+   537:                                                 UDPGet(&i);
+   538:                                         }
+   539:                                 }
+   540:                         }
+   541: 
+   542:                         // Remove all Additional Records
+   543:                         while(DNSHeader.AdditionalRecords.Val--)
+   544:                         {
+   545:                                 DNSDiscardName();                                       // Throw away response name
+   546:                                 UDPGet(&DNSAnswerHeader.ResponseType.v[1]);             // Response type
+   547:                                 UDPGet(&DNSAnswerHeader.ResponseType.v[0]);
+   548:                                 UDPGet(&DNSAnswerHeader.ResponseClass.v[1]);    // Response class
+   549:                                 UDPGet(&DNSAnswerHeader.ResponseClass.v[0]);
+   550:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[3]);              // Time to live
+   551:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[2]);
+   552:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[1]);
+   553:                                 UDPGet(&DNSAnswerHeader.ResponseTTL.v[0]);
+   554:                                 UDPGet(&DNSAnswerHeader.ResponseLen.v[1]);              // Response length
+   555:                                 UDPGet(&DNSAnswerHeader.ResponseLen.v[0]);
+   556: 
+   557:                                 // Make sure that this is a 4 byte IP address, response type A or MX, class 1
+   558:                                 // Check if this is Type A
+   559:                                 if( DNSAnswerHeader.ResponseType.Val    == 0x0001u &&
+   560:                                         DNSAnswerHeader.ResponseClass.Val       == 0x0001u && // Internet class
+   561:                                         DNSAnswerHeader.ResponseLen.Val         == 0x0004u)
+   562:                                 {
+   563:                                         Flags.bits.AddressValid = TRUE;
+   564:                                         UDPGet(&ResolvedInfo.IPAddr.v[0]);
+   565:                                         UDPGet(&ResolvedInfo.IPAddr.v[1]);
+   566:                                         UDPGet(&ResolvedInfo.IPAddr.v[2]);
+   567:                                         UDPGet(&ResolvedInfo.IPAddr.v[3]);
+   568:                                         goto DoneSearchingRecords;
+   569:                                 }
+   570:                                 else
+   571:                                 {
+   572:                                         while(DNSAnswerHeader.ResponseLen.Val--)
+   573:                                         {
+   574:                                                 UDPGet(&i);
+   575:                                         }
+   576:                                 }
+   577:                         }
+   578: 
+   579: DoneSearchingRecords:
+   580: 
+   581:                         UDPDiscard();
+   582:                         UDPClose(MySocket);
+   583:                         MySocket = INVALID_UDP_SOCKET;
+   584:                         smDNS = DNS_DONE;
+   585:                         // No break, DNS_DONE is the correct step
+   586: 
+   587:                 case DNS_DONE:
+   588:                         // Return 0.0.0.0 if DNS resolution failed, otherwise return the 
+   589:                         // resolved IP address
+   590:                         if(!Flags.bits.AddressValid)
+   591:                                 ResolvedInfo.IPAddr.Val = 0;
+   592:                         HostIP->Val = ResolvedInfo.IPAddr.Val;
+   593:                         return TRUE;
+   594: 
+   595:                 case DNS_FAIL:
+   596:                         // If 3 attempts or more, quit
+   597:                         if(vDNSAttemptCount >= 2u)
+   598:                         {
+   599:                                 // Return an invalid IP address 0.0.0.0 if we can't finish ARP or DNS query step
+   600:                                 HostIP->Val = 0x00000000;
+   601:                                 return TRUE;
+   602:                         }
+   603:                         vDNSAttemptCount++;
+   604: 
+   605:                         // Swap primary and secondary DNS servers if there is a secondary DNS server programmed
+   606:                         if(AppConfig.SecondaryDNSServer.Val)
+   607:                         {
+   608:                                 AppConfig.PrimaryDNSServer.Val ^= AppConfig.SecondaryDNSServer.Val;
+   609:                                 AppConfig.SecondaryDNSServer.Val ^= AppConfig.PrimaryDNSServer.Val;
+   610:                                 AppConfig.PrimaryDNSServer.Val ^= AppConfig.SecondaryDNSServer.Val;
+   611: 
+   612:                                 // Start another ARP resolution for the secondary server (now primary)
+   613:                                 vARPAttemptCount = 0;
+   614:                                 if(MySocket != INVALID_UDP_SOCKET)
+   615:                                 {
+   616:                                         UDPClose(MySocket);
+   617:                                         MySocket = INVALID_UDP_SOCKET;
+   618:                                 }
+   619:                                 smDNS = DNS_ARP_START_RESOLVE;
+   620:                         }
+   621: 
+   622:                         break;
+   623: 
+   624:         }
+   625:         
+   626:         return FALSE;
+   627: }
+   628: 
+   629: /*****************************************************************************
+   630:   Function:
+   631:         static void DNSPutString(BYTE* String)
+   632: 
+   633:   Summary:
+   634:         Writes a string to the DNS socket.
+   635:         
+   636:   Description:
+   637:         This function writes a string to the DNS socket, ensuring that it is
+   638:         properly formatted.
+   639: 
+   640:   Precondition:
+   641:         UDP socket is obtained and ready for writing.
+   642: 
+   643:   Parameters:
+   644:         String - the string to write to the UDP socket.
+   645: 
+   646:   Returns:
+   647:         None
+   648:   ***************************************************************************/
+   649: static void DNSPutString(BYTE* String)
+   650: {
+   651:         BYTE *RightPtr;
+   652:         BYTE i;
+   653:         BYTE Len;
+   654: 
+   655:         RightPtr = String;
+   656: 
+   657:         while(1)
+   658:         {
+   659:                 do
+   660:                 {
+   661:                         i = *RightPtr++;
+   662:                 } while((i != 0x00u) && (i != '.') && (i != '/') && (i != ',') && (i != '>'));
+   663:         
+   664:                 // Put the length and data
+   665:                 // Also, skip over the '.' in the input string
+   666:                 Len = (BYTE)(RightPtr-String-1);
+   667:                 UDPPut(Len);
+   668:                 String += UDPPutArray(String, Len) + 1;
+   669: 
+   670:                 if(i == 0x00u || i == '/' || i == ',' || i == '>')
+   671:                         break;
+   672:         }
+   673:         
+   674:         // Put the string null terminator character (zero length label)
+   675:         UDPPut(0x00);
+   676: }
+   677: 
+   678: /*****************************************************************************
+   679:   Function:
+   680:         static void DNSPutROMString(ROM BYTE* String)
+   681: 
+   682:   Summary:
+   683:         Writes a ROM string to the DNS socket.
+   684:         
+   685:   Description:
+   686:         This function writes a string to the DNS socket, ensuring that it is
+   687:         properly formatted.
+   688: 
+   689:   Precondition:
+   690:         UDP socket is obtained and ready for writing.
+   691: 
+   692:   Parameters:
+   693:         String - the string to write to the UDP socket.
+   694: 
+   695:   Returns:
+   696:         None
+   697:   
+   698:   Remarks:
+   699:         This function is aliased to DNSPutString on non-PIC18 platforms.
+   700:   ***************************************************************************/
+   701: #if defined(__18CXX)
+   702: static void DNSPutROMString(ROM BYTE* String)
+   703: {
+   704:         ROM BYTE *RightPtr;
+   705:         BYTE i;
+   706:         BYTE Len;
+   707: 
+   708:         RightPtr = String;
+   709: 
+   710:         while(1)
+   711:         {
+   712:                 do
+   713:                 {
+   714:                         i = *RightPtr++;
+   715:                 } while((i != 0x00u) && (i != '.') && (i != '/') && (i != ',') && (i != '>'));
+   716:         
+   717:                 // Put the length and data
+   718:                 // Also, skip over the '.' in the input string
+   719:                 Len = (BYTE)(RightPtr-String-1);
+   720:                 UDPPut(Len);
+   721:                 String += UDPPutROMArray(String, Len) + 1;
+   722: 
+   723:                 if(i == 0x00u || i == '/' || i == ',' || i == '>')
+   724:                         break;
+   725:         }
+   726:         
+   727:         // Put the string terminator character (zero length label)
+   728:         UDPPut(0x00);
+   729: }
+   730: #endif
+   731: 
+   732: 
+   733: /*****************************************************************************
+   734:   Function:
+   735:         static void DNSDiscardName(void)
+   736: 
+   737:   Summary:
+   738:         Reads a name string or string pointer from the DNS socket and discards it.
+   739:         
+   740:   Description:
+   741:         This function reads a name string from the DNS socket.  Each string 
+   742:         consists of a series of labels.  Each label consists of a length prefix 
+   743:         byte, followed by the label bytes.  At the end of the string, a zero length 
+   744:         label is found as termination.  If name compression is used, this function 
+   745:         will automatically detect the pointer and discard it.
+   746: 
+   747:   Precondition:
+   748:         UDP socket is obtained and ready for reading a DNS name
+   749: 
+   750:   Parameters:
+   751:         None
+   752: 
+   753:   Returns:
+   754:         None
+   755:   ***************************************************************************/
+   756: static void DNSDiscardName(void)
+   757: {
+   758:         BYTE i;
+   759: 
+   760:         while(1)
+   761:         {
+   762:                 // Get first byte which will tell us if this is a 16-bit pointer or the 
+   763:                 // length of the first of a series of labels
+   764:                 if(!UDPGet(&i))
+   765:                         return;
+   766:                 
+   767:                 // Check if this is a pointer, if so, get the reminaing 8 bits and return
+   768:                 if((i & 0xC0u) == 0xC0u)
+   769:                 {
+   770:                         UDPGet(&i);
+   771:                         return;
+   772:                 }
+   773: 
+   774:                 // Exit once we reach a zero length label
+   775:                 if(i == 0u)                                     
+   776:                         return;
+   777: 
+   778:                 // Discard complete label
+   779:                 UDPGetArray(NULL, i);           
+   780:         }
+   781: }
+   782: 
+   783: 
+   784: #endif  //#if defined(STACK_USE_DNS)

@@ -1,0 +1,291 @@
+     1: //
+     2: // Copyright (C) 2012 Telldus Technologies AB. All rights reserved.
+     3: //
+     4: // Copyright: See COPYING file that comes with this distribution
+     5: //
+     6: //
+     7: 
+     8: #include <htc.h>
+     9: #include <string.h>
+    10: #include "TCPIP Stack/TCPIP.h"
+    11: #include "common.h"
+    12: #include "config.h"
+    13: 
+    14: typedef enum {
+    15:         SM_CLEARED = 0,
+    16:         SM_PARSE_SIGNATURE,
+    17:         SM_PARSE_LENGTH,
+    18:         SM_PARSE_MESSAGE,
+    19:         SM_MESSAGE_RECEIVED,
+    20: } SM_LM;
+    21: 
+    22: static SM_LM state = SM_CLEARED;
+    23: 
+    24: static char buffer[200];
+    25: static BYTE bufferP;
+    26: static BYTE hashStartP;
+    27: static BYTE signature[20];
+    28: static BYTE signature2[20];
+    29: static ROM BYTE PRIVATE_KEY[] = "";
+    30: 
+    31: void LMAppendChar(const char ch) {
+    32:         char *pos = strchr(&buffer, '\0');
+    33:         if (pos != NULL) {
+    34:                 (*pos) = ch;
+    35:         }
+    36: }
+    37: 
+    38: void LMClear() {
+    39:         memset(&buffer, '\0', sizeof(buffer));
+    40:         bufferP = 0;
+    41:         state = SM_CLEARED;
+    42: }
+    43: 
+    44: void LMAppendString(const char *string) {
+    45:         BYTE hb = btohexa_high(strlen(string));
+    46:         BYTE lb = btohexa_low(strlen(string));
+    47:         if (hb != '0') {
+    48:                 LMAppendChar(hb);
+    49:         }
+    50:         LMAppendChar(lb);
+    51:         LMAppendChar(':');
+    52:         strcat(&buffer, string);
+    53: }
+    54: 
+    55: void LMAppendRomString(ROM BYTE *string) {
+    56:         BYTE hb = btohexa_high(strlen(string));
+    57:         BYTE lb = btohexa_low(strlen(string));
+    58:         if (hb != '0') {
+    59:                 LMAppendChar(hb);
+    60:         }
+    61:         LMAppendChar(lb);
+    62:         LMAppendChar(':');
+    63:         strcat(&buffer, string);
+    64: }
+    65: 
+    66: void LMAppendInt(unsigned long value) {
+    67:         char hex[sizeof(value)*2], i;
+    68:         LMAppendChar('i');
+    69:         if (value == 0) {
+    70:                 LMAppendChar('0');
+    71:         } else {
+    72:                 for(i=0; i < sizeof(hex); ++i) {
+    73:                         hex[i] = btohexa_low(value);
+    74:                         value >>= 4;
+    75:                 }
+    76: 
+    77:                 //Skip all prepending zeros
+    78:                 for(i=sizeof(hex); i > 0; --i) {
+    79:                         if (hex[i-1] != '0') {
+    80:                                 break;
+    81:                         }
+    82:                 }
+    83:                 for(; i > 0; --i) {
+    84:                         LMAppendChar(hex[i-1]);
+    85:                 }
+    86:         }
+    87:         LMAppendChar('s');
+    88: }
+    89: 
+    90: void LMStartHash() {
+    91:         LMAppendChar('h');
+    92: }
+    93: 
+    94: void LMAppendHashString(ROM BYTE *key, const char *value) {
+    95:         LMAppendRomString(key);
+    96:         LMAppendString(value);
+    97: }
+    98: 
+    99: void LMAppendHashHexString(const char *key, const char *value, const unsigned char length) {
+   100:         unsigned char i;
+   101:         LMAppendRomString(key);
+   102:         LMAppendChar('i');
+   103:         if (value == 0) {
+   104:                 LMAppendChar('0');
+   105:         } else {
+   106:                 //Skip all prepending zeros
+   107:                 for(i=0; i<length; ++i) {
+   108:                         if (value[i] != '0') {
+   109:                                 break;
+   110:                         }
+   111:                 }
+   112:                 for (;i<length;++i) {
+   113:                         LMAppendChar(btohexa_high(value[i]));
+   114:                         LMAppendChar(btohexa_low(value[i]));
+   115:                 }
+   116:         }
+   117:         LMAppendChar('s');
+   118: }
+   119: 
+   120: void LMAppendHashInt(ROM BYTE *key, unsigned long value) {
+   121:         LMAppendRomString(key);
+   122:         LMAppendInt(value);
+   123: }
+   124: 
+   125: void LMEndHash() {
+   126:         LMAppendChar('s');
+   127: }
+   128: 
+   129: BOOL LMNextIsInt() {
+   130:         return buffer[bufferP] == 'i';
+   131: }
+   132: 
+   133: unsigned long LMTakeInt() {
+   134:         long retval = 0, ch;
+   135:         if (!LMNextIsInt()) {
+   136:                 return 0;
+   137:         }
+   138:         ++bufferP;
+   139:         while(bufferP < sizeof(buffer)) {
+   140:                 ch = buffer[bufferP++];
+   141:                 if (ch == 's') {
+   142:                         break;
+   143:                 }
+   144:                 retval <<= 4;
+   145:                 retval |= hexToByte(ch);
+   146:         }
+   147:         return retval;
+   148: }
+   149: 
+   150: BOOL LMTakeString(BYTE* instr, BYTE count) {
+   151:         BYTE i = 0, length = 0, ch;
+   152: 
+   153:         //Get string length
+   154:         while(bufferP < sizeof(buffer)) {
+   155:                 ch = buffer[bufferP++];
+   156:                 if (ch == ':') {
+   157:                         break;
+   158:                 }
+   159:                 length <<= 4;
+   160:                 length |= hexToByte(ch);
+   161:         }
+   162:         if (length > count-1) { //-1 if for the trailing '\0'
+   163:                 //Advance bufferP anyway
+   164:                 bufferP += length;
+   165:                 return FALSE;
+   166:         }
+   167:         for (i = 0; i < length; ++i) {
+   168:                 instr[i] = buffer[bufferP++];
+   169:         }
+   170:         instr[length] = '\0';
+   171:         return TRUE;
+   172: }
+   173: 
+   174: BOOL LMEnterHash() {
+   175:         if (buffer[bufferP] != 'h') {
+   176:                 return FALSE;
+   177:         }
+   178:         hashStartP = bufferP+1;
+   179: 
+   180:         return TRUE;
+   181: }
+   182: 
+   183: BOOL LMFindHashString(ROM BYTE *key) {
+   184:         unsigned char k[12]; //Increase this if we need to search for longer keys
+   185: 
+   186:         bufferP = hashStartP;
+   187:         while(bufferP < sizeof(buffer)) {
+   188:                 if (!LMTakeString(&k, sizeof(k))) {
+   189:                         return FALSE;
+   190:                 }
+   191:                 if (strcmp(key, k) == 0) {
+   192:                         return TRUE;
+   193:                 }
+   194:                 if (LMNextIsInt()) {
+   195:                         LMTakeInt();
+   196:                 } else {
+   197:                         LMTakeString(0,0);
+   198:                 }
+   199:                 if (buffer[bufferP] == 's') {
+   200:                         //End of hash
+   201:                         return FALSE;
+   202:                 }
+   203:         }
+   204:         return FALSE;
+   205: }
+   206: 
+   207: void LMGenerateSignature() {
+   208:         static HASH_SUM hash;
+   209: 
+   210:         SHA1Initialize(&hash);
+   211:         SHA1AddData(&hash, &buffer, strlen(buffer));
+   212:         SHA1AddROMData(&hash, &PRIVATE_KEY, 32);
+   213:         SHA1Calculate(&hash, &signature);
+   214: }
+   215: 
+   216: BOOL validateSignature() {
+   217:         BYTE i;
+   218:         LMGenerateSignature();
+   219: 
+   220:         for(i=0; i < 20; ++i) {
+   221:                 if (signature[i] != signature2[i]) {
+   222:                         return FALSE;
+   223:                 }
+   224:         }
+   225:         return TRUE;
+   226: }
+   227: 
+   228: void LMParseChar(const char ch) {
+   229:         static BYTE length = 0;
+   230:         BYTE i;
+   231: 
+   232:         if (state == SM_CLEARED) {
+   233:                 LMAppendChar(ch);
+   234:                 if (strncmp(&buffer, "28:", 3) == 0) {
+   235:                         state = SM_PARSE_SIGNATURE;
+   236:                 } else if (buffer[2] != 0) {
+   237:                         buffer[0] = buffer[1];
+   238:                         buffer[1] = buffer[2];
+   239:                         buffer[2] = 0;
+   240:                 }
+   241: 
+   242:         } else if (state == SM_PARSE_SIGNATURE) {
+   243:                 LMAppendChar(ch);
+   244:                 if (strlen(buffer) == 43) {
+   245:                         for(i=3; i < 43; i+=2) {
+   246:                                 signature2[(i-3)/2] = (hexToByte(buffer[i]) << 4) | hexToByte(buffer[i+1]);
+   247:                         }
+   248:                         LMClear();
+   249:                         state = SM_PARSE_LENGTH;
+   250:                         length = 0;
+   251:                 }
+   252: 
+   253:         } else if (state == SM_PARSE_LENGTH) {
+   254:                 if (ch == ':') {
+   255:                         LMClear();
+   256:                         state = SM_PARSE_MESSAGE;
+   257:                 } else {
+   258:                         length <<= 4;
+   259:                         length |= hexToByte(ch);
+   260:                 }
+   261: 
+   262:         } else if (state == SM_PARSE_MESSAGE) {
+   263:                 LMAppendChar(ch);
+   264:                 length--;
+   265:                 if (length == 0) {
+   266:                         if (validateSignature()) {
+   267:                                 state = SM_MESSAGE_RECEIVED;
+   268:                         } else {
+   269:                                 LMClear();
+   270:                                 printf("Signature mismatch\r\n");
+   271:                         }
+   272:                 }
+   273:         } else if (state == SM_MESSAGE_RECEIVED) {
+   274:                 printf("=== WARNING ===\r\nNew bits received without handling the previous message!\r\n");
+   275:                 LMClear();
+   276:                 LMAppendChar(ch);
+   277:                 state = SM_PARSE_SIGNATURE;
+   278:         }
+   279: }
+   280: 
+   281: BOOL LMHasPendingMessage() {
+   282:         return state == SM_MESSAGE_RECEIVED;
+   283: }
+   284: 
+   285: char *LMContent() {
+   286:         return &buffer;
+   287: }
+   288: 
+   289: void LMPrintContent() {
+   290:         printf("Content %s\r\n", &buffer);
+   291: }

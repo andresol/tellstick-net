@@ -1,0 +1,134 @@
+     1: //
+     2: // Copyright (C) 2012 Telldus Technologies AB. All rights reserved.
+     3: //
+     4: // Copyright: See COPYING file that comes with this distribution
+     5: //
+     6: //
+     7: 
+     8: #include <htc.h>
+     9: #include "HardwareProfile.h"
+    10: #include "send.h"
+    11: 
+    12: #define Lo(param) ((char *)&param)[0]
+    13: #define Hi(param) ((char *)&param)[1]
+    14: 
+    15: const int FACTOR = 103;
+    16: unsigned int times[4];
+    17: 
+    18: unsigned char sendPacket[200];
+    19: 
+    20: void initSender() {
+    21:         /**
+    22:         * Clock 1: 25 MHz
+    23:         * Prescaler: 1:1
+    24:         * Timer: 16 bit
+    25:         * Timeout after ?
+    26:         **/
+    27: 
+    28:         // Prescaler 1:1
+    29:         T1CKPS1 = 0;
+    30:         T1CKPS0 = 0;
+    31: 
+    32:         TMR1CS = 0; //Clock source = internal clock (Fosc/4)
+    33: 
+    34:         TMR1ON = 0; // Turn off timer
+    35:         TMR1IE = 0; // No interrupts
+    36: 
+    37:         //SPDT control
+    38:         TX_ANT_TRIS = 0; //Output
+    39:         TX_ANT = 0;
+    40: }
+    41: 
+    42: void sendCommand() {
+    43:         unsigned char *j;
+    44:         unsigned int nextTimer;
+    45:         char status = 0;
+    46: 
+    47:         TMR1ON = 0; // Stop timer
+    48: 
+    49:         /**
+    50:         * The reason we set the flag to 1 is because we don't want to wait for
+    51:         * the timer the first time.
+    52:         * The first time there is no timer-value calculated ;-)
+    53:         */
+    54:         TMR1IF = 1;                       // Set the timer-flag
+    55: 
+    56:         for (j=sendPacket; (*j) != '\0'; ++j) {
+    57:                 if ( (*j) == 1 ) {
+    58:                         status=~status;
+    59:                         continue;
+    60:                 }
+    61:                 nextTimer = 0xFFFF - ((*j)*FACTOR);
+    62: 
+    63:                 while(!TMR1IF) {}
+    64: 
+    65:                 TMR1ON = 0; // Stop timer
+    66:                 TMR1H = Hi(nextTimer);
+    67:                 TMR1L = Lo(nextTimer);
+    68:                 TMR1IF = 0;
+    69:                 status=~status;
+    70:                 SENDER=status;
+    71:                 TMR1ON = 1; //Turn on timer
+    72:         }
+    73:         while(!TMR1IF) {}
+    74:         SENDER=0;
+    75: }
+    76: 
+    77: void sendExtendedCommand() {
+    78:         unsigned char *j;
+    79:         unsigned char i;
+    80:         unsigned char pulses;
+    81:         unsigned char time;
+    82:         unsigned char timePointer;
+    83:         unsigned char status = 0;
+    84:         unsigned int nextTimer; // The value to start the timer with
+    85: 
+    86:         char txt[4];
+    87: 
+    88:         //Start off by calculating timer-values
+    89:         j=sendPacket;
+    90:         for(i=0;i<4;++i) {
+    91:                 if ((*j) == 1) {
+    92:                         times[i] = 0xFFFF;
+    93:                 } else {
+    94:                         times[i] = 0xFFFF - ((*j)*FACTOR);
+    95:                 }
+    96:                 j++;
+    97:         }
+    98: 
+    99:         pulses = (*j);
+   100:         j++;
+   101: 
+   102:         TMR1ON = 0; // Stop Timer1
+   103:         TMR1IF = 1;  // See comment in sendCommand() why we set this to 1
+   104: 
+   105:         for (;pulses > 0;j++) {
+   106:                 time = (*j);
+   107: 
+   108:                 for (i=0;i<4;++i) {
+   109:                         timePointer = (time & 0b11000000) >> 6;
+   110:                         nextTimer = times[timePointer];
+   111:                         time <<= 2;                        //Shift two bits
+   112:                         if (nextTimer == 0xFFFF) {
+   113:                                 status=~status;
+   114:                                 continue;
+   115:                         }
+   116:                         while( !TMR1IF ) {}           //Wait until timer overflows
+   117: 
+   118:                         TMR1ON = 0;                  // Stop timer
+   119:                         TMR1IF = 0;                   // Clear flag
+   120:                         TMR1H = Hi(nextTimer);             // Load timer
+   121:                         TMR1L = Lo(nextTimer);
+   122:                         status=~status;
+   123:                         SENDER=status;                    // Toggle antenna
+   124:                         TMR1ON = 1;                  // Start Timer1
+   125: 
+   126:                         pulses--;
+   127:                         if (pulses < 1) {
+   128:                                 break;
+   129:                         }
+   130:                 }
+   131:         }
+   132:         while( !TMR1IF ) {}               //Wait until last timer overflows
+   133:         SENDER=0;
+   134: }

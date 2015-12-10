@@ -1,0 +1,195 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+"101 /home/andresol/tellstick-net/tcpip/IP.c
+[v __Identifier `us 1 s ]
+"102 /home/andresol/tellstick-net/tcpip/IP.c
+[v _IPHeaderLen `uc 1 s ]
+[s S25 `us 1 `us 1 ]
+[n S25 . LW HW ]
+[s S26 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S26 . LB HB UB MB ]
+[s S22 `uc 1 `uc 1 ]
+[n S22 . LB HB ]
+[s S23 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S23 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S21 `us 1 `uc -> 2 `i `S22 1 `S23 1 ]
+[n S21 . Val v byte bits ]
+[s S27 `S21 1 `S21 1 ]
+[n S27 . low high ]
+[s S28 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S28 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S24 `ul 1 `us -> 2 `i `uc -> 4 `i `S25 1 `S26 1 `S27 1 `S28 1 ]
+[n S24 . Val w v word byte wordUnion bits ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S356 `S24 1 `S355 1 ]
+[n S356 . IPAddr MACAddr ]
+[c E208 0 1 .. ]
+[n E208 _BOOL FALSE TRUE  ]
+[s S373 `uc 1 `uc 1 `us 1 `us 1 `us 1 `uc 1 `uc 1 `us 1 `S24 1 `S24 1 ]
+[n S373 _IP_HEADER VersionIHL TypeOfService TotalLength Identification FragmentInfo TimeToLive Protocol HeaderChecksum SourceAddress DestAddress ]
+"295 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACGetArray `(us 0 ef2`*uc`us ]
+"168 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACCalcRxChecksum `(us 0 ef2`us`us ]
+"291 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACSetReadPtrInRx `(v 0 ef1`us ]
+"105 /home/andresol/tellstick-net/tcpip/IP.c
+[v _SwapIPHeader `(v 0 sf1`*S373 ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S357 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S357 0 e ]
+"107 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _CalcIPChecksum `(us 0 ef2`*uc`us ]
+"301 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACPutHeader `(v 0 ef3`*S355`uc`us ]
+"304 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACPutArray `(v 0 ef2`*uc`us ]
+"104 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _swaps `(us 0 ef1`us ]
+[i __Identifier
+"101 /home/andresol/tellstick-net/tcpip/IP.c
+-> -> 0 `i `us
+]
+"140
+[v _IPGetHeader `(E208 1 ef4`*S24`*S356`*uc`*us ]
+{
+[e :U _IPGetHeader ]
+[v _localIP `*S24 1 r1 ]
+[v _remote `*S356 1 r2 ]
+[v _protocol `*uc 1 r3 ]
+[v _len `*us 1 r4 ]
+[f ]
+"141
+[v _CalcChecksum `S21 1 a ]
+"142
+[v _header `S373 1 a ]
+"153
+[e ( _MACGetArray (2 , -> &U _header `*uc -> -> # _header `ui `us ]
+"156
+[e $ ! != -> & -> . _header 0 `i -> 240 `i `ui -> 64 `ui 390  ]
+"157
+[e ) . `E208 0 ]
+[e $UE 389  ]
+[e :U 390 ]
+"161
+[e $ ! != & -> . _header 4 `ui -> 65311 `ui -> -> 0 `i `ui 391  ]
+"162
+[e ) . `E208 0 ]
+[e $UE 389  ]
+[e :U 391 ]
+"164
+[e = _IPHeaderLen -> << & -> . _header 0 `i -> 15 `i -> 2 `i `uc ]
+"171
+[e = . _CalcChecksum 0 ( _MACCalcRxChecksum (2 , -> -> 0 `i `us -> _IPHeaderLen `us ]
+"174
+[e ( _MACSetReadPtrInRx (1 -> _IPHeaderLen `us ]
+"176
+[e $ ! != -> . _CalcChecksum 0 `ui -> -> -> 0 `i `us `ui 392  ]
+"210
+{
+"213
+[e ) . `E208 0 ]
+[e $UE 389  ]
+"214
+}
+[e :U 392 ]
+"217
+[e ( _SwapIPHeader (1 &U _header ]
+"221
+[e $ ! != _localIP -> -> 0 `i `*S24 393  ]
+"222
+[e = . *U _localIP 0 . . _header 9 0 ]
+[e :U 393 ]
+"224
+[e = . . *U _remote 0 0 . . _header 8 0 ]
+"225
+[e = *U _protocol . _header 6 ]
+"226
+[e = *U _len -> - -> . _header 2 `ui -> _IPHeaderLen `ui `us ]
+"228
+[e ) . `E208 1 ]
+[e $UE 389  ]
+"229
+[e :UE 389 ]
+}
+"255
+[v _IPPutHeader `(us 1 ef3`*S356`uc`us ]
+{
+[e :U _IPPutHeader ]
+[v _remote `*S356 1 r1 ]
+[v _protocol `uc 1 r2 ]
+[v _len `us 1 r3 ]
+[f ]
+"256
+[v _header `S373 1 a ]
+"258
+[e = _IPHeaderLen -> -> # `S373 `ui `uc ]
+"260
+[e = . _header 0 -> | -> 64 `ui -> -> 5 `i `ui `uc ]
+"261
+[e = . _header 1 -> | -> 0 `i -> 0 `i `uc ]
+"262
+[e = . _header 2 -> + -> # _header `ui -> _len `ui `us ]
+"263
+[e = . _header 3 =+ __Identifier -> -> 1 `i `us ]
+"264
+[e = . _header 4 -> -> 0 `i `us ]
+"265
+[e = . _header 5 -> -> 100 `i `uc ]
+"266
+[e = . _header 6 _protocol ]
+"267
+[e = . _header 7 -> -> 0 `i `us ]
+"268
+[e = . _header 8 . _AppConfig 0 ]
+"270
+[e = . . _header 9 0 . . *U _remote 0 0 ]
+"272
+[e ( _SwapIPHeader (1 &U _header ]
+"274
+[e = . _header 7 ( _CalcIPChecksum (2 , -> &U _header `*uc -> -> # _header `ui `us ]
+"276
+[e ( _MACPutHeader (3 , , &U . *U _remote 1 -> -> 0 `ui `uc -> + -> # _header `ui -> _len `ui `us ]
+"277
+[e ( _MACPutArray (2 , -> &U _header `*uc -> -> # _header `ui `us ]
+"279
+[e ) -> -> 0 `i `us ]
+[e $UE 394  ]
+"281
+[e :UE 394 ]
+}
+"300
+[v _IPSetRxBuffer `(v 1 ef1`us ]
+{
+[e :U _IPSetRxBuffer ]
+[v _Offset `us 1 r1 ]
+[f ]
+"301
+[e ( _MACSetReadPtrInRx (1 -> + -> _Offset `ui -> _IPHeaderLen `ui `us ]
+"302
+[e :UE 395 ]
+}
+"307
+[v _SwapIPHeader `(v 1 sf1`*S373 ]
+{
+[e :U _SwapIPHeader ]
+[v _h `*S373 1 r1 ]
+[f ]
+"308
+[e = . *U _h 2 ( _swaps (1 . *U _h 2 ]
+"309
+[e = . *U _h 3 ( _swaps (1 . *U _h 3 ]
+"310
+[e = . *U _h 7 ( _swaps (1 . *U _h 7 ]
+"311
+[e :UE 396 ]
+}

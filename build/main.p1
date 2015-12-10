@@ -1,0 +1,418 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+[s S25 `us 1 `us 1 ]
+[n S25 . LW HW ]
+[s S26 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S26 . LB HB UB MB ]
+[s S22 `uc 1 `uc 1 ]
+[n S22 . LB HB ]
+[s S23 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S23 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S21 `us 1 `uc -> 2 `i `S22 1 `S23 1 ]
+[n S21 . Val v byte bits ]
+[s S27 `S21 1 `S21 1 ]
+[n S27 . low high ]
+[s S28 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S28 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S24 `ul 1 `us -> 2 `i `uc -> 4 `i `S25 1 `S26 1 `S27 1 `S28 1 ]
+[n S24 . Val w v word byte wordUnion bits ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S357 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"28 /home/andresol/tellstick-net/firmware/main.c
+[v _AppConfig `S357 1 e ]
+[s S389 `uc -> 6 `i `uc -> 11 `i `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 ]
+[n S389 . MACAddr secret ipAddr netmask gateway dns1 dns2 ]
+"29 /home/andresol/tellstick-net/firmware/main.c
+[v _config `S389 1 e ]
+[s S322 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S322 . RBIF INT0IF TMR0IF RBIE INT0IE TMR0IE PEIE_GIEL GIE_GIEH ]
+[s S323 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S323 . . . . . . . PEIE GIE ]
+[s S324 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S324 . . . . . . . GIEL GIEH ]
+[s S325 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S325 . . . . . . . . . ]
+[s S326 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S326 . . INT0F T0IF . INT0E T0IE . . ]
+[s S327 :6 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S327 . . . . ]
+[u S321 `S322 1 `S323 1 `S324 1 `S325 1 `S326 1 `S327 1 ]
+[n S321 . . . . . . . ]
+"3315 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _INTCONbits `S321 0 e@4082 ]
+"85 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Tick.h
+[v _TickUpdate `(v 0 ef ]
+"1896 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR2IF `Vb 0 e@31985 ]
+"9 /home/andresol/tellstick-net/firmware/pwm.h
+[v _pwmUpdate `(v 0 ef ]
+"2060 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR4IF `Vb 0 e@32035 ]
+"1060 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR4 `Vuc 0 e@3960 ]
+"5 /home/andresol/tellstick-net/rf/receive.h
+[v _rfReceiveUpdate `(v 0 ef1`uc ]
+"114 /usr/hitech/picc-18/pro/9.66/include/legacy/ppic18f67j60.h
+[v _RB4 `VNb 0 e@31756 ]
+"1988 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR3IF `Vb 0 e@32009 ]
+"2279 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR3H `Vuc 0 e@4019 ]
+"2275 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR3L `Vuc 0 e@4018 ]
+"3 /home/andresol/tellstick-net/rf/transmit.h
+[v _rfTransmitUpdate `(v 0 ef ]
+[s S292 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :2 `Vuc 1 :1 `Vuc 1 ]
+[n S292 . nBOR nPOR nPD nTO nRI . IPEN ]
+[s S293 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S293 . BOR POR PD TO RI ]
+[u S291 `S292 1 `S293 1 ]
+[n S291 . . . ]
+"2925 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _RCONbits `S291 0 e@4048 ]
+"3254 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _GIEH `Vb 0 e@32663 ]
+"3253 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _GIEL `Vb 0 e@32662 ]
+"2930 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _SWDTEN `Vb 0 e@32392 ]
+"9 /home/andresol/tellstick-net/firmware/eeprom.h
+[v _initEEPROM `(v 0 ef ]
+"11 /home/andresol/tellstick-net/firmware/eeprom.h
+[v _loadEEPROM `(v 0 ef2`*uc`ui ]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _memcpy `(*v 0 ef3`*v`*Cv`ui ]
+[c E208 0 1 .. ]
+[n E208 _BOOL FALSE TRUE  ]
+[p mainexit ]
+"324 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MIWRL `Vuc 0 e@3766 ]
+"328 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _MIWRH `Vuc 0 e@3767 ]
+"1608 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISA `Vuc 0 e@3986 ]
+"1643 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISB `Vuc 0 e@3987 ]
+"1686 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISC `Vuc 0 e@3988 ]
+"1729 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISD `Vuc 0 e@3989 ]
+"1752 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISE `Vuc 0 e@3990 ]
+"1787 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISF `Vuc 0 e@3991 ]
+"1828 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISG `Vuc 0 e@3992 ]
+"1165 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _PORTA `Vuc 0 e@3968 ]
+"1209 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _PORTB `Vuc 0 e@3969 ]
+"1260 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _PORTC `Vuc 0 e@3970 ]
+"1347 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _PORTD `Vuc 0 e@3971 ]
+"1373 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _PORTE `Vuc 0 e@3972 ]
+"1393 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _PORTF `Vuc 0 e@3973 ]
+"1845 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _OSCTUNE `Vuc 0 e@3995 ]
+"2561 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _ADCON1 `Vuc 0 e@4033 ]
+"11 /home/andresol/tellstick-net/firmware/rf.h
+[v _initTransmitter `(v 0 ef ]
+"10 /home/andresol/tellstick-net/firmware/rf.h
+[v _initReceiver `(v 0 ef ]
+"8 /home/andresol/tellstick-net/firmware/pwm.h
+[v _initPwm `(v 0 ef ]
+"80 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Tick.h
+[v _TickInit `(v 0 ef ]
+"143 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _StackInit `(v 0 ef ]
+"177 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _WritePHYReg `(v 0 ef2`uc`us ]
+"144 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _StackTask `(v 0 ef ]
+"145 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _StackApplications `(v 0 ef ]
+"81 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Tick.h
+[v _TickGet `(ul 0 ef ]
+"6 /home/andresol/tellstick-net/rf/receive.h
+[v _rfReceiveTask `(v 0 ef ]
+"8 /home/andresol/tellstick-net/firmware/discovery.h
+[v _discoveryTask `(v 0 ef ]
+"3 /home/andresol/tellstick-net/firmware/localaccess.h
+[v _localAccessTask `(v 0 ef ]
+"25 /home/andresol/tellstick-net/firmware/main.c
+[; 	global __config1 ;#
+[; 	__config1 equ 0xFFFE & 0xFFBF ;#
+"26
+[; 	global __config2 ;#
+[; 	__config2 equ 0xFFFD ;#
+"31
+[v F5354 `(v 1 tf ]
+[v _LowISR `LIF5354 1 e ]
+{
+[e :U _LowISR ]
+[f ]
+"32
+[e $ ! != -> . . _INTCONbits 0 2 `i -> -> -> 0 `i `Vuc `i 391  ]
+{
+"33
+[e ( _TickUpdate ..  ]
+"34
+}
+[e :U 391 ]
+"35
+[e $ ! _TMR2IF 392  ]
+{
+"36
+[e ( _pwmUpdate ..  ]
+"37
+[e = _TMR2IF -> -> 0 `i `b ]
+"38
+}
+[e :U 392 ]
+"39
+[e :UE 390 ]
+}
+"41
+[v F5357 `(v 1 tf ]
+[v _HighISR `IF5357 1 e ]
+{
+[e :U _HighISR ]
+[f ]
+"42
+[e $ ! _TMR4IF 394  ]
+{
+"43
+[e = _TMR4 -> -> 226 `i `uc ]
+"44
+[e ( _rfReceiveUpdate (1 -> -> _RB4 `i `uc ]
+"47
+[e = _TMR4IF -> -> 0 `i `b ]
+"48
+}
+[e :U 394 ]
+"49
+[e $ ! _TMR3IF 395  ]
+{
+"50
+[e = _TMR3H -> -> 255 `i `uc ]
+"51
+[e = _TMR3L -> -> 196 `i `uc ]
+"52
+[e ( _rfTransmitUpdate ..  ]
+"53
+[e = _TMR3IF -> -> 0 `i `b ]
+"54
+}
+[e :U 395 ]
+"55
+[e :UE 393 ]
+}
+"57
+[v _initInterrupts `(v 1 ef ]
+{
+[e :U _initInterrupts ]
+[f ]
+"59
+[e = . . _RCONbits 0 6 -> -> 1 `i `uc ]
+"62
+[e = _GIEH -> -> 1 `i `b ]
+"63
+[e = _GIEL -> -> 1 `i `b ]
+"64
+[e :UE 396 ]
+}
+"66
+[v _initWDT `(v 1 ef ]
+{
+[e :U _initWDT ]
+[f ]
+"67
+[e = _SWDTEN -> -> 1 `i `b ]
+"68
+[e :UE 397 ]
+}
+"70
+[v _initAppConfig `(v 1 sf ]
+{
+[e :U _initAppConfig ]
+[f ]
+"71
+[e ( _initEEPROM ..  ]
+"72
+[e ( _loadEEPROM (2 , -> &U _config `*uc -> # _config `ui ]
+"74
+[e $ ! == -> *U + &U . _config 0 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _config 0 `ui `ux `i -> 255 `i 399  ]
+{
+"76
+[e = *U + &U . _config 0 * -> -> -> 5 `i `ui `ux -> -> # *U &U . _config 0 `ui `ux -> -> 0 `i `uc ]
+"77
+[e = *U + &U . _config 0 * -> -> -> 4 `i `ui `ux -> -> # *U &U . _config 0 `ui `ux -> -> 0 `i `uc ]
+"78
+[e = *U + &U . _config 0 * -> -> -> 3 `i `ui `ux -> -> # *U &U . _config 0 `ui `ux -> -> 0 `i `uc ]
+"79
+[e = *U + &U . _config 0 * -> -> -> 2 `i `ui `ux -> -> # *U &U . _config 0 `ui `ux -> -> 84 `i `uc ]
+"80
+[e = *U + &U . _config 0 * -> -> -> 1 `i `ui `ux -> -> # *U &U . _config 0 `ui `ux -> -> 202 `i `uc ]
+"81
+[e = *U + &U . _config 0 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _config 0 `ui `ux -> -> 172 `i `uc ]
+"82
+}
+[e :U 399 ]
+"84
+[e ( _memcpy (3 , , -> &U . _AppConfig 9 `*v -> &U . _config 0 `*Cv -> # . _AppConfig 9 `ui ]
+"85
+[e = . . _AppConfig 5 0 | | | -> 192 `ul << -> 168 `ul -> -> 8 `ul `i << -> 0 `ul -> -> 16 `ul `i << -> 51 `ul -> -> 24 `ul `i ]
+"86
+[e = . . _AppConfig 6 0 | | | -> 255 `ul << -> 255 `ul -> -> 8 `ul `i << -> 255 `ul -> -> 16 `ul `i << -> 0 `ul -> -> 24 `ul `i ]
+"91
+[e $ ! || || || == -> . . . _config 2 4 0 `i -> 255 `i == -> . . . _config 2 4 1 `i -> 255 `i == -> . . . _config 2 4 2 `i -> 255 `i == -> . . . _config 2 4 3 `i -> 255 `i 400  ]
+{
+"92
+[e = . . _AppConfig 8 1 -> . `E208 1 `uc ]
+"93
+[e = . . _AppConfig 8 2 -> . `E208 1 `uc ]
+"94
+[e = . . _AppConfig 0 0 | | | -> 192 `ul << -> 168 `ul -> -> 8 `ul `i << -> 0 `ul -> -> 16 `ul `i << -> 51 `ul -> -> 24 `ul `i ]
+"95
+[e = . . _AppConfig 1 0 | | | -> 255 `ul << -> 255 `ul -> -> 8 `ul `i << -> 255 `ul -> -> 16 `ul `i << -> 0 `ul -> -> 24 `ul `i ]
+"96
+[e = . . _AppConfig 2 0 | | | -> 192 `ul << -> 168 `ul -> -> 8 `ul `i << -> 0 `ul -> -> 16 `ul `i << -> 1 `ul -> -> 24 `ul `i ]
+"97
+[e = . . _AppConfig 3 0 | | | -> 192 `ul << -> 168 `ul -> -> 8 `ul `i << -> 0 `ul -> -> 16 `ul `i << -> 1 `ul -> -> 24 `ul `i ]
+"98
+[e = . . _AppConfig 4 0 | | | -> 0 `ul << -> 0 `ul -> -> 8 `ul `i << -> 0 `ul -> -> 16 `ul `i << -> 0 `ul -> -> 24 `ul `i ]
+"99
+}
+[e $U 401  ]
+[e :U 400 ]
+{
+"100
+[e = . . _AppConfig 8 1 -> . `E208 0 `uc ]
+"101
+[e = . . _AppConfig 8 2 -> . `E208 0 `uc ]
+"102
+[e = . _AppConfig 0 . _config 2 ]
+"103
+[e = . _AppConfig 1 . _config 3 ]
+"104
+[e = . _AppConfig 2 . _config 4 ]
+"105
+[e = . _AppConfig 3 . _config 5 ]
+"106
+[e = . _AppConfig 4 . _config 6 ]
+"107
+}
+[e :U 401 ]
+"108
+[e :UE 398 ]
+}
+"110
+[v _main `(i 1 ef ]
+{
+[e :U _main ]
+[f ]
+"111
+[v _t `ul 1 a ]
+[e = _t -> -> -> 0 `i `l `ul ]
+"114
+[e = _MIWRL -> -> 0 `i `uc ]
+"115
+[e = _MIWRH -> -> 0 `i `uc ]
+"117
+[e = _TRISA -> -> 0 `i `uc ]
+"118
+[e = _TRISB -> -> 0 `i `uc ]
+"119
+[e = _TRISC -> -> 0 `i `uc ]
+"120
+[e = _TRISD -> -> 0 `i `uc ]
+"121
+[e = _TRISE -> -> 0 `i `uc ]
+"122
+[e = _TRISF -> -> 0 `i `uc ]
+"123
+[e = _TRISG -> -> 0 `i `uc ]
+"124
+[e = _PORTA -> -> 0 `i `uc ]
+"125
+[e = _PORTB -> -> 0 `i `uc ]
+"126
+[e = _PORTC -> -> 0 `i `uc ]
+"127
+[e = _PORTD -> -> 0 `i `uc ]
+"128
+[e = _PORTE -> -> 0 `i `uc ]
+"129
+[e = _PORTF -> -> 0 `i `uc ]
+"131
+[e = _OSCTUNE -> -> 64 `i `uc ]
+"134
+[e = _ADCON1 -> -> 15 `i `uc ]
+"140
+[e ( _initTransmitter ..  ]
+"141
+[e ( _initReceiver ..  ]
+"142
+[e ( _initPwm ..  ]
+"143
+[e ( _initInterrupts ..  ]
+"144
+[e ( _initAppConfig ..  ]
+"145
+[e ( _initWDT ..  ]
+"146
+[e ( _TickInit ..  ]
+"147
+[e ( _StackInit ..  ]
+"149
+[e ( _WritePHYReg (2 , -> -> 20 `i `uc -> -> 14146 `i `us ]
+"151
+[e -> 1 `i ]
+"153
+[e :U 404 ]
+{
+"154
+[e ( _StackTask ..  ]
+"155
+[e ( _StackApplications ..  ]
+"156
+[e $ ! >= - ( _TickGet ..  _t / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul 406  ]
+{
+"157
+[e = _t ( _TickGet ..  ]
+"158
+}
+[e :U 406 ]
+"162
+[e ( _rfReceiveTask ..  ]
+"163
+[e ( _discoveryTask ..  ]
+"164
+[e ( _localAccessTask ..  ]
+"165
+[; CLRWDT ;#
+"166
+}
+[e :U 403 ]
+"153
+[e $U 404  ]
+[e :U 405 ]
+"167
+[e ) -> 42 `i ]
+[e $UE 402  ]
+"168
+[e :UE 402 ]
+}

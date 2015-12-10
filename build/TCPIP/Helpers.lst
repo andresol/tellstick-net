@@ -1,0 +1,2179 @@
+     1: /*********************************************************************
+     2:  
+     3:  Helper Functions for Microchip TCPIP Stack
+     4:  
+     5:  FileName:      Helpers.c
+     6:  Dependencies:  See INCLUDES section
+     7:  Processor:     PIC18, PIC24, dsPIC, PIC32
+     8:  Compiler:      Microchip C18, C30, C32
+     9:  Company:       Microchip Technology, Inc.
+    10: 
+    11:  Software License Agreement
+    12: 
+    13:  Copyright (C) 2002-2011 Microchip Technology Inc.  All rights
+    14:  reserved.
+    15: 
+    16:  Microchip licenses to you the right to use, modify, copy, and
+    17:  distribute:
+    18:  (i)  the Software when embedded on a Microchip microcontroller or
+    19:       digital signal controller product ("Device") which is
+    20:       integrated into Licensee's product; or
+    21:  (ii) ONLY the Software driver source files ENC28J60.c, ENC28J60.h,
+    22:                 ENCX24J600.c and ENCX24J600.h ported to a non-Microchip device
+    23:                 used in conjunction with a Microchip ethernet controller for
+    24:                 the sole purpose of interfacing with the ethernet controller.
+    25: 
+    26:  You should refer to the license agreement accompanying this
+    27:  Software for additional information regarding your rights and
+    28:  obligations.
+    29: 
+    30:  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT
+    31:  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+    32:  LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+    33:  PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL
+    34:  MICROCHIP BE LIABLE FOR ANY INCIDENTAL, SPECIAL, INDIRECT OR
+    35:  CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF
+    36:  PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES, ANY CLAIMS
+    37:  BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE
+    38:  THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION, OR OTHER
+    39:  SIMILAR COSTS, WHETHER ASSERTED ON THE BASIS OF CONTRACT, TORT
+    40:  (INCLUDING NEGLIGENCE), BREACH OF WARRANTY, OR OTHERWISE.
+    41: 
+    42:  ********************************************************************
+    43:  File Description:
+    44:  
+    45:  Change History:
+    46:  
+    47:   Rev         Description
+    48:   ----------  -------------------------------------------------------
+    49:   1.0 - 5.31  Initial release; Rewritten CalcIPChecksum() to avoid
+    50:               multi-byte shift operation; Added hexatob(),
+    51:               btohexa_high(), and btohexa_low(); Optimized swapl();
+    52:               Added leftRotateDWORD()
+    53:   5.36        Updated compile time check for ultoa();
+    54: 
+    55:  ********************************************************************/
+    56: #define __HELPERS_C
+    57: 
+    58: #include "TCPIP Stack/TCPIP.h"
+    59: 
+    60: 
+    61: // Default Random Number Generator seed. 0x41FE9F9E corresponds to calling LFSRSeedRand(1)
+    62: static DWORD dwLFSRRandSeed = 0x41FE9F9E;
+    63: 
+    64: /*****************************************************************************
+    65:   Function:
+    66:         DWORD LFSRSeedRand(DWORD dwSeed)
+    67: 
+    68:   Summary:
+    69:         Seeds the LFSR random number generator invoked by the LFSRRand() function.  
+    70:         The prior seed is returned.
+    71: 
+    72:   Description:
+    73:         Seeds the LFSR random number generator invoked by the LFSRRand() function.  
+    74:         The prior seed is returned.
+    75: 
+    76:   Precondition:
+    77:         None
+    78: 
+    79:   Parameters:
+    80:         wSeed - The new 32-bit seed value to assign to the LFSR.
+    81: 
+    82:   Returns:
+    83:         The last seed in use.  This can be saved and restored by a subsequent call 
+    84:         to LFSRSeedRand() if you wish to use LFSRRand() in multiple contexts 
+    85:         without disrupting the random number sequence from the alternative 
+    86:         context.  For example, if App 1 needs a given sequence of random numbers 
+    87:         to perform a test, if you save and restore the seed in App 2, it is 
+    88:         possible for App 2 to not disrupt the random number sequence provided to 
+    89:         App 1, even if the number of times App 2 calls LFSRRand() varies.
+    90:         
+    91:   Side Effects:
+    92:         None
+    93:         
+    94:   Remarks:
+    95:         Upon initial power up, the internal seed is initialized to 0x1.  Using a 
+    96:         dwSeed value of 0x0 will return the same sequence of random numbers as 
+    97:         using the seed of 0x1.
+    98:   ***************************************************************************/
+    99: DWORD LFSRSeedRand(DWORD dwSeed)
+   100: {
+   101:         DWORD dwOldSeed;
+   102:         BYTE i;
+   103: 
+   104:         // Save original seed to be returned later
+   105:         dwOldSeed = dwLFSRRandSeed;
+   106: 
+   107:         // Ensure zero isn't selected as a seed value, this would result in all 
+   108:         // 0x0000 output values from the LFSR
+   109:         if(dwSeed == 0u)
+   110:                 dwSeed = 1;
+   111:                 
+   112:         // Set the new seed
+   113:         dwLFSRRandSeed = dwSeed;
+   114:         
+   115:         // Run the LFSR a few times to get rid of obvious start up artifacts for 
+   116:         // seed values that don't have many set bits.
+   117:         for(i = 0; i < 16; i++)
+   118:                 LFSRRand();
+   119:         
+   120:         // Return saved old seed
+   121:         return dwOldSeed;
+   122: }
+   123: 
+   124: /*****************************************************************************
+   125:   Function:
+   126:         WORD LFSRRand(void)
+   127: 
+   128:   Summary:
+   129:         Returns a pseudo-random 16-bit unsigned integer in the range from 0 
+   130:         to 65535 (0x0000 to 0xFFFF).
+   131: 
+   132:   Description:
+   133:         Returns a pseudo-random 16-bit unsigned integer in the range from 0 
+   134:         to 65535 (0x0000 to 0xFFFF).  The random number is generated using a 
+   135:         Linear Feedback Shift Register (LFSR) type pseudo-random number generator 
+   136:         algorithm.  The LFSR can be seeded by calling the LFSRSeedRand() function
+   137:         to generate the same sequence of random numbers as a prior string of calls.
+   138:         
+   139:         The internal LFSR will repeat after 2^32-1 iterations.
+   140: 
+   141:   Precondition:
+   142:         None
+   143: 
+   144:   Parameters:
+   145:         None
+   146: 
+   147:   Returns:
+   148:         Random 16-bit unsigned integer.
+   149:         
+   150:   Side Effects:
+   151:         The internal LFSR seed is updated so that the next call to LFSRRand() 
+   152:         will return a different random number.
+   153:         
+   154:   Remarks:
+   155:         None
+   156:   ***************************************************************************/
+   157: WORD LFSRRand(void)
+   158: {
+   159:         BYTE i;
+   160:         
+   161:         // Taps: 32 31 29 1
+   162:         // Characteristic polynomial: x^32 + x^31 + x^29 + x + 1
+   163:         // Repeat 15 times to make the shift pattern less obvious
+   164:         for(i = 0; i < 15; i++)
+   165:                 dwLFSRRandSeed = (dwLFSRRandSeed >> 1) ^ ((0ul - (dwLFSRRandSeed & 1ul)) & 0xD0000001ul);
+   166: 
+   167:         // Return 16-bits as pseudo-random number
+   168:         return (WORD)dwLFSRRandSeed;
+   169: }
+   170: 
+   171: 
+   172: /*****************************************************************************
+   173:   Function:
+   174:         DWORD GenerateRandomDWORD(void)
+   175: 
+   176:   Summary:
+   177:         Generates a random DWORD.
+   178: 
+   179:   Description:
+   180:         This function generates a random 32-bit integer.  It collects
+   181:         randomness by comparing the A/D converter's internal R/C oscillator
+   182:         clock with our main system clock.  By passing collected entropy to the
+   183:         LFSRSeedRand()/LFSRRand() functions, the output is normalized (deskewed) 
+   184:         in the hopes of meeting statistical randomness tests.
+   185: 
+   186:   Precondition:
+   187:         None
+   188: 
+   189:   Parameters:
+   190:         None
+   191: 
+   192:   Returns:
+   193:         Random 32-bit number.
+   194:         
+   195:   Side Effects:
+   196:         This function uses the A/D converter (and so you must disable 
+   197:         interrupts if you use the A/D converted in your ISR).  The LFSRRand() 
+   198:         function will be reseeded, and Timer0 (PIC18) and Timer1 (PIC24, 
+   199:         dsPIC, and PIC32) will be used.  TMR#H:TMR#L will have a new value.
+   200:         Note that this is the same timer used by the Tick module.
+   201:         
+   202:   Remarks:
+   203:         This function times out after 1 second of attempting to generate the 
+   204:         random DWORD.  In such a case, the output may not be truly random.  
+   205:         Typically, this function executes in around 500,000 instruction cycles.
+   206:         
+   207:         The intent of this function is to produce statistically random and
+   208:         cryptographically secure random number.  Whether or not this is true on
+   209:         all (or any) devices/voltages/temperatures is not tested.
+   210:   ***************************************************************************/
+   211: DWORD GenerateRandomDWORD(void)
+   212: {
+   213:         BYTE vBitCount;
+   214:         WORD w, wTime, wLastValue;
+   215:         DWORD dwTotalTime;
+   216:         union
+   217:         {
+   218:                 DWORD   dw;
+   219:                 WORD    w[2];
+   220:         } randomResult;
+   221: 
+   222: #if defined __18CXX     
+   223: {
+   224:         BYTE ADCON0Save, ADCON2Save;
+   225:         BYTE T0CONSave, TMR0HSave, TMR0LSave;
+   226: 
+   227:         // Save hardware SFRs
+   228:         ADCON0Save = ADCON0;
+   229:         ADCON2Save = ADCON2;
+   230:         T0CONSave = T0CON;
+   231:         TMR0LSave = TMR0L;
+   232:         TMR0HSave = TMR0H;
+   233: 
+   234:         // Set up Timer and A/D converter module
+   235:         ADCON0 = 0x01;  // Turn on the A/D module
+   236:         ADCON2 = 0x3F;  // 20 Tad acquisition, Frc A/D clock used for conversion
+   237:         T0CON = 0x88;   // TMR0ON = 1, no prescalar
+   238:         vBitCount = 0;
+   239:         dwTotalTime = 0;
+   240:         wLastValue = 0;
+   241:         randomResult.dw = LFSRRand();
+   242:         while(1)
+   243:         {
+   244:                 // Time the duration of an A/D acquisition and conversion
+   245:                 TMR0H = 0x00;
+   246:                 TMR0L = 0x00;
+   247:                 ADCON0bits.GO = 0x01;
+   248:                 ClrWdt();
+   249:                 while(ADCON0bits.GO == 0x01);
+   250:                 ((BYTE*)&wTime)[0] = TMR0L;
+   251:                 ((BYTE*)&wTime)[1] = TMR0H;
+   252:                 w = LFSRRand();
+   253:         
+   254:                 // Wait no longer than 1 second obtaining entropy
+   255:                 dwTotalTime += wTime;
+   256:                 if(dwTotalTime >= GetInstructionClock())
+   257:                 {
+   258:                         randomResult.w[0] ^= LFSRRand();
+   259:                         randomResult.w[1] ^= LFSRRand();
+   260:                         break;
+   261:                 }
+   262:         
+   263:                 // Keep sampling if minimal entropy was likely obtained this round
+   264:                 if(wLastValue == wTime)
+   265:                         continue;
+   266:         
+   267:                 // Add this entropy into the pseudo random number generator by reseeding
+   268:                 LFSRSeedRand(w + (wLastValue - wTime));
+   269:                 wLastValue = wTime;
+   270:         
+   271:                 // Accumulate at least 32 bits of randomness over time
+   272:                 randomResult.dw <<= 1;
+   273:                 if(LFSRRand() & 0x0080)
+   274:                         randomResult.w[0] |= 0x1;
+   275:         
+   276:                 // See if we've collected a fair amount of entropy and can quit early
+   277:                 if(++vBitCount == 0u)
+   278:                         break;
+   279:         }
+   280: 
+   281:         // Restore hardware SFRs
+   282:         ADCON0 = ADCON0Save;
+   283:         ADCON2 = ADCON2Save;
+   284:         TMR0H = TMR0HSave;
+   285:         TMR0L = TMR0LSave;
+   286:         T0CON = T0CONSave;
+   287: }
+   288: #else
+   289: {
+   290:         WORD AD1CON1Save, AD1CON2Save, AD1CON3Save;
+   291:         WORD T1CONSave, PR1Save;
+   292: 
+   293:         // Save hardware SFRs
+   294:         AD1CON1Save = AD1CON1;
+   295:         AD1CON2Save = AD1CON2;
+   296:         AD1CON3Save = AD1CON3;
+   297:         T1CONSave = T1CON;
+   298:         PR1Save = PR1;
+   299: 
+   300:         // Set up Timer and A/D converter module
+   301:         AD1CON1 = 0x0000;               // Turn off the ADC so we can write to it
+   302:         AD1CON3 = 0x9F00;               // Frc A/D clock, 31 Tad acquisition
+   303:         AD1CON2 = 0x003F;               // Interrupt after every 16th sample/convert
+   304:         AD1CON1 = 0x80E4;               // Turn on the A/D module, auto-convert
+   305:         T1CON = 0x8000;                 // TON = 1, no prescalar
+   306:         PR1 = 0xFFFF;                   // Don't clear timer early
+   307:         vBitCount = 0;
+   308:         dwTotalTime = 0;
+   309:         wLastValue = 0;
+   310:         randomResult.dw = LFSRRand();
+   311:         while(1)
+   312:         {
+   313:                 ClrWdt();
+   314:                 #if defined(__C30__)
+   315:                         while(!IFS0bits.AD1IF);
+   316:                 #else
+   317:                         while(!IFS1bits.AD1IF);
+   318:                 #endif
+   319:                 wTime = TMR1;
+   320:                 TMR1 = 0x0000;
+   321: 
+   322:                 #if defined(__C30__)
+   323:                         IFS0bits.AD1IF = 0;
+   324:                 #else
+   325:                         IFS1CLR = _IFS1_AD1IF_MASK;
+   326:                 #endif
+   327:                 w = LFSRRand();
+   328:         
+   329:                 // Wait no longer than 1 second obtaining entropy
+   330:                 dwTotalTime += wTime;
+   331:                 if(dwTotalTime >= GetInstructionClock())
+   332:                 {
+   333:                         randomResult.w[0] ^= LFSRRand();
+   334:                         randomResult.w[1] ^= LFSRRand();
+   335:                         break;
+   336:                 }
+   337:         
+   338:                 // Keep sampling if minimal entropy was likely obtained this round
+   339:                 if(wLastValue == wTime)
+   340:                         continue;
+   341:         
+   342:                 // Add this entropy into the pseudo random number generator by reseeding
+   343:                 LFSRSeedRand(w + (wLastValue - wTime));
+   344:                 wLastValue = wTime;
+   345:         
+   346:                 // Accumulate at least 32 bits of randomness over time
+   347:                 randomResult.dw <<= 1;
+   348:                 if(LFSRRand() & 0x0080)
+   349:                         randomResult.w[0] |= 0x1;
+   350:         
+   351:                 // See if we've collected a fair amount of entropy and can quit early
+   352:                 if(++vBitCount == 0u)
+   353:                         break;
+   354:         }
+   355: 
+   356: 
+   357:         // Restore hardware SFRs
+   358:         AD1CON1 = 0x0000;               // Turn off the ADC so we can write to it
+   359:         AD1CON3 = AD1CON3Save;
+   360:         AD1CON2 = AD1CON2Save;
+   361:         AD1CON1 = AD1CON1Save;
+   362:         T1CON = T1CONSave;
+   363:         PR1 = PR1Save;
+   364: }
+   365: #endif
+   366: 
+   367:         return randomResult.dw;
+   368: }
+   369: 
+   370: 
+   371: #if defined(STACK_USE_HTTP_SERVER)
+   372: /*****************************************************************************
+   373:   Function:
+   374:         void UnencodeURL(BYTE* URL)
+   375: 
+   376:   Summary:
+   377:         Decodes a URL-encoded string.
+   378: 
+   379:   Description:
+   380:         This function is deprecated except for use with HTTP Classic.  It
+   381:         attempts to decode a URL encoded string, converting all hex escape
+   382:         sequences into a literal byte.  However, it is inefficient over long
+   383:         strings and does not handle URL-encoded data strings ('&' and '=').
+   384: 
+   385:   Precondition:
+   386:         None
+   387: 
+   388:   Parameters:
+   389:         URL - the null-terminated string to decode
+   390: 
+   391:   Returns:
+   392:         None
+   393:   ***************************************************************************/
+   394: void UnencodeURL(BYTE* URL)
+   395: {
+   396:         BYTE *Right, *Copy;
+   397:         WORD_VAL Number;
+   398: 
+   399:         while((Right = (BYTE*)strchr((char*)URL, '%')))
+   400:         {
+   401:                 // Make sure the string is long enough
+   402:                 if(Right[1] == '\0')
+   403:                         break;
+   404:                 if(Right[2] == '\0')
+   405:                         break;
+   406: 
+   407:                 // Update the string in place
+   408:                 Number.v[0] = Right[2];
+   409:                 Number.v[1] = Right[1];
+   410:                 *Right++ = hexatob(Number);
+   411:                 URL = Right;
+   412: 
+   413:                 // Remove two blank spots by shifting all remaining characters right two
+   414:                 Copy = Right + 2;
+   415:                 while((*Right++ = *Copy++));
+   416:         }
+   417: }                   
+   418: #endif
+   419: 
+   420: 
+   421: /*****************************************************************************
+   422:   Function:
+   423:         BOOL StringToIPAddress(BYTE* str, IP_ADDR* IPAddress)
+   424: 
+   425:   Summary:
+   426:         Converts a string to an IP address
+   427: 
+   428:   Description:
+   429:         This function parses a dotted-quad decimal IP address string into an 
+   430:         IP_ADDR struct.  The output result is big-endian.
+   431:         
+   432:   Precondition:
+   433:         None
+   434: 
+   435:   Parameters:
+   436:         str - Pointer to a dotted-quad IP address string
+   437:         IPAddress - Pointer to IP_ADDR in which to store the result
+   438: 
+   439:   Return Values:
+   440:         TRUE - an IP address was successfully decoded
+   441:         FALSE - no IP address could be found, or the format was incorrect
+   442:   ***************************************************************************/
+   443: BOOL StringToIPAddress(BYTE* str, IP_ADDR* IPAddress)
+   444: {
+   445:         DWORD_VAL dwVal;
+   446:         BYTE i, charLen, currentOctet;
+   447: 
+   448:         charLen = 0;
+   449:         currentOctet = 0;
+   450:         dwVal.Val = 0;
+   451:         while((i = *str++))
+   452:         {
+   453:                 if(currentOctet > 3u)
+   454:                         break;
+   455: 
+   456:                 i -= '0';
+   457:                 
+   458: 
+   459:                 // Validate the character is a numerical digit or dot, depending on location
+   460:                 if(charLen == 0u)
+   461:                 {
+   462:                         if(i > 9u)
+   463:                                 return FALSE;
+   464:                 }
+   465:                 else if(charLen == 3u)
+   466:                 {
+   467:                         if(i != (BYTE)('.' - '0'))
+   468:                                 return FALSE;
+   469: 
+   470:                         if(dwVal.Val > 0x00020505ul)
+   471:                                 return FALSE;
+   472: 
+   473:                         IPAddress->v[currentOctet++] = dwVal.v[2]*((BYTE)100) + dwVal.v[1]*((BYTE)10) + dwVal.v[0];
+   474:                         charLen = 0;
+   475:                         dwVal.Val = 0;
+   476:                         continue;
+   477:                 }
+   478:                 else
+   479:                 {
+   480:                         if(i == (BYTE)('.' - '0'))
+   481:                         {
+   482:                                 if(dwVal.Val > 0x00020505ul)
+   483:                                         return FALSE;
+   484: 
+   485:                                 IPAddress->v[currentOctet++] = dwVal.v[2]*((BYTE)100) + dwVal.v[1]*((BYTE)10) + dwVal.v[0];
+   486:                                 charLen = 0;
+   487:                                 dwVal.Val = 0;
+   488:                                 continue;
+   489:                         }
+   490:                         if(i > 9u)
+   491:                                 return FALSE;
+   492:                 }
+   493: 
+   494:                 charLen++;
+   495:                 dwVal.Val <<= 8;
+   496:                 dwVal.v[0] = i;
+   497:         }
+   498: 
+   499:         // Make sure the very last character is a valid termination character 
+   500:         // (i.e., not more hostname, which could be legal and not an IP 
+   501:         // address as in "10.5.13.233.picsaregood.com"
+   502:         if(i != 0u && i != '/' && i != '\r' && i != '\n' && i != ' ' && i != '\t')
+   503:                 return FALSE;
+   504: 
+   505:         // Verify and convert the last octet and return the result
+   506:         if(dwVal.Val > 0x00020505ul)
+   507:                 return FALSE;
+   508: 
+   509:         IPAddress->v[3] = dwVal.v[2]*((BYTE)100) + dwVal.v[1]*((BYTE)10) + dwVal.v[0];
+   510: 
+   511:         return TRUE;
+   512: }
+   513: 
+   514: /*****************************************************************************
+   515:   Function:
+   516:         BOOL ROMStringToIPAddress(ROM BYTE* str, IP_ADDR* IPAddress)
+   517: 
+   518:   Summary:
+   519:         Converts a string to an IP address
+   520: 
+   521:   Description:
+   522:         This function parses a dotted-quad decimal IP address string into an 
+   523:         IP_ADDR struct.  The output result is big-endian.
+   524:         
+   525:   Precondition:
+   526:         None
+   527: 
+   528:   Parameters:
+   529:         str - Pointer to a dotted-quad IP address string
+   530:         IPAddress - Pointer to IP_ADDR in which to store the result
+   531: 
+   532:   Return Values:
+   533:         TRUE - an IP address was successfully decoded
+   534:         FALSE - no IP address could be found, or the format was incorrect
+   535:   
+   536:   Remarks:
+   537:         This function is aliased to StringToIPAddress on non-PIC18 platforms.
+   538:   ***************************************************************************/
+   539: #if defined(__18CXX)
+   540: BOOL ROMStringToIPAddress(ROM BYTE* str, IP_ADDR* IPAddress)
+   541: {
+   542:         DWORD_VAL dwVal;
+   543:         BYTE i, charLen, currentOctet;
+   544: 
+   545:         charLen = 0;
+   546:         currentOctet = 0;
+   547:         dwVal.Val = 0;
+   548:         while(i = *str++)
+   549:         {
+   550:                 if(currentOctet > 3u)
+   551:                         break;
+   552: 
+   553:                 i -= '0';
+   554:                 
+   555: 
+   556:                 // Validate the character is a numerical digit or dot, depending on location
+   557:                 if(charLen == 0u)
+   558:                 {
+   559:                         if(i > 9u)
+   560:                                 return FALSE;
+   561:                 }
+   562:                 else if(charLen == 3u)
+   563:                 {
+   564:                         if(i != (BYTE)('.' - '0'))
+   565:                                 return FALSE;
+   566: 
+   567:                         if(dwVal.Val > 0x00020505ul)
+   568:                                 return FALSE;
+   569: 
+   570:                         IPAddress->v[currentOctet++] = dwVal.v[2]*((BYTE)100) + dwVal.v[1]*((BYTE)10) + dwVal.v[0];
+   571:                         charLen = 0;
+   572:                         dwVal.Val = 0;
+   573:                         continue;
+   574:                 }
+   575:                 else
+   576:                 {
+   577:                         if(i == (BYTE)('.' - '0'))
+   578:                         {
+   579:                                 if(dwVal.Val > 0x00020505ul)
+   580:                                         return FALSE;
+   581: 
+   582:                                 IPAddress->v[currentOctet++] = dwVal.v[2]*((BYTE)100) + dwVal.v[1]*((BYTE)10) + dwVal.v[0];
+   583:                                 charLen = 0;
+   584:                                 dwVal.Val = 0;
+   585:                                 continue;
+   586:                         }
+   587:                         if(i > 9u)
+   588:                                 return FALSE;
+   589:                 }
+   590: 
+   591:                 charLen++;
+   592:                 dwVal.Val <<= 8;
+   593:                 dwVal.v[0] = i;
+   594:         }
+   595: 
+   596:         // Make sure the very last character is a valid termination character 
+   597:         // (i.e., not more hostname, which could be legal and not an IP 
+   598:         // address as in "10.5.13.233.picsaregood.com"
+   599:         if(i != 0u && i != '/' && i != '\r' && i != '\n' && i != ' ' && i != '\t')
+   600:                 return FALSE;
+   601: 
+   602:         // Verify and convert the last octet and return the result
+   603:         if(dwVal.Val > 0x00020505ul)
+   604:                 return FALSE;
+   605: 
+   606:         IPAddress->v[3] = dwVal.v[2]*((BYTE)100) + dwVal.v[1]*((BYTE)10) + dwVal.v[0];
+   607: 
+   608:         return TRUE;
+   609: }
+   610: #endif
+   611: 
+   612: 
+   613: 
+   614: /*****************************************************************************
+   615:   Function:
+   616:         WORD Base64Decode(BYTE* cSourceData, WORD wSourceLen, 
+   617:                                                 BYTE* cDestData, WORD wDestLen)
+   618: 
+   619:   Description:
+   620:         Decodes a Base-64 array to its literal representation.
+   621:         
+   622:   Precondition:
+   623:         None
+   624: 
+   625:   Parameters:
+   626:         cSourceData - Pointer to a string of Base-64 encoded data
+   627:         wSourceLen      - Length of the Base-64 source data
+   628:         cDestData       - Pointer to write the decoded data
+   629:         wSourceLen      - Maximum length that can be written to cDestData
+   630: 
+   631:   Returns:
+   632:         Number of decoded bytes written to cDestData.
+   633:   
+   634:   Remarks:
+   635:         This function is binary safe and will ignore invalid characters (CR, LF, 
+   636:         etc).  If cSourceData is equal to cDestData, the data will be converted
+   637:         in-place.  If cSourceData is not equal to cDestData, but the regions 
+   638:         overlap, the behavior is undefined.
+   639:         
+   640:         Decoded data is always at least 1/4 smaller than the source data.
+   641:   ***************************************************************************/
+   642: #if defined(STACK_USE_BASE64_DECODE)
+   643: WORD Base64Decode(BYTE* cSourceData, WORD wSourceLen, BYTE* cDestData, WORD wDestLen)
+   644: {
+   645:         BYTE i;
+   646:         BYTE vByteNumber;
+   647:         WORD wBytesOutput;
+   648: 
+   649:         vByteNumber = 0;
+   650:         wBytesOutput = 0;
+   651: 
+   652:         // Loop over all provided bytes
+   653:         while(wSourceLen--)
+   654:         {
+   655:                 // Fetch a Base64 byte and decode it to the original 6 bits
+   656:                 i = *cSourceData++;
+   657:                 if(i >= 'A' && i <= 'Z')        // Regular data
+   658:                         i -= 'A' - 0;
+   659:                 else if(i >= 'a' && i <= 'z')
+   660:                         i -= 'a' - 26;
+   661:                 else if(i >= '0' && i <= '9')
+   662:                         i -= '0' - 52;
+   663:                 else if(i == '+' || i == '-')
+   664:                         i = 62;
+   665:                 else if(i == '/' || i == '_')
+   666:                         i = 63;
+   667:                 else                                            // Skip all padding (=) and non-Base64 characters
+   668:                         continue;
+   669: 
+   670: 
+   671:                 // Write the 6 bits to the correct destination location(s)
+   672:                 if(vByteNumber == 0u)
+   673:                 {
+   674:                         vByteNumber++;
+   675:                         if(wBytesOutput >= wDestLen)
+   676:                                 break;
+   677:                         wBytesOutput++;
+   678:                         *cDestData = i << 2;
+   679:                 }
+   680:                 else if(vByteNumber == 1u)
+   681:                 {
+   682:                         vByteNumber++;
+   683:                         *cDestData++ |= i >> 4;
+   684:                         if(wBytesOutput >= wDestLen)
+   685:                                 break;
+   686:                         wBytesOutput++;
+   687:                         *cDestData = i << 4;
+   688:                 }
+   689:                 else if(vByteNumber == 2u)
+   690:                 {
+   691:                         vByteNumber++;
+   692:                         *cDestData++ |= i >> 2;
+   693:                         if(wBytesOutput >= wDestLen)
+   694:                                 break;
+   695:                         wBytesOutput++;
+   696:                         *cDestData = i << 6;
+   697:                 }
+   698:                 else
+   699:                 {
+   700:                         vByteNumber = 0;
+   701:                         *cDestData++ |= i;
+   702:                 }
+   703:         }
+   704: 
+   705:         return wBytesOutput;
+   706: }
+   707: #endif  // #if defined(STACK_USE_BASE64_DECODE)
+   708: 
+   709: 
+   710: /*****************************************************************************
+   711:   Function:
+   712:         WORD Base64Encode(BYTE* cSourceData, WORD wSourceLen,
+   713:                                                 BYTE* cDestData, WORD wDestLen)
+   714: 
+   715:   Description:
+   716:         Encodes a binary array to Base-64.
+   717:         
+   718:   Precondition:
+   719:         None
+   720: 
+   721:   Parameters:
+   722:         cSourceData - Pointer to a string of binary data
+   723:         wSourceLen      - Length of the binary source data
+   724:         cDestData       - Pointer to write the Base-64 encoded data
+   725:         wSourceLen      - Maximum length that can be written to cDestData
+   726: 
+   727:   Returns:
+   728:         Number of encoded bytes written to cDestData.  This will always be
+   729:         a multiple of 4.
+   730:   
+   731:   Remarks:
+   732:         Encoding cannot be performed in-place.  If cSourceData overlaps with 
+   733:         cDestData, the behavior is undefined.
+   734:         
+   735:         Encoded data is always at least 1/3 larger than the source data.  It may
+   736:         be 1 or 2 bytes larger than that.
+   737:   ***************************************************************************/
+   738: #if defined(STACK_USE_BASE64_ENCODE) || defined(STACK_USE_SMTP_CLIENT) || defined(STACK_USE_DYNAMICDNS_CLIENT)
+   739: WORD Base64Encode(BYTE* cSourceData, WORD wSourceLen, BYTE* cDestData, WORD wDestLen)
+   740: {
+   741:         BYTE i, j;
+   742:         BYTE vOutput[4];
+   743:         WORD wOutputLen;
+   744: 
+   745:         wOutputLen = 0;
+   746:         while(wDestLen >= 4u)
+   747:         {
+   748:                 // Start out treating the output as all padding
+   749:                 vOutput[0] = 0xFF;
+   750:                 vOutput[1] = 0xFF;
+   751:                 vOutput[2] = 0xFF;
+   752:                 vOutput[3] = 0xFF;
+   753: 
+   754:                 // Get 3 input octets and split them into 4 output hextets (6-bits each) 
+   755:                 if(wSourceLen == 0u)
+   756:                         break;
+   757:                 i = *cSourceData++;
+   758:                 wSourceLen--;
+   759:                 vOutput[0] = (i & 0xFC)>>2;
+   760:                 vOutput[1] = (i & 0x03)<<4;
+   761:                 if(wSourceLen)
+   762:                 {
+   763:                         i = *cSourceData++;
+   764:                         wSourceLen--;
+   765:                         vOutput[1] |= (i & 0xF0)>>4;
+   766:                         vOutput[2] = (i & 0x0F)<<2;
+   767:                         if(wSourceLen)
+   768:                         {
+   769:                                 i = *cSourceData++;
+   770:                                 wSourceLen--;
+   771:                                 vOutput[2] |= (i & 0xC0)>>6;
+   772:                                 vOutput[3] = i & 0x3F;
+   773:                         }
+   774:                 }
+   775:         
+   776:                 // Convert hextets into Base 64 alphabet and store result
+   777:                 for(i = 0; i < 4u; i++)
+   778:                 {
+   779:                         j = vOutput[i];
+   780: 
+   781:                         if(j <= 25u)
+   782:                                 j += 'A' - 0;
+   783:                         else if(j <= 51u)
+   784:                                 j += 'a' - 26;
+   785:                         else if(j <= 61u)
+   786:                                 j += '0' - 52;
+   787:                         else if(j == 62u)
+   788:                                 j = '+';
+   789:                         else if(j == 63u)
+   790:                                 j = '/';
+   791:                         else                            // Padding
+   792:                                 j = '=';
+   793: 
+   794:                         *cDestData++ = j;
+   795:                 }
+   796: 
+   797:                 // Update counters
+   798:                 wDestLen -= 4;
+   799:                 wOutputLen += 4;
+   800:         }
+   801: 
+   802:         return wOutputLen;
+   803: }
+   804: #endif // #if defined(STACK_USE_BASE64_ENCODE) || defined(STACK_USE_SMTP) || defined(STACK_USE_DYNAMICDNS_CLIENT)
+   805: 
+   806: 
+   807: /*****************************************************************************
+   808:   Function:
+   809:         void uitoa(WORD Value, BYTE* Buffer)
+   810: 
+   811:   Summary:
+   812:         Converts an unsigned integer to a decimal string.
+   813:         
+   814:   Description:
+   815:         Converts a 16-bit unsigned integer to a null-terminated decimal string.
+   816:         
+   817:   Precondition:
+   818:         None
+   819: 
+   820:   Parameters:
+   821:         Value   - The number to be converted
+   822:         Buffer  - Pointer in which to store the converted string
+   823: 
+   824:   Returns:
+   825:         None
+   826:   ***************************************************************************/
+   827: void uitoa(WORD Value, BYTE* Buffer)
+   828: {
+   829:         BYTE i;
+   830:         WORD Digit;
+   831:         WORD Divisor;
+   832:         BOOL Printed = FALSE;
+   833: 
+   834:         if(Value)
+   835:         {
+   836:                 for(i = 0, Divisor = 10000; i < 5u; i++)
+   837:                 {
+   838:                         Digit = Value/Divisor;
+   839:                         if(Digit || Printed)
+   840:                         {
+   841:                                 *Buffer++ = '0' + Digit;
+   842:                                 Value -= Digit*Divisor;
+   843:                                 Printed = TRUE;
+   844:                         }
+   845:                         Divisor /= 10;
+   846:                 }
+   847:         }
+   848:         else
+   849:         {
+   850:                 *Buffer++ = '0';
+   851:         }
+   852: 
+   853:         *Buffer = '\0';
+   854: }                           
+   855: 
+   856: /*****************************************************************************
+   857:   Function:
+   858:         void ultoa(DWORD Value, BYTE* Buffer)
+   859: 
+   860:   Summary:
+   861:         Converts an unsigned integer to a decimal string.
+   862:         
+   863:   Description:
+   864:         Converts a 32-bit unsigned integer to a null-terminated decimal string.
+   865:         
+   866:   Precondition:
+   867:         None
+   868: 
+   869:   Parameters:
+   870:         Value   - The number to be converted
+   871:         Buffer  - Pointer in which to store the converted string
+   872: 
+   873:   Returns:
+   874:         None
+   875:   ***************************************************************************/
+   876: // HI-TECH PICC-18 PRO 9.63, C30 v3.25, and C32 v1.12 already have a ultoa() library function
+   877: // C18 already has a ultoa() function that more-or-less matches this one
+   878: // C32 < 1.12 and C30 < v3.25 need this function
+   879: #if (defined(__PIC32MX__) && (__C32_VERSION__ < 112)) || (defined (__C30__) && (__C30_VERSION__ < 325)) || defined(__C30_LEGACY_LIBC__) || defined(__C32_LEGACY_LIBC__)
+   880: void ultoa(DWORD Value, BYTE* Buffer)
+   881: {
+   882:         BYTE i;
+   883:         DWORD Digit;
+   884:         DWORD Divisor;
+   885:         BOOL Printed = FALSE;
+   886: 
+   887:         if(Value)
+   888:         {
+   889:                 for(i = 0, Divisor = 1000000000; i < 10; i++)
+   890:                 {
+   891:                         Digit = Value/Divisor;
+   892:                         if(Digit || Printed)
+   893:                         {
+   894:                                 *Buffer++ = '0' + Digit;
+   895:                                 Value -= Digit*Divisor;
+   896:                                 Printed = TRUE;
+   897:                         }
+   898:                         Divisor /= 10;
+   899:                 }
+   900:         }
+   901:         else
+   902:         {
+   903:                 *Buffer++ = '0';
+   904:         }
+   905: 
+   906:         *Buffer = '\0';
+   907: }
+   908: #endif
+   909: 
+   910: /*****************************************************************************
+   911:   Function:
+   912:         BYTE hexatob(WORD_VAL AsciiChars)
+   913: 
+   914:   Summary:
+   915:         Converts a hex string to a single byte.
+   916:         
+   917:   Description:
+   918:         Converts a two-character ASCII hex string to a single packed byte.
+   919:         
+   920:   Precondition:
+   921:         None
+   922: 
+   923:   Parameters:
+   924:         AsciiChars - WORD_VAL where .v[0] is the ASCII value for the lower nibble
+   925:                                         and .v[1] is the ASCII value for the upper nibble.  Each
+   926:                                         must range from '0'-'9', 'A'-'F', or 'a'-'f'.
+   927: 
+   928:   Returns:
+   929:         Resulting packed byte 0x00 - 0xFF.
+   930:   ***************************************************************************/
+   931: BYTE hexatob(WORD_VAL AsciiChars)
+   932: {
+   933:         // Convert lowercase to uppercase
+   934:         if(AsciiChars.v[1] > 'F')
+   935:                 AsciiChars.v[1] -= 'a'-'A';
+   936:         if(AsciiChars.v[0] > 'F')
+   937:                 AsciiChars.v[0] -= 'a'-'A';
+   938: 
+   939:         // Convert 0-9, A-F to 0x0-0xF
+   940:         if(AsciiChars.v[1] > '9')
+   941:                 AsciiChars.v[1] -= 'A' - 10;
+   942:         else
+   943:                 AsciiChars.v[1] -= '0';
+   944: 
+   945:         if(AsciiChars.v[0] > '9')
+   946:                 AsciiChars.v[0] -= 'A' - 10;
+   947:         else
+   948:                 AsciiChars.v[0] -= '0';
+   949: 
+   950:         // Concatenate
+   951:         return (AsciiChars.v[1]<<4) |  AsciiChars.v[0];
+   952: }
+   953: 
+   954: /*****************************************************************************
+   955:   Function:
+   956:         BYTE btohexa_high(BYTE b)
+   957: 
+   958:   Summary:
+   959:         Converts the upper nibble of a binary value to a hexadecimal ASCII byte.
+   960: 
+   961:   Description:
+   962:         Converts the upper nibble of a binary value to a hexadecimal ASCII byte.
+   963:         For example, btohexa_high(0xAE) will return 'A'.
+   964: 
+   965:   Precondition:
+   966:         None
+   967: 
+   968:   Parameters:
+   969:         b - the byte to convert
+   970: 
+   971:   Returns:
+   972:         The upper hexadecimal ASCII byte '0'-'9' or 'A'-'F'.
+   973:   ***************************************************************************/
+   974: BYTE btohexa_high(BYTE b)
+   975: {
+   976:         b >>= 4;
+   977:         return (b>0x9u) ? b+'A'-10:b+'0';
+   978: }
+   979: 
+   980: /*****************************************************************************
+   981:   Function:
+   982:         BYTE btohexa_high(BYTE b)
+   983: 
+   984:   Summary:
+   985:         Converts the lower nibble of a binary value to a hexadecimal ASCII byte.
+   986: 
+   987:   Description:
+   988:         Converts the lower nibble of a binary value to a hexadecimal ASCII byte.
+   989:         For example, btohexa_high(0xAE) will return 'E'.
+   990: 
+   991:   Precondition:
+   992:         None
+   993: 
+   994:   Parameters:
+   995:         b - the byte to convert
+   996: 
+   997:   Returns:
+   998:         The lower hexadecimal ASCII byte '0'-'9' or 'A'-'F'.
+   999:   ***************************************************************************/
+  1000: BYTE btohexa_low(BYTE b)
+  1001: {
+  1002:         b &= 0x0F;
+  1003:         return (b>9u) ? b+'A'-10:b+'0';
+  1004: }
+  1005: 
+  1006: /*****************************************************************************
+  1007:   Function:
+  1008:         signed char stricmppgm2ram(BYTE* a, ROM BYTE* b)
+  1009: 
+  1010:   Summary:
+  1011:         Case-insensitive comparison of a string in RAM to a string in ROM.
+  1012: 
+  1013:   Description:
+  1014:         Performs a case-insensitive comparison of a string in RAM to a string
+  1015:         in ROM.  This function performs identically to strcmppgm2ram, except that
+  1016:         the comparison is not case-sensitive.
+  1017: 
+  1018:   Precondition:
+  1019:         None
+  1020: 
+  1021:   Parameters:
+  1022:         a - Pinter to tring in RAM
+  1023:         b - Pointer to string in ROM
+  1024: 
+  1025:   Return Values:
+  1026:         \-1 - a < b
+  1027:         0       - a = b
+  1028:         1       - a > b
+  1029:   ***************************************************************************/
+  1030: signed char stricmppgm2ram(BYTE* a, ROM BYTE* b)
+  1031: {
+  1032:         BYTE cA, cB;
+  1033:         
+  1034:         // Load first two characters
+  1035:         cA = *a;
+  1036:         cB = *b;
+  1037:         
+  1038:         // Loop until one string terminates
+  1039:         while(cA != '\0' && cB != '\0')
+  1040:         {
+  1041:                 // Shift case if necessary
+  1042:                 if(cA >= 'a' && cA <= 'z')
+  1043:                         cA -= 'a' - 'A';
+  1044:                 if(cB >= 'a' && cB <= 'z')
+  1045:                         cB -= 'a' - 'A';
+  1046:                         
+  1047:                 // Compare
+  1048:                 if(cA > cB)
+  1049:                         return 1;
+  1050:                 if(cA < cB)
+  1051:                         return -1;
+  1052:                 
+  1053:                 // Characters matched, so continue
+  1054:                 a++;
+  1055:                 b++;
+  1056:                 cA = *a;
+  1057:                 cB = *b;
+  1058:         }
+  1059:         
+  1060:         // See if one string terminated first
+  1061:         if(cA > cB)
+  1062:                 return 1;
+  1063:         if(cA < cB)
+  1064:                 return -1;
+  1065:                 
+  1066:         // Strings match
+  1067:         return 0;
+  1068: }
+  1069: 
+  1070: /*****************************************************************************
+  1071:   Function:
+  1072:         WORD swaps(WORD v)
+  1073: 
+  1074:   Description:
+  1075:         Swaps the endian-ness of a WORD.
+  1076: 
+  1077:   Precondition:
+  1078:         None
+  1079: 
+  1080:   Parameters:
+  1081:         v - the WORD to swap
+  1082: 
+  1083:   Returns:
+  1084:         The swapped version of v.
+  1085:   ***************************************************************************/
+  1086: WORD swaps(WORD v)
+  1087: {
+  1088:         WORD_VAL t;
+  1089:         BYTE b;
+  1090: 
+  1091:         t.Val   = v;
+  1092:         b       = t.v[1];
+  1093:         t.v[1]  = t.v[0];
+  1094:         t.v[0]  = b;
+  1095: 
+  1096:         return t.Val;
+  1097: }
+  1098: 
+  1099: /*****************************************************************************
+  1100:   Function:
+  1101:         DWORD swapl(DWORD v)
+  1102: 
+  1103:   Description:
+  1104:         Swaps the endian-ness of a DWORD.
+  1105: 
+  1106:   Precondition:
+  1107:         None
+  1108: 
+  1109:   Parameters:
+  1110:         v - the DWORD to swap
+  1111: 
+  1112:   Returns:
+  1113:         The swapped version of v.
+  1114:   ***************************************************************************/
+  1115: DWORD swapl(DWORD v)
+  1116: {
+  1117:         // Swap bytes 0 and 3
+  1118:         ((DWORD_VAL*)&v)->v[0] ^= ((DWORD_VAL*)&v)->v[3];
+  1119:         ((DWORD_VAL*)&v)->v[3] ^= ((DWORD_VAL*)&v)->v[0];
+  1120:         ((DWORD_VAL*)&v)->v[0] ^= ((DWORD_VAL*)&v)->v[3];
+  1121: 
+  1122:         // Swap bytes 1 and 2
+  1123:         ((DWORD_VAL*)&v)->v[1] ^= ((DWORD_VAL*)&v)->v[2];
+  1124:         ((DWORD_VAL*)&v)->v[2] ^= ((DWORD_VAL*)&v)->v[1];
+  1125:         ((DWORD_VAL*)&v)->v[1] ^= ((DWORD_VAL*)&v)->v[2];
+  1126: 
+  1127:         return v;
+  1128: }
+  1129: 
+  1130: 
+  1131: /*****************************************************************************
+  1132:   Function:
+  1133:         WORD CalcIPChecksum(BYTE* buffer, WORD count)
+  1134: 
+  1135:   Summary:
+  1136:         Calculates an IP checksum value.
+  1137: 
+  1138:   Description:
+  1139:         This function calculates an IP checksum over an array of input data.  The
+  1140:         checksum is the 16-bit one's complement of one's complement sum of all 
+  1141:         words in the data (with zero-padding if an odd number of bytes are 
+  1142:         summed).  This checksum is defined in RFC 793.
+  1143: 
+  1144:   Precondition:
+  1145:         buffer is WORD aligned (even memory address) on 16- and 32-bit PICs.
+  1146: 
+  1147:   Parameters:
+  1148:         buffer - pointer to the data to be checksummed
+  1149:         count  - number of bytes to be checksummed
+  1150: 
+  1151:   Returns:
+  1152:         The calculated checksum.
+  1153:         
+  1154:   Internal:
+  1155:         This function could be improved to do 32-bit sums on PIC32 platforms.
+  1156:   ***************************************************************************/
+  1157: WORD CalcIPChecksum(BYTE* buffer, WORD count)
+  1158: {
+  1159:         WORD i;
+  1160:         WORD *val;
+  1161:         union
+  1162:         {
+  1163:                 WORD w[2];
+  1164:                 DWORD dw;
+  1165:         } sum;
+  1166: 
+  1167:         i = count >> 1;
+  1168:         val = (WORD*)buffer;
+  1169: 
+  1170:         // Calculate the sum of all words
+  1171:         sum.dw = 0x00000000ul;
+  1172:         while(i--)
+  1173:                 sum.dw += (DWORD)*val++;
+  1174: 
+  1175:         // Add in the sum of the remaining byte, if present
+  1176:         if(count & 0x1)
+  1177:                 sum.dw += (DWORD)*(BYTE*)val;
+  1178: 
+  1179:         // Do an end-around carry (one's complement arrithmatic)
+  1180:         sum.dw = (DWORD)sum.w[0] + (DWORD)sum.w[1];
+  1181: 
+  1182:         // Do another end-around carry in case if the prior add 
+  1183:         // caused a carry out
+  1184:         sum.w[0] += sum.w[1];
+  1185: 
+  1186:         // Return the resulting checksum
+  1187:         return ~sum.w[0];
+  1188: }
+  1189: 
+  1190: 
+  1191: /*****************************************************************************
+  1192:   Function:
+  1193:         WORD CalcIPBufferChecksum(WORD len)
+  1194: 
+  1195:   Summary:
+  1196:         Calculates an IP checksum in the MAC buffer itself.
+  1197: 
+  1198:   Description:
+  1199:         This function calculates an IP checksum over an array of input data 
+  1200:         existing in the MAC buffer.  The checksum is the 16-bit one's complement 
+  1201:         of one's complement sum of all words in the data (with zero-padding if 
+  1202:         an odd number of bytes are summed).  This checksum is defined in RFC 793.
+  1203: 
+  1204:   Precondition:
+  1205:         TCP is initialized and the MAC buffer pointer is set to the start of
+  1206:         the buffer.
+  1207: 
+  1208:   Parameters:
+  1209:         len - number of bytes to be checksummed
+  1210: 
+  1211:   Returns:
+  1212:         The calculated checksum.
+  1213: 
+  1214:   Remarks:
+  1215:         All Microchip MACs should perform this function in hardware.
+  1216:   ***************************************************************************/
+  1217: #if defined(NON_MCHP_MAC)
+  1218: WORD CalcIPBufferChecksum(WORD len)
+  1219: {
+  1220:         DWORD_VAL Checksum = {0x00000000ul};
+  1221:         WORD ChunkLen;
+  1222:         BYTE DataBuffer[20];    // Must be an even size
+  1223:         WORD *DataPtr;
+  1224: 
+  1225:         while(len)
+  1226:         {
+  1227:                 // Obtain a chunk of data (less SPI overhead compared 
+  1228:                 // to requesting one byte at a time)
+  1229:                 ChunkLen = len > sizeof(DataBuffer) ? sizeof(DataBuffer) : len;
+  1230:                 MACGetArray(DataBuffer, ChunkLen);
+  1231:                 len -= ChunkLen;
+  1232: 
+  1233:                 // Take care of a last odd numbered data byte
+  1234:                 if(((WORD_VAL*)&ChunkLen)->bits.b0)
+  1235:                 {
+  1236:                         DataBuffer[ChunkLen] = 0x00;
+  1237:                         ChunkLen++;
+  1238:                 }
+  1239: 
+  1240:                 // Calculate the checksum over this chunk
+  1241:                 DataPtr = (WORD*)&DataBuffer[0];
+  1242:                 while(ChunkLen)
+  1243:                 {
+  1244:                         Checksum.Val += *DataPtr++;
+  1245:                         ChunkLen -= 2;
+  1246:                 }
+  1247:         }
+  1248:         
+  1249:         // Do an end-around carry (one's complement arrithmatic)
+  1250:         Checksum.Val = (DWORD)Checksum.w[0] + (DWORD)Checksum.w[1];
+  1251: 
+  1252:         // Do another end-around carry in case if the prior add 
+  1253:         // caused a carry out
+  1254:         Checksum.w[0] += Checksum.w[1];
+  1255: 
+  1256:         // Return the resulting checksum
+  1257:         return ~Checksum.w[0];
+  1258: }
+  1259: #endif
+  1260: 
+  1261: /*****************************************************************************
+  1262:   Function:
+  1263:         char* strupr(char* s)
+  1264: 
+  1265:   Summary:
+  1266:         Converts a string to uppercase.
+  1267: 
+  1268:   Description:
+  1269:         This function converts strings to uppercase on platforms that do not
+  1270:         already have this function defined.  All lower-case characters are
+  1271:         converted, an characters not included in 'a'-'z' are left as-is.
+  1272: 
+  1273:   Precondition:
+  1274:         None
+  1275: 
+  1276:   Parameters:
+  1277:         s - the null-terminated string to be converted.
+  1278: 
+  1279:   Returns:
+  1280:         Pointer to the initial string.
+  1281:   ***************************************************************************/
+  1282: #if !defined(__18CXX) || defined(HI_TECH_C)
+  1283: char* strupr(char* s)
+  1284: {
+  1285:         char c;
+  1286:         char *t;
+  1287: 
+  1288:         t = s;
+  1289:         while( (c = *t) )
+  1290:         {
+  1291:                 if(c >= 'a' && c <= 'z')
+  1292:                 {
+  1293:                         *t -= ('a' - 'A');
+  1294:                 }
+  1295:                 t++;
+  1296:         }
+  1297:         return s;
+  1298: }
+  1299: #endif
+  1300: 
+  1301: #if defined(__18CXX)
+  1302: // Make this variable global for the following function.
+  1303: // Hi-Tech PICC18 cannot access local function variables from inline asm.
+  1304: DWORD_VAL toRotate; 
+  1305: #endif
+  1306: 
+  1307: /*****************************************************************************
+  1308:   Function:
+  1309:         DWORD leftRotateDWORD(DWORD val, BYTE bits)
+  1310: 
+  1311:   Summary:
+  1312:         Left-rotates a DWORD.
+  1313: 
+  1314:   Description:
+  1315:         This function rotates the bits in a 32-bit DWORD left by a specific 
+  1316:         number of bits.
+  1317: 
+  1318:   Precondition:
+  1319:         None
+  1320: 
+  1321:   Parameters:
+  1322:         val             - the DWORD to be rotated
+  1323:         bits    - the number of bits by which to shift
+  1324: 
+  1325:   Returns:
+  1326:         Rotated DWORD value.
+  1327:         
+  1328:   Remarks:
+  1329:         This function is only implemented on 8-bit platforms for now.  The 
+  1330:         8-bit compilers generate excessive code for this function, while C30
+  1331:         and C32 already generate compact code.  Those compilers are served
+  1332:         by a macro defined in Helpers.h.
+  1333:   ***************************************************************************/
+  1334: #if defined(__18CXX)
+  1335: DWORD leftRotateDWORD(DWORD val, BYTE bits)
+  1336: {
+  1337:         BYTE i, t;
+  1338:         //DWORD_VAL toRotate;
+  1339:         toRotate.Val = val;
+  1340:         
+  1341:         for(i = bits; i >= 8u; i -= 8)
+  1342:         {
+  1343:                 t = toRotate.v[3];
+  1344:                 toRotate.v[3] = toRotate.v[2];
+  1345:                 toRotate.v[2] = toRotate.v[1];
+  1346:                 toRotate.v[1] = toRotate.v[0];
+  1347:                 toRotate.v[0] = t;
+  1348:         }
+  1349:         
+  1350:         
+  1351:         #if defined(HI_TECH_C)
+  1352:         for(; i != 0; i--)
+  1353:         {
+  1354:                 asm("movlb (_toRotate)>>8");
+  1355:                 //asm("bcf _STATUS,0,C");
+  1356:                 asm("bcf 0xFD8,0,C");           // HI-TECH PICC-18 PRO 9.63PL1 doesn't define _STATUS
+  1357:                 asm("btfsc (_toRotate)&0ffh+3,7,B");
+  1358:                 //asm("bsf _STATUS,0,C");
+  1359:                 asm("bsf 0xFD8,0,C");           // HI-TECH PICC-18 PRO 9.63PL1 doesn't define _STATUS
+  1360:                 asm("rlcf (_toRotate)&0ffh+0,F,B");
+  1361:                 asm("rlcf (_toRotate)&0ffh+1,F,B");
+  1362:                 asm("rlcf (_toRotate)&0ffh+2,F,B");
+  1363:                 asm("rlcf (_toRotate)&0ffh+3,F,B");
+  1364:         }
+  1365:         #else
+  1366:         for(; i != 0u; i--)
+  1367:         {
+  1368:                 _asm
+  1369:                 movlb toRotate
+  1370:                 bcf STATUS,0,0
+  1371:                 btfsc toRotate+3,7,1
+  1372:                 bsf STATUS,0,0
+  1373:                 rlcf toRotate+0,1,1
+  1374:                 rlcf toRotate+1,1,1
+  1375:                 rlcf toRotate+2,1,1
+  1376:                 rlcf toRotate+3,1,1
+  1377:                 _endasm
+  1378:         }
+  1379:         #endif
+  1380:         
+  1381:         return toRotate.Val;
+  1382: }
+  1383: #endif
+  1384: 
+  1385: /*****************************************************************************
+  1386:   Function:
+  1387:         void FormatNetBIOSName(BYTE Name[])
+  1388: 
+  1389:   Summary:
+  1390:         Formats a string to a valid NetBIOS name.
+  1391: 
+  1392:   Description:
+  1393:         This function formats a string to a valid NetBIOS name.  Names will be
+  1394:         exactly 16 characters, as defined by the NetBIOS spec.  The 16th 
+  1395:         character will be a 0x00 byte, while the other 15 will be the 
+  1396:         provided string, padded with spaces as necessary.
+  1397: 
+  1398:   Precondition:
+  1399:         None
+  1400: 
+  1401:   Parameters:
+  1402:         Name - the string to format as a NetBIOS name.  This parameter must have
+  1403:           at least 16 bytes allocated.
+  1404: 
+  1405:   Returns:
+  1406:         None
+  1407:   ***************************************************************************/
+  1408: void FormatNetBIOSName(BYTE Name[])
+  1409: {
+  1410:         BYTE i;
+  1411: 
+  1412:         Name[15] = '\0';
+  1413:         strupr((char*)Name);
+  1414:         i = 0;
+  1415:         while(i < 15u)
+  1416:         {
+  1417:                 if(Name[i] == '\0')
+  1418:                 {
+  1419:                         while(i < 15u)
+  1420:                         {
+  1421:                                 Name[i++] = ' ';
+  1422:                         }
+  1423:                         break;
+  1424:                 }
+  1425:                 i++;
+  1426:         }
+  1427: }
+  1428: 
+  1429: /*****************************************************************************
+  1430:   Function:
+  1431:         char * strnchr(const char *searchString, size_t count, char c)
+  1432: 
+  1433:   Summary:
+  1434:         Searches a string up to a specified number of characters for a specific 
+  1435:         character.
+  1436: 
+  1437:   Description:
+  1438:         Searches a string up to a specified number of characters for a specific 
+  1439:         character.  The string is searched forward and the first occurance 
+  1440:         location is returned.  If the search character is not present in the 
+  1441:         string, or if the maximum character count is reached first, then a NULL 
+  1442:         pointer is returned.
+  1443: 
+  1444:   Precondition:
+  1445:         None
+  1446: 
+  1447:   Parameters:
+  1448:         searchString - Pointer to a null terminated string to search.  If count is 
+  1449:                 less than the string size, then the string need not be null terminated.
+  1450:         count - Maximum number of characters to search before aborting.
+  1451:         c - Character to search for
+  1452:         
+  1453:   Returns:
+  1454:         Pointer to the first occurance of the character c in the string 
+  1455:         searchString.  If the character is not found or the maximum count is 
+  1456:         reached, a NULL pointer is returned.
+  1457:   ***************************************************************************/
+  1458: char * strnchr(const char *searchString, size_t count, char c)
+  1459: {
+  1460:         char c2;
+  1461:         
+  1462:         while(count--)
+  1463:         {
+  1464:                 c2  = *searchString++;
+  1465:                 if(c2 == 0u)
+  1466:                         return NULL;
+  1467:                 if(c2 == c)
+  1468:                         return (char*)--searchString;
+  1469:         }
+  1470:         return NULL;
+  1471: }
+  1472: 
+  1473: /*****************************************************************************
+  1474:   Function:
+  1475:         BYTE ExtractURLFields(BYTE *vURL, 
+  1476:                                                   PROTOCOLS *protocol, 
+  1477:                                                   BYTE *vUsername, WORD *wUsernameLen, 
+  1478:                                                   BYTE *vPassword, WORD *wPasswordLen, 
+  1479:                                                   BYTE *vHostname, WORD *wHostnameLen, 
+  1480:                                                   WORD *wPort, 
+  1481:                                                   BYTE *vFilePath, WORD *wFilePathLen)
+  1482: 
+  1483:   Summary:
+  1484:         Extracts all parameters from an URL string (ex: 
+  1485:         "http://admin:passwd@www.microchip.com:8080/myfile.gif" is split into 
+  1486:         {PROTOCOL_HTTP, "admin", "passwd", "www.microchip.com", 8080, "/myfile.gif"}.
+  1487: 
+  1488:   Description:
+  1489:         Extracts all parameters from an URL string (ex: 
+  1490:         "http://admin:passwd@www.microchip.com:8080/myfile.gif" is split into 
+  1491:         {PROTOCOL_HTTP, "admin", "passwd", "www.microchip.com", 8080, "/myfile.gif"}.
+  1492:         
+  1493:         The URL string can be null terminated, or alternatively could be terminated 
+  1494:         by a carriage return or line feed.
+  1495:         
+  1496:         If the protocol is unrecognized or the protocol is recognized but the URL 
+  1497:         is malformed, than an error is safely returned.  For more information on 
+  1498:         URL/URI interpretation see RFC 2396.
+  1499: 
+  1500:   Precondition:
+  1501:         This function is commented out by default to save code space because 
+  1502:         it is not used by any current stack features.  However, if you want to use 
+  1503:         it, go ahead and uncomment it.  It has been tested, so it (should) work 
+  1504:         correctly.
+  1505: 
+  1506:   Parameters:
+  1507:         vURL -  Pointer to null terminated URL to decode and extract from.  This 
+  1508:                 parameter is required and needs to have the minimum RFC 1738 components 
+  1509:                 in it (protocol and hostname).
+  1510:                 
+  1511:         protocol - Optional pointer to a PROTOCOLS enum to retrieve the decoded 
+  1512:                 protocol type.  If this parameter is unneeded, specify a NULL pointer.  
+  1513:                 The protocol is a required part of the URL, so it must always be 
+  1514:                 present.  The protocol also determines what scheme all other parameters 
+  1515:                 are decoded using, so the function will fail if an unrecognized 
+  1516:                 protocol is provided.  The PROTOCOLS enum members show all of the 
+  1517:                 currently supported protocols for this function.
+  1518:                 
+  1519:                 <p>For the example URL provided in the function description, 
+  1520:                 PROTOCOL_HTTP would be returned for this field.
+  1521:                 
+  1522:         vUsername - Optional pointer to a buffer to write the decoded username 
+  1523:                 portion of the URL.  If the URL does not contain a username or a NULL 
+  1524:                 pointer is supplied, then this field is ignored.
+  1525: 
+  1526:                 <p>For the example URL provided in the function description, "admin" 
+  1527:                 would be returned for this field.
+  1528:                 
+  1529:         wUsernameLen -
+  1530:                 On call\: Optional pointer to a WORD specifying the maximum length of 
+  1531:                 the vUsername buffer, including the null terminator character.
+  1532:                 
+  1533:                 <p>Upon return\: If wUsernameLen and vUsername are non-NULL, the 
+  1534:                 *wUsernameLen WORD is updated with the actual number of characters 
+  1535:                 written to the vUsername buffer, including the null terminator 
+  1536:                 character.  If vUsername is NULL but wUsernameLen is non-NULL, then no 
+  1537:                 characters are copied, but *wUsernameLen will return the number of 
+  1538:                 characters required to fit the full username string.  If wUsernameLen 
+  1539:                 is NULL, then the username field in the URL, if present, is ignored and 
+  1540:                 the vUsername pointer is not used.
+  1541:                 
+  1542:                 <p>If zero characters were written, this indicates that the URL did not 
+  1543:                 contain a username field.  If one character was written, this indicates 
+  1544:                 that a username field was present, but was a zero character string 
+  1545:                 (ex\: "").
+  1546:                  
+  1547:                 <p>For the example URL provided in the function description, 6 (0x0006) 
+  1548:                 would be returned for this field.
+  1549:                 
+  1550:         vPassword - Optional pointer to a buffer to write the decoded password 
+  1551:                 portion of the URL.  If the URL does not contain a password or a NULL 
+  1552:                 pointer is supplied, then this field is ignored.
+  1553: 
+  1554:                 <p>For the example URL provided in the function description, "passwd" 
+  1555:                 would be returned for this field.
+  1556:                 
+  1557:         wPasswordLen -
+  1558:                 On call\: Optional pointer to a WORD specifying the maximum length of 
+  1559:                 the vPassword buffer, including the null terminator character.
+  1560:                 
+  1561:                 <p>Upon return\: If wPasswordLen and vPassword are non-NULL, the 
+  1562:                 *wPasswordLen WORD is updated with the actual number of characters 
+  1563:                 written to the vPassword buffer, including the null terminator 
+  1564:                 character.  If vPassword is NULL but wPasswordLen is non-NULL, then no 
+  1565:                 characters are copied, but *wPasswordLen will return the number of 
+  1566:                 characters required to fit the full password string.  If wPasswordLen 
+  1567:                 is NULL, then the password field in the URL, if present, is ignored and 
+  1568:                 the vPassword pointer is not used.
+  1569:                 
+  1570:                 <p>If zero characters were written, this indicates that the URL did not 
+  1571:                 contain a password field.  If one character was written, this indicates 
+  1572:                 that a password field was present, but was a zero character string 
+  1573:                 (ex\: "").
+  1574:                  
+  1575:                 <p>For the example URL provided in the function description, 7 (0x0007) 
+  1576:                 would be returned for this field.
+  1577:                 
+  1578:         vHostname - Optional pointer to a buffer to write the decoded hostname 
+  1579:                 portion of the URL.  All Internet URLs must contain a hostname or IP 
+  1580:                 address, however, if a NULL pointer is supplied, then this field is 
+  1581:                 ignored.
+  1582: 
+  1583:                 <p>For the example URL provided in the function description, 
+  1584:                 "www.microchip.com" would be returned for this field.  If the URL was 
+  1585:                 "http://192.168.0.1", then this field would be returned as 
+  1586:                 "192.168.0.1".  The IP address would not be decoded to a DWORD (use the 
+  1587:                 StringToIPAddress() helper function to do this).
+  1588:                 
+  1589:         wHostnameLen -
+  1590:                 On call\: Optional pointer to a WORD specifying the maximum length of 
+  1591:                 the vHostname buffer, including the null terminator character.
+  1592:                 
+  1593:                 <p>Upon return\: If wHostnameLen and vHostname are non-NULL, the 
+  1594:                 *wHostnameLen WORD is updated with the actual number of characters 
+  1595:                 written to the vHostname buffer, including the null terminator 
+  1596:                 character.  If vHostname is NULL but wHostnameLen is non-NULL, then no 
+  1597:                 characters are copied, but *wHostnameLen will return the number of 
+  1598:                 characters required to fit the full hostname string.  If wHostnameLen 
+  1599:                 is NULL, then the hostname field in the URL, is ignored and the 
+  1600:                 vHostname pointer is not used.
+  1601:                 
+  1602:                 <p>For the example URL provided in the function description, 
+  1603:                 18 (0x0012) would be returned for this field.  If the URL was 
+  1604:                 "http://192.168.0.1", then this field would be returned as 12 (0x000C).
+  1605:                 
+  1606:         wPort - Optional pointer to a WORD specifying the TCP or UDP port that the 
+  1607:                 server is listening on.  If the port field is absent from the URL, then 
+  1608:                 this parameter will specify the default port for the protocol.  For 
+  1609:                 example, "http://www.microchip.com" would result in 80 being return as 
+  1610:                 the specified port.
+  1611:                  
+  1612:                 <p>If the wPort pointer is NULL, then the port field in the URL 
+  1613:                 is ignored, if present.
+  1614:                 
+  1615:         vFilePath - Optional pointer to a buffer to write the decoded file path 
+  1616:                 portion of the URL.  If a NULL pointer is supplied, then this field is 
+  1617:                 ignored.  If a file path is not present in the URL, then "/" will be 
+  1618:                 returned in this field.  
+  1619: 
+  1620:                 <p>For the example URL provided in the function description, 
+  1621:                 "/myfile.gif" would be returned for this field.
+  1622:                 
+  1623:         wFilePathLen -
+  1624:                 On call\: Optional pointer to a WORD specifying the maximum length of 
+  1625:                 the vFilePath buffer, including the null terminator character.
+  1626:                 
+  1627:                 <p>Upon return\: If wFilePathLen and vFilePath are non-NULL, the 
+  1628:                 *wFilePathLen WORD is updated with the actual number of characters 
+  1629:                 written to the vFilePath buffer, including the null terminator 
+  1630:                 character.  If vFilePath is NULL but wFilePathLen is non-NULL, then no 
+  1631:                 characters are copied, but *wFilePathLen will return the number of 
+  1632:                 characters required to fit the full file path string.  If wFilePathLen 
+  1633:                 is NULL, then the file path field in the URL, if present, is ignored and 
+  1634:                 the vFilePath pointer is not used.
+  1635:                 
+  1636:                 <p>This function always returns "/" if no file path is present, so
+  1637:                 *wFilePathLen will also be at least 2 characters ('/' and null 
+  1638:                 terminator) if the pointer is non-NULL.
+  1639:         
+  1640:                 <p>For the example URL provided in the function description, 12 (0x000C) 
+  1641:                 would be returned for this field.
+  1642:                 
+  1643:   Returns:
+  1644:         Zero on success.  Nonzero indicates an error code.  If a nonzero error code 
+  1645:         is returned, none of the returned buffers or pointer values should be 
+  1646:         treated as valid, but some of them may have been written to.  The following 
+  1647:         are all possible return values.
+  1648:         <table>
+  1649:                 0   No error
+  1650:                 1   Protocol unknown (additional code needs to be added to 
+  1651:                          ExtractURLFields() and the PROTOCOLS enum needs to be updated if 
+  1652:                          you want to decode URLs of this protocol type.
+  1653:                 2   URL malformed. Illegal or unknown URL format encountered.
+  1654:                 3   Buffer too small.  One of the input buffer sizes is too small to 
+  1655:                          contain the URL parameter.
+  1656:         </table>
+  1657:   ***************************************************************************/
+  1658: #if 0   
+  1659: BYTE ExtractURLFields(BYTE *vURL, PROTOCOLS *protocol, BYTE *vUsername, WORD *wUsernameLen, BYTE *vPassword, WORD *wPasswordLen, BYTE *vHostname, WORD *wHostnameLen, WORD *wPort, BYTE *vFilePath, WORD *wFilePathLen)
+  1660: {
+  1661:         // These two arrays must exactly match up each other and the PROTOCOLS enum 
+  1662:         // elements.  The protocol name strings must also be specified in all 
+  1663:         // lowercase.
+  1664:         static ROM char * ROM   vProtocolNames[] = {"http", "https", "mms", "rtsp"};
+  1665:         static ROM WORD                 wProtocolPorts[] = { 80,     443,     1755,  554};
+  1666:         WORD w, w2;
+  1667:         BYTE i, j;
+  1668:         PROTOCOLS prot;
+  1669:         BYTE *temp, *temp2;
+  1670:         WORD wURLLen;
+  1671:         WORD wLocalPort;
+  1672:         
+  1673:         
+  1674:         // Calculate how long this URL is
+  1675:         wURLLen = strlen((char*)vURL);
+  1676:         temp = (BYTE*)strnchr((char*)vURL, wURLLen, '\r');
+  1677:         if(temp)
+  1678:                 wURLLen = temp - vURL;
+  1679:         temp = (BYTE*)strnchr((char*)vURL, wURLLen, '\n');
+  1680:         if(temp)
+  1681:                 wURLLen = temp - vURL;
+  1682:         
+  1683: 
+  1684:         // Parse starting protocol field
+  1685:         // Find out how long the protocol name field is
+  1686:         temp = (BYTE*)strnchr((char*)vURL, wURLLen, ':');
+  1687:         if(temp == NULL)
+  1688:                 return 2;
+  1689:         
+  1690:         // Search protocol list to see if this is a recognized protocol
+  1691:         for(prot = 0; (BYTE)prot < sizeof(wProtocolPorts)/sizeof(wProtocolPorts[0]); prot++)
+  1692:         {
+  1693:                 w = strlenpgm(vProtocolNames[prot]);
+  1694:                 if((WORD)(temp - vURL) == w)
+  1695:                 {
+  1696:                         w2 = 0;
+  1697:                         temp2 = vURL;
+  1698:                         while(w)
+  1699:                         {
+  1700:                                 i = *temp2++;
+  1701:                                 if((i >= 'A') && (i <= 'Z'))
+  1702:                                         i += 'a' - 'A';
+  1703:                                 if(i != (BYTE)vProtocolNames[prot][w2++])
+  1704:                                         break;
+  1705:                                 w--;
+  1706:                         }
+  1707:                         if(w == 0u)
+  1708:                         {
+  1709:                                 if(protocol)
+  1710:                                         *protocol = prot;
+  1711:                                 break;
+  1712:                         }
+  1713:                 }
+  1714:         }
+  1715: 
+  1716:         // If we've search the whole list and didn't find a match, then 
+  1717:         // this protocol is unknown and this URL cannot be parsed.
+  1718:         if((BYTE)prot >= sizeof(wProtocolPorts)/sizeof(wProtocolPorts[0]))
+  1719:                 return 1;
+  1720:         
+  1721:         w = temp - vURL + 1;
+  1722:         vURL += w;
+  1723:         wURLLen -= w;
+  1724: 
+  1725:         // Protocols using the authority field all must have a double 
+  1726:         // slash "//" prefix
+  1727:         if(wURLLen < 2u)
+  1728:                 return 2;
+  1729:         for(j = 0; j < 2u; j++)
+  1730:         {
+  1731:                 i = *vURL++;
+  1732:                 if(i != '/')
+  1733:                         return 2;
+  1734:         }
+  1735:         wURLLen -= 2;
+  1736:         
+  1737: 
+  1738:         // Parse username and password fields
+  1739:         // See if there is a @ sign, indicating that there is at 
+  1740:         // least a username and possibly a password in this URL
+  1741:         temp = (BYTE*)strnchr((char*)vURL, wURLLen, '@');
+  1742:         if(temp == NULL)
+  1743:         {
+  1744:                 if(wUsernameLen)
+  1745:                         *wUsernameLen = 0;
+  1746:                 if(wPasswordLen)
+  1747:                         *wPasswordLen = 0;
+  1748:         }
+  1749:         else
+  1750:         {
+  1751:                 // If we get down here, there is a user name present, let's 
+  1752:                 // see if a password is also present by searching for a 
+  1753:                 // colon between the current string position and the @ 
+  1754:                 // symbol.
+  1755:                 temp2 = (BYTE*)strnchr((char*)vURL, temp - vURL, ':');
+  1756:                 
+  1757:                 // Calculate username length and password length, including 
+  1758:                 // null terminator (if the field exists)
+  1759:                 if(temp2 == NULL)
+  1760:                 {
+  1761:                         w = temp - vURL + 1;    // Username
+  1762:                         w2 = 0;                                 // Password
+  1763:                 }
+  1764:                 else
+  1765:                 {
+  1766:                         w = temp2 - vURL + 1;   // Username
+  1767:                         w2 = temp - temp2;              // Password
+  1768:                 }
+  1769:                 
+  1770:                 if(wUsernameLen)
+  1771:                 {
+  1772:                         if(vUsername)
+  1773:                         {
+  1774:                                 if(*wUsernameLen < w)
+  1775:                                         return 3;
+  1776:                                 memcpy((void*)vUsername, (void*)vURL, w - 1);
+  1777:                                 vUsername[w-1] = 0;
+  1778:                         }
+  1779:                         *wUsernameLen = w;
+  1780:                 }
+  1781:         
+  1782:                 if(wPasswordLen)
+  1783:                 {
+  1784:                         if(vPassword)
+  1785:                         {
+  1786:                                 if(*wPasswordLen < w2)
+  1787:                                         return 3;
+  1788:                                 if(w2)
+  1789:                                 {
+  1790:                                         memcpy((void*)vPassword, (void*)temp2+1, w2 - 1);
+  1791:                                         vPassword[w2-1] = 0;
+  1792:                                 }
+  1793:                         }
+  1794:                         *wPasswordLen = w2;
+  1795:                 }
+  1796:         
+  1797:                 vURL += w;
+  1798:                 wURLLen -= w;
+  1799:                 if(w2)
+  1800:                 {
+  1801:                         vURL += w2;
+  1802:                         wURLLen -= w2;
+  1803:                 }
+  1804:         }
+  1805: 
+  1806: 
+  1807:         // Parse hostname field
+  1808:         // Find the length of the hostname, including NULL 
+  1809:         // terminator
+  1810:         temp = (BYTE*)strnchr((char*)vURL, wURLLen, ':');
+  1811:         temp2 = (BYTE*)strnchr((char*)vURL, wURLLen, '/');
+  1812:         if(temp && temp2)
+  1813:         {
+  1814:                 if(temp > temp2)
+  1815:                         temp = NULL;
+  1816:         }
+  1817:         if(temp == NULL)
+  1818:         {
+  1819:                 temp = temp2;
+  1820:                 if(temp2 == NULL)
+  1821:                         temp = vURL + wURLLen;
+  1822:         }
+  1823:         w = temp - vURL + 1;
+  1824:         if(wHostnameLen)
+  1825:         {
+  1826:                 if(vHostname)
+  1827:                 {
+  1828:                         if(*wHostnameLen < w)
+  1829:                                 return 3;
+  1830:                         memcpy((void*)vHostname, (void*)vURL, w - 1);
+  1831:                         vHostname[w-1] = 0;
+  1832:                 }
+  1833:                 *wHostnameLen = w;
+  1834:         }
+  1835:         vURL += w - 1;
+  1836:         wURLLen -= w - 1;
+  1837: 
+  1838: 
+  1839:         // Parse port field
+  1840:         if(*vURL == ':')
+  1841:         {
+  1842:                 vURL++;
+  1843:                 wURLLen--;
+  1844:                 wLocalPort = 0;
+  1845:                 w = wURLLen;
+  1846:                 temp = (BYTE*)strnchr((char*)vURL, wURLLen, '/');
+  1847:                 if(temp != NULL)
+  1848:                         w = temp - vURL;
+  1849:                 w2 = w;
+  1850:                 if(wPort)
+  1851:                 {
+  1852:                         while(w--)
+  1853:                         {
+  1854:                                 wLocalPort *= 10;
+  1855:                                 wLocalPort += *vURL++ - '0';
+  1856:                         }
+  1857:                         *wPort = wLocalPort;
+  1858:                 }
+  1859:                 else
+  1860:                         vURL += w2;
+  1861:                 wURLLen -= w2;
+  1862:         }
+  1863:         else if(wPort)
+  1864:                 *wPort = wProtocolPorts[prot];
+  1865: 
+  1866: 
+  1867:         // Parse file path field
+  1868:         if(wFilePathLen)
+  1869:         {
+  1870:                 w = ++wURLLen;
+  1871:                 if(wURLLen == 1u)
+  1872:                         w = 2;
+  1873:                 if(vFilePath)
+  1874:                 {
+  1875:                         if(*wFilePathLen < w)
+  1876:                                 return 3;
+  1877:                         if(wURLLen == 1u)
+  1878:                                 vFilePath[0] = '/';
+  1879:                         else
+  1880:                                 memcpy((void*)vFilePath, (void*)vURL, wURLLen - 1);
+  1881:                         vFilePath[w - 1] = 0;
+  1882:                         *wFilePathLen = w;
+  1883:                         return 0;
+  1884:                 }
+  1885:                 *wFilePathLen = w;
+  1886:         }
+  1887:         return 0;
+  1888: }
+  1889: #endif
+  1890: 
+  1891: 
+  1892: /*****************************************************************************
+  1893:   Function:
+  1894:         SHORT Replace(BYTE *vExpression, ROM BYTE *vFind, ROM BYTE *vReplacement, 
+  1895:                                   WORD wMaxLen, BOOL bSearchCaseInsensitive)
+  1896: 
+  1897:   Summary:
+  1898:         Replaces all instances of a particular substring with a new string
+  1899: 
+  1900:   Description:
+  1901:         Searches a string (vExpression) and replaces all instances of a particular 
+  1902:         substring (vFind) with a new string (vReplacement).  The start offset to 
+  1903:         being searching and a maximum number of replacements can be specified.  The 
+  1904:         search can be performed in a case sensitive or case insensitive manner.
+  1905: 
+  1906:   Precondition:
+  1907:         This function is commented out by default to save code space because 
+  1908:         it is not used by any current stack features.  However, if you want to use 
+  1909:         it, go ahead and uncomment it.  It has been tested, so it (should) work 
+  1910:         correctly.
+  1911: 
+  1912:   Parameters:
+  1913:         vExpression - Null terminated string to search and make replacements within.
+  1914:         vFind - Null terminated string to search for.
+  1915:         vReplacement - Null terminated string to replace all instances of vFind with.
+  1916:         wMaxLen - Maximum length of the output vExpression string if string 
+  1917:                 expansion is going to occur (replacement length is longer than find 
+  1918:                 length).  If the replacements will cause this maximum string length to 
+  1919:                 be exceeded, then no replacements will be made and a negative result 
+  1920:                 will be returned, indicating failure.  If the replacement length is 
+  1921:                 shorter or equal to the search length, then this parameter is ignored.
+  1922:         bSearchCaseInsensitive - Boolean indicating if the search should be 
+  1923:                 performed in a case insensitive manner.  Specify TRUE for case 
+  1924:                 insensitive searches (slower) or FALSE for case sensitive 
+  1925:                 searching (faster).
+  1926: 
+  1927:   Remarks:
+  1928:         If the replacement string length is shorter than or equal to the search 
+  1929:         string length and the search string occurs in multiple overlapping 
+  1930:         locations (ex\: expression is "aaa", find is "aa", and replacement is "bb") 
+  1931:         then the first find match occuring when searching from left to right will 
+  1932:         be replaced.  (ex\: output expression will be "bba").
+  1933:         
+  1934:         However, if the replacement string length is longer than the search string 
+  1935:         length, the search will occur starting from the end of the string and 
+  1936:         proceed to the beginning (right to left searching).  In this case if the 
+  1937:         expression was "aaa", find was "aa", and replacement was "bbb", then the 
+  1938:         final output expression will be "abbb".  
+  1939: 
+  1940:   Returns:
+  1941:         If zero or greater, indicates the count of how many replacements were made.  
+  1942:         If less than zero (negative result), indicates that wMaxLen was too small 
+  1943:         to make the necessary replacements.  In this case, no replacements were 
+  1944:         made.
+  1945:   ***************************************************************************/
+  1946: #if 0
+  1947: SHORT Replace(BYTE *vExpression, ROM BYTE *vFind, ROM BYTE *vReplacement, WORD wMaxLen, BOOL bSearchCaseInsensitive)
+  1948: {
+  1949:         WORD wExpressionLen, wFindLen, wFindLenMinusOne, wReplacementLen;
+  1950:         WORD wFindCount, wReplacementsLeft;
+  1951:         BYTE i, j;
+  1952:         BYTE vFirstFindChar;
+  1953:         WORD wBytesLeft;
+  1954:         BYTE *vDest;
+  1955:         BYTE *vExpressionCompare;
+  1956:         ROM BYTE *vFindCompare;
+  1957:         WORD w;
+  1958: 
+  1959:         wFindLen = strlenpgm((ROM char*)vFind);
+  1960:         if(wFindLen == 0u)
+  1961:                 return 0;
+  1962:         
+  1963:         wExpressionLen = strlen((char*)vExpression);
+  1964:         wReplacementLen = strlenpgm((ROM char*)vReplacement);
+  1965: 
+  1966:         wFindCount = 0;
+  1967:         wFindLenMinusOne = wFindLen - 1;
+  1968:         vFirstFindChar = *vFind++;
+  1969:         if(bSearchCaseInsensitive)      // Convert to all lowercase if needed
+  1970:                 if((vFirstFindChar >= (BYTE)'A') && (vFirstFindChar <= (BYTE)'Z'))
+  1971:                         vFirstFindChar += 'a' - 'A';
+  1972: 
+  1973:         // If the replacement string is the same length as the search string, then 
+  1974:         // we can immediately do the needed replacements inline and return.
+  1975:         if(wFindLen == wReplacementLen)
+  1976:         {
+  1977:                 for(wBytesLeft = wExpressionLen; wBytesLeft; wBytesLeft--)
+  1978:                 {
+  1979:                         i = *vExpression++;
+  1980:                         if(bSearchCaseInsensitive)
+  1981:                         {
+  1982:                                 if((i >= (BYTE)'A') && (i <= (BYTE)'Z'))
+  1983:                                         i += 'a' - 'A';
+  1984:                                 if(i != vFirstFindChar)
+  1985:                                         continue;
+  1986:                                 vExpressionCompare = vExpression;
+  1987:                                 vFindCompare = vFind;
+  1988:                                 w = wFindLenMinusOne;
+  1989:                                 while(w)
+  1990:                                 {
+  1991:                                         i = *vExpressionCompare++;
+  1992:                                         j = *vFindCompare++;
+  1993:                                         if((i >= (BYTE)'A') && (i <= (BYTE)'Z'))
+  1994:                                                 i += 'a' - 'A';
+  1995:                                         if((j >= (BYTE)'A') && (j <= (BYTE)'Z'))
+  1996:                                                 j += 'a' - 'A';
+  1997:                                         if(i != j)
+  1998:                                                 break;
+  1999:                                         w--;
+  2000:                                 }
+  2001:                                 if(w)
+  2002:                                         continue;
+  2003:                         }
+  2004:                         else
+  2005:                         {
+  2006:                                 if(i != vFirstFindChar)
+  2007:                                         continue;
+  2008:                                 if(memcmppgm2ram((void*)vExpression, (ROM void*)vFind, wFindLenMinusOne))
+  2009:                                         continue;
+  2010:                         }
+  2011:         
+  2012:                         memcpypgm2ram((void*)vExpression-1, (ROM void*)vReplacement, wReplacementLen);
+  2013:                         wFindCount++;
+  2014:                         vExpression += wFindLenMinusOne;
+  2015:                         wBytesLeft -= wFindLenMinusOne;
+  2016:                 }
+  2017:                 return wFindCount;
+  2018:         }
+  2019:         
+  2020:         
+  2021:         // If the replacement string is shorter than the search string, then we can 
+  2022:         // search from left to right and move the string over as we find occurrences.
+  2023:         if(wFindLen > wReplacementLen)
+  2024:         {
+  2025:                 vDest = vExpression;
+  2026:                 for(wBytesLeft = wExpressionLen; wBytesLeft; wBytesLeft--)
+  2027:                 {
+  2028:                         i = *vExpression++;
+  2029:                         *vDest++ = i;
+  2030:                         if(bSearchCaseInsensitive)
+  2031:                         {
+  2032:                                 if((i >= (BYTE)'A') && (i <= (BYTE)'Z'))
+  2033:                                         i += 'a' - 'A';
+  2034:                                 if(i != vFirstFindChar)
+  2035:                                         continue;
+  2036:                                 vExpressionCompare = vExpression;
+  2037:                                 vFindCompare = vFind;
+  2038:                                 w = wFindLenMinusOne;
+  2039:                                 while(w)
+  2040:                                 {
+  2041:                                         i = *vExpressionCompare++;
+  2042:                                         j = *vFindCompare++;
+  2043:                                         if((i >= (BYTE)'A') && (i <= (BYTE)'Z'))
+  2044:                                                 i += 'a' - 'A';
+  2045:                                         if((j >= (BYTE)'A') && (j <= (BYTE)'Z'))
+  2046:                                                 j += 'a' - 'A';
+  2047:                                         if(i != j)
+  2048:                                                 break;
+  2049:                                         w--;
+  2050:                                 }
+  2051:                                 if(w)
+  2052:                                         continue;
+  2053:                         }
+  2054:                         else
+  2055:                         {
+  2056:                                 if(i != vFirstFindChar)
+  2057:                                         continue;
+  2058:                                 if(memcmppgm2ram((void*)vExpression, (ROM void*)vFind, wFindLenMinusOne))
+  2059:                                         continue;
+  2060:                         }
+  2061:         
+  2062:                         memcpypgm2ram((void*)vDest-1, (ROM void*)vReplacement, wReplacementLen);
+  2063:                         vDest += wReplacementLen-1;
+  2064:                         wFindCount++;
+  2065:                         vExpression += wFindLenMinusOne;
+  2066:                         wBytesLeft -= wFindLenMinusOne;
+  2067:                 }
+  2068:                 *vDest = 0x00;  // Write new null terminator since the string may have shrunk
+  2069:                 return wFindCount;
+  2070:         }
+  2071:         
+  2072:         // If the replacement string is longer than the search string, then we will 
+  2073:         // take a two pass approach.  On the first pass, we will merely count how 
+  2074:         // many replacements to make.  With this we can calculate how long the 
+  2075:         // final string is going to be.  On the second pass, we will search from 
+  2076:         // right to left and expand the string as needed.
+  2077: 
+  2078:         // Pass 1: count how many occurrences of vFind are in vExpression
+  2079:         for(wBytesLeft = wExpressionLen; wBytesLeft; wBytesLeft--)
+  2080:         {
+  2081:                 i = *vExpression++;
+  2082:                 if(bSearchCaseInsensitive)
+  2083:                 {
+  2084:                         if((i >= (BYTE)'A') && (i <= (BYTE)'Z'))
+  2085:                                 i += 'a' - 'A';
+  2086:                         if(i != vFirstFindChar)
+  2087:                                 continue;
+  2088:                         vExpressionCompare = vExpression;
+  2089:                         vFindCompare = vFind;
+  2090:                         w = wFindLenMinusOne;
+  2091:                         while(w)
+  2092:                         {
+  2093:                                 i = *vExpressionCompare++;
+  2094:                                 j = *vFindCompare++;
+  2095:                                 if((i >= (BYTE)'A') && (i <= (BYTE)'Z'))
+  2096:                                         i += 'a' - 'A';
+  2097:                                 if((j >= (BYTE)'A') && (j <= (BYTE)'Z'))
+  2098:                                         j += 'a' - 'A';
+  2099:                                 if(i != j)
+  2100:                                         break;
+  2101:                                 w--;
+  2102:                         }
+  2103:                         if(w)
+  2104:                                 continue;
+  2105:                 }
+  2106:                 else
+  2107:                 {
+  2108:                         if(i != vFirstFindChar)
+  2109:                                 continue;
+  2110:                         if(memcmppgm2ram((void*)vExpression, (ROM void*)vFind, wFindLenMinusOne))
+  2111:                                 continue;
+  2112:                 }
+  2113: 
+  2114:                 wFindCount++;
+  2115:                 vExpression += wFindLenMinusOne;
+  2116:                 wBytesLeft -= wFindLenMinusOne;
+  2117:         }
+  2118:         
+  2119:         // Return immediately if no replacements are needed
+  2120:         if(wFindCount == 0u)
+  2121:                 return 0;
+  2122: 
+  2123:         // Pass 2: make replacements and move string over
+  2124:         vDest = vExpression + wFindCount * (wReplacementLen - wFindLen);
+  2125:         if(vDest > vExpression - wExpressionLen + wMaxLen)
+  2126:                 return -1;
+  2127:         *vDest-- = 0x00;        // Write new null terminator
+  2128:         vExpression -= 1;
+  2129:         vFind -= 1;
+  2130:         vFirstFindChar = vFind[wFindLenMinusOne];
+  2131:         if(bSearchCaseInsensitive)      // Convert to all lowercase if needed
+  2132:                 if((vFirstFindChar >= (BYTE)'A') && (vFirstFindChar <= (BYTE)'Z'))
+  2133:                         vFirstFindChar += 'a' - 'A';
+  2134:         wReplacementsLeft = wFindCount;
+  2135:         while(wReplacementsLeft)
+  2136:         {
+  2137:                 i = *vExpression--;
+  2138:                 *vDest-- = i;
+  2139:                 if(bSearchCaseInsensitive)
+  2140:                 {
+  2141:                         if((i >= (BYTE)'A') && (i <= (BYTE)'Z'))
+  2142:                                 i += 'a' - 'A';
+  2143:                         if(i != vFirstFindChar)
+  2144:                                 continue;
+  2145:                         vExpressionCompare = vExpression;
+  2146:                         vFindCompare = &vFind[wFindLenMinusOne-1];
+  2147:                         w = wFindLenMinusOne;
+  2148:                         while(w)
+  2149:                         {
+  2150:                                 i = *vExpressionCompare--;
+  2151:                                 j = *vFindCompare--;
+  2152:                                 if((i >= (BYTE)'A') && (i <= (BYTE)'Z'))
+  2153:                                         i += 'a' - 'A';
+  2154:                                 if((j >= (BYTE)'A') && (j <= (BYTE)'Z'))
+  2155:                                         j += 'a' - 'A';
+  2156:                                 if(i != j)
+  2157:                                         break;
+  2158:                                 w--;
+  2159:                         }
+  2160:                         if(w)
+  2161:                                 continue;
+  2162:                 }
+  2163:                 else
+  2164:                 {
+  2165:                         if(i != vFirstFindChar)
+  2166:                                 continue;
+  2167:                         if(memcmppgm2ram((void*)vExpression-wFindLenMinusOne, (ROM void*)vFind, wFindLenMinusOne))
+  2168:                                 continue;
+  2169:                 }
+  2170:                 memcpypgm2ram((void*)vDest-wReplacementLen+2, (ROM void*)vReplacement, wReplacementLen);
+  2171:                 vDest -= wReplacementLen-1;
+  2172: 
+  2173:                 vExpression -= wFindLenMinusOne;
+  2174:                 wBytesLeft -= wFindLenMinusOne;
+  2175:                 wReplacementsLeft--;
+  2176:         }
+  2177:         return wFindCount;
+  2178: }
+  2179: #endif

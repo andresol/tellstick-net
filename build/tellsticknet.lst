@@ -1,0 +1,188 @@
+     1: //
+     2: // Copyright (C) 2012 Telldus Technologies AB. All rights reserved.
+     3: //
+     4: // Copyright: See COPYING file that comes with this distribution
+     5: //
+     6: //
+     7: 
+     8: #include <htc.h>
+     9: #include "TCPIP Stack/TCPIP.h"
+    10: #include "TCPIP Stack/Helpers.h"
+    11: 
+    12: #include "common.h"
+    13: #include "eeprom.h"
+    14: #include "livemessage.h"
+    15: #include "localaccess.h"
+    16: #include "pwm.h"
+    17: #include "send.h"
+    18: #include "transmit.h"
+    19: #include "transmit_arctech.h"
+    20: 
+    21: static UDP_PORT localPort;
+    22: static UDP_SOCKET s = INVALID_UDP_SOCKET;
+    23: static NODE_INFO        remote;
+    24: 
+    25: void registerListener() {
+    26:         memcpy(&remote, &UDPSocketInfo[localSocket].remote, sizeof(remote));
+    27:         localPort = UDPSocketInfo[localSocket].remotePort;
+    28: 
+    29:         if(s != INVALID_UDP_SOCKET) {
+    30:                 UDPClose(s);
+    31:                 s = INVALID_UDP_SOCKET;
+    32:                 return;
+    33:         }
+    34: }
+    35: 
+    36: void sendToLocalListeners() {
+    37:         int i, len;
+    38:         char *b;
+    39: 
+    40:         if(s == INVALID_UDP_SOCKET) {
+    41:                 s = UDPOpen(localPort, &remote, localPort);
+    42:         }
+    43:         if(s == INVALID_UDP_SOCKET) {
+    44:                 return;
+    45:         }
+    46: 
+    47:         if (!UDPIsPutReady(s)) {
+    48:                 return;
+    49:         }
+    50:         b = LMContent();
+    51:         len = strlen(b);
+    52:         for(i=0; i<len; ++i) {
+    53:                 UDPPut(b[i]);
+    54:         }
+    55:         UDPFlush();
+    56: }
+    57: 
+    58: void send() {
+    59:         unsigned char pause = DEFAULT_PAUSE;
+    60:         unsigned char repeats = DEFAULT_REPEATS;
+    61:         unsigned char i, j;
+    62:         unsigned long ack;
+    63:         BYTE protocol[20] = "", model[20] = "";
+    64: 
+    65:         if (!LMEnterHash()) {
+    66:                 return;
+    67:         }
+    68: 
+    69:         if (LMFindHashString("P")) {
+    70:                 pause = LMTakeInt();
+    71:         }
+    72:         if (LMFindHashString("R")) {
+    73:                 repeats = LMTakeInt();
+    74:         }
+    75: 
+    76:         if (LMFindHashString("protocol")) {
+    77:                 LMTakeString(&protocol, sizeof(protocol));
+    78: 
+    79:                 if (LMFindHashString("model")) {
+    80:                         LMTakeString(&model, sizeof(model));
+    81:                 }
+    82:                 if (strcmp(protocol, "arctech") != 0 || strcmp(model, "selflearning") != 0) {
+    83:                         return;
+    84:                 }
+    85:                 sendArctechSelflearning();
+    86:                 return;
+    87:         }
+    88: 
+    89:         if (!LMFindHashString("S")) {
+    90:                 return;
+    91:         }
+    92:         if (!LMTakeString(&sendPacket, sizeof(sendPacket))) {
+    93:                 return;
+    94:         }
+    95: 
+    96:         rfStartTransmit();
+    97:         for(unsigned char i = 0; i < repeats; ++i) {
+    98:                 setTXPulses(2);
+    99:                 rfSend(&sendPacket);
+   100:                 for(unsigned char j = 0; j < pause; ++j) {
+   101:                         __delay_ms(1);
+   102:                 }
+   103:         }
+   104:         rfStopTransmit();
+   105: }
+   106: 
+   107: void saveIp() {
+   108:         if (AppConfig.Flags.bIsDHCPEnabled) {
+   109:                 config.ipAddr.Val = 0xFFFFFFFF;
+   110:                 config.netmask.Val = 0xFFFFFFFF;
+   111:                 config.gateway.Val = 0xFFFFFFFF;
+   112:                 config.dns1.Val = 0xFFFFFFFF;
+   113:                 config.dns2.Val = 0xFFFFFFFF;
+   114:         } else {
+   115:                 config.ipAddr.Val = AppConfig.MyIPAddr.Val;
+   116:                 config.netmask.Val = AppConfig.MyMask.Val;
+   117:                 config.gateway.Val = AppConfig.MyGateway.Val;
+   118:                 config.dns1.Val = AppConfig.PrimaryDNSServer.Val;
+   119:                 config.dns2.Val = AppConfig.SecondaryDNSServer.Val;
+   120:         }
+   121:         saveEEPROM((unsigned char*)&config, sizeof(config));
+   122:         Reset();
+   123: }
+   124: 
+   125: void setIp() {
+   126:         IP_ADDR ip, netmask, gateway, dns1, dns2;
+   127: 
+   128:         if (!LMEnterHash()) {
+   129:                 return;
+   130:         }
+   131:         if (!LMFindHashString("ip")) {
+   132:                 return;
+   133:         }
+   134:         ip.Val = LMTakeInt();
+   135:         if (ip.Val == 0xFFFFFFFF) {
+   136:                 AppConfig.Flags.bIsDHCPEnabled = TRUE;
+   137:                 AppConfig.Flags.bInConfigMode = TRUE;
+   138:                 DHCPEnable(0);
+   139:                 return;
+   140:         }
+   141: 
+   142:         if (!LMFindHashString("netmask")) {
+   143:                 return;
+   144:         }
+   145:         netmask.Val = LMTakeInt();
+   146: 
+   147:         if (!LMFindHashString("gateway")) {
+   148:                 return;
+   149:         }
+   150:         gateway.Val = LMTakeInt();
+   151: 
+   152:         if (!LMFindHashString("dns1")) {
+   153:                 return;
+   154:         }
+   155:         dns1.Val = LMTakeInt();
+   156: 
+   157:         if (!LMFindHashString("dns2")) {
+   158:                 return;
+   159:         }
+   160:         dns2.Val = LMTakeInt();
+   161: 
+   162:         AppConfig.Flags.bIsDHCPEnabled = FALSE;
+   163:         AppConfig.MyIPAddr.Val = ip.Val;
+   164:         AppConfig.MyMask.Val = netmask.Val;
+   165:         AppConfig.MyGateway.Val = gateway.Val;
+   166:         AppConfig.PrimaryDNSServer.Val = dns1.Val;
+   167:         AppConfig.SecondaryDNSServer.Val = dns2.Val;
+   168: }
+   169: 
+   170: void handleMessage() {
+   171:         BYTE name[20] = "";
+   172: 
+   173:         if (!LMTakeString(&name, sizeof(name))) {
+   174:                 printf("Could not handle message (to long?)\r\n");
+   175:                 return;
+   176:         }
+   177:         if (strcmp(name, "reglistener") == 0) {
+   178:                 registerListener();
+   179:         } else if (strcmp(name, "send") == 0) {
+   180:                         send();
+   181:         } else if (strcmp(name, "setip") == 0) {
+   182:                 setIp();
+   183:         } else if (strcmp(name, "saveip") == 0) {
+   184:                 saveIp();
+   185:         } else if (strcmp(name, "disconnect") == 0) {
+   186:                 Reset();
+   187:         }
+   188: }

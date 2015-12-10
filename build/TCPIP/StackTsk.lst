@@ -1,0 +1,478 @@
+     1: /*********************************************************************
+     2:  *
+     3:  *      TCP/IP Stack Manager
+     4:  *  Module for Microchip TCP/IP Stack
+     5:  *       -Handles internal RX packet pre-processing prior to dispatching 
+     6:  *    to upper application layers.
+     7:  *       -Reference: AN833
+     8:  *
+     9:  *********************************************************************
+    10:  * FileName:        StackTsk.c
+    11:  * Dependencies:    ARP, IP, Network layer interface (ENC28J60.c, 
+    12:  *                                      ETH97J60.c, ENCX24J600.c, or WFMac.c)
+    13:  * Processor:       PIC18, PIC24F, PIC24H, dsPIC30F, dsPIC33F, PIC32
+    14:  * Compiler:        Microchip C32 v1.05 or higher
+    15:  *                                      Microchip C30 v3.12 or higher
+    16:  *                                      Microchip C18 v3.30 or higher
+    17:  *                                      HI-TECH PICC-18 PRO 9.63PL2 or higher
+    18:  * Company:         Microchip Technology, Inc.
+    19:  *
+    20:  * Software License Agreement
+    21:  *
+    22:  * Copyright (C) 2002-2009 Microchip Technology Inc.  All rights
+    23:  * reserved.
+    24:  *
+    25:  * Microchip licenses to you the right to use, modify, copy, and
+    26:  * distribute:
+    27:  * (i)  the Software when embedded on a Microchip microcontroller or
+    28:  *      digital signal controller product ("Device") which is
+    29:  *      integrated into Licensee's product; or
+    30:  * (ii) ONLY the Software driver source files ENC28J60.c, ENC28J60.h,
+    31:  *              ENCX24J600.c and ENCX24J600.h ported to a non-Microchip device
+    32:  *              used in conjunction with a Microchip ethernet controller for
+    33:  *              the sole purpose of interfacing with the ethernet controller.
+    34:  *
+    35:  * You should refer to the license agreement accompanying this
+    36:  * Software for additional information regarding your rights and
+    37:  * obligations.
+    38:  *
+    39:  * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT
+    40:  * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+    41:  * LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+    42:  * PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL
+    43:  * MICROCHIP BE LIABLE FOR ANY INCIDENTAL, SPECIAL, INDIRECT OR
+    44:  * CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF
+    45:  * PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES, ANY CLAIMS
+    46:  * BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE
+    47:  * THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION, OR OTHER
+    48:  * SIMILAR COSTS, WHETHER ASSERTED ON THE BASIS OF CONTRACT, TORT
+    49:  * (INCLUDING NEGLIGENCE), BREACH OF WARRANTY, OR OTHERWISE.
+    50:  *
+    51:  *
+    52:  * V5.36 ---- STACK_USE_MPFS has been removed.
+    53: ********************************************************************/
+    54: #define __STACKTSK_C
+    55: 
+    56: #include "TCPIP Stack/TCPIP.h"
+    57: 
+    58: #if defined( WF_CS_TRIS )
+    59:     #if defined( WF_CONFIG_CONSOLE )
+    60:         #include "TCPIP Stack/WFConsole.h"
+    61:     #endif
+    62:     #if defined( STACK_USE_EZ_CONFIG ) || defined( EZ_CONFIG_SCAN )
+    63:         #include "TCPIP Stack/WFEasyConfig.h"
+    64:     #endif
+    65:         #include "TCPIP Stack/WFApi.h"
+    66: #endif
+    67: 
+    68: // Stack FSM states.
+    69: typedef enum
+    70: {
+    71:     SM_STACK_IDLE,
+    72:     SM_STACK_MAC,
+    73:     SM_STACK_IP,
+    74:     SM_STACK_ARP,
+    75:     SM_STACK_TCP,
+    76:     SM_STACK_UDP
+    77: } SM_STACK;
+    78: static SM_STACK smStack;
+    79: 
+    80: NODE_INFO remoteNode;
+    81: 
+    82: #if defined (WF_CS_TRIS) && defined (STACK_USE_DHCP_CLIENT)
+    83: BOOL g_DhcpRenew = FALSE;
+    84: extern void SetDhcpProgressState(void);
+    85: #endif
+    86: 
+    87: extern BOOL ARPProcess(void);
+    88: 
+    89: /*********************************************************************
+    90:  * Function:        void StackInit(void)
+    91:  *
+    92:  * PreCondition:    None
+    93:  *
+    94:  * Input:           None
+    95:  *
+    96:  * Output:          Stack and its componets are initialized
+    97:  *
+    98:  * Side Effects:    None
+    99:  *
+   100:  * Note:            This function must be called before any of the
+   101:  *                  stack or its component routines are used.
+   102:  *
+   103:  ********************************************************************/
+   104: void StackInit(void)
+   105: {
+   106:     smStack                     = SM_STACK_IDLE;
+   107: 
+   108: #if defined(STACK_USE_IP_GLEANING) || defined(STACK_USE_DHCP_CLIENT)
+   109:     /*
+   110:      * If DHCP or IP Gleaning is enabled,
+   111:      * startup in Config Mode.
+   112:      */
+   113:     AppConfig.Flags.bInConfigMode = TRUE;
+   114: 
+   115: #endif
+   116: 
+   117:         // Seed the LFSRRand() function
+   118:         LFSRSeedRand(GenerateRandomDWORD());
+   119: 
+   120:     MACInit();
+   121: 
+   122: #if defined(WF_CS_TRIS) && defined(STACK_USE_EZ_CONFIG) && !defined(__18CXX)
+   123:     WFEasyConfigInit();
+   124: #endif    
+   125: 
+   126:     ARPInit();
+   127: 
+   128: #if defined(STACK_USE_UDP)
+   129:     UDPInit();
+   130: #endif
+   131: 
+   132: #if defined(STACK_USE_TCP)
+   133:     TCPInit();
+   134: #endif
+   135: 
+   136: #if defined(STACK_USE_BERKELEY_API)
+   137:         BerkeleySocketInit();
+   138: #endif
+   139: 
+   140: #if defined(STACK_USE_HTTP2_SERVER)
+   141:     HTTPInit();
+   142: #endif
+   143: 
+   144: #if defined(STACK_USE_RSA)
+   145:         RSAInit();
+   146: #endif
+   147: 
+   148: #if defined(STACK_USE_SSL)
+   149:     SSLInit();
+   150: #endif
+   151: 
+   152: #if defined(STACK_USE_FTP_SERVER) && defined(STACK_USE_MPFS2)
+   153:     FTPInit();
+   154: #endif
+   155: 
+   156: #if defined(STACK_USE_SNMP_SERVER)
+   157:         SNMPInit();
+   158: #endif
+   159: 
+   160: #if defined(STACK_USE_DHCP_CLIENT)
+   161:         DHCPInit(0);
+   162:     if(!AppConfig.Flags.bIsDHCPEnabled)
+   163:     {
+   164:         DHCPDisable(0);
+   165:     }
+   166: #endif
+   167: 
+   168: #if defined(STACK_USE_AUTO_IP)
+   169:     AutoIPInit(0);
+   170: #endif
+   171: 
+   172: #if defined(STACK_USE_DYNAMICDNS_CLIENT)
+   173:         DDNSInit();
+   174: #endif
+   175: 
+   176: #if defined(STACK_USE_RANDOM)
+   177:         RandomInit();
+   178: #endif
+   179: }
+   180: 
+   181: 
+   182: /*********************************************************************
+   183:  * Function:        void StackTask(void)
+   184:  *
+   185:  * PreCondition:    StackInit() is already called.
+   186:  *
+   187:  * Input:           None
+   188:  *
+   189:  * Output:          Stack FSM is executed.
+   190:  *
+   191:  * Side Effects:    None
+   192:  *
+   193:  * Note:            This FSM checks for new incoming packets,
+   194:  *                  and routes it to appropriate stack components.
+   195:  *                  It also performs timed operations.
+   196:  *
+   197:  *                  This function must be called periodically to
+   198:  *                  ensure timely responses.
+   199:  *
+   200:  ********************************************************************/
+   201: void StackTask(void)
+   202: {
+   203:     WORD dataCount;
+   204:     IP_ADDR tempLocalIP;
+   205:         BYTE cFrameType;
+   206:         BYTE cIPFrameType;
+   207: 
+   208:    
+   209:     #if defined( WF_CS_TRIS )
+   210:         // This task performs low-level MAC processing specific to the MRF24WB0M
+   211:         MACProcess();
+   212:         #if defined( STACK_USE_EZ_CONFIG ) && !defined(__18CXX)
+   213:             WFEasyConfigMgr();
+   214:         #endif
+   215:         
+   216:         
+   217:         #if defined(STACK_USE_DHCP_CLIENT)
+   218:                 // Normally, an application would not include  DHCP module
+   219:                 // if it is not enabled. But in case some one wants to disable
+   220:                 // DHCP module at run-time, remember to not clear our IP
+   221:                 // address if link is removed.
+   222:                 if(AppConfig.Flags.bIsDHCPEnabled)
+   223:                 {
+   224:                         if(g_DhcpRenew == TRUE)
+   225:                         {
+   226:                                 g_DhcpRenew = FALSE;
+   227:                         AppConfig.MyIPAddr.Val = AppConfig.DefaultIPAddr.Val;
+   228:                                 AppConfig.MyMask.Val = AppConfig.DefaultMask.Val;
+   229:                                 AppConfig.Flags.bInConfigMode = TRUE;
+   230:                                 DHCPInit(0);
+   231:                         }
+   232:                 
+   233:                         // DHCP must be called all the time even after IP configuration is
+   234:                         // discovered.
+   235:                         // DHCP has to account lease expiration time and renew the configuration
+   236:                         // time.
+   237:                         DHCPTask();
+   238:                         
+   239:                         if(DHCPIsBound(0))
+   240:                                 AppConfig.Flags.bInConfigMode = FALSE;
+   241:                 }
+   242:         #endif // STACK_USE_DHCP_CLIENT
+   243:         
+   244:         
+   245:     #endif
+   246: 
+   247: 
+   248:         #if defined(STACK_USE_DHCP_CLIENT) && !defined(WF_CS_TRIS)
+   249:         // Normally, an application would not include  DHCP module
+   250:         // if it is not enabled. But in case some one wants to disable
+   251:         // DHCP module at run-time, remember to not clear our IP
+   252:         // address if link is removed.
+   253:         if(AppConfig.Flags.bIsDHCPEnabled)
+   254:         {
+   255:                 static BOOL bLastLinkState = FALSE;
+   256:                 BOOL bCurrentLinkState;
+   257:                 
+   258:                 bCurrentLinkState = MACIsLinked();
+   259:                 if(bCurrentLinkState != bLastLinkState)
+   260:                 {
+   261:                         bLastLinkState = bCurrentLinkState;
+   262:                         if(!bCurrentLinkState)
+   263:                         {
+   264:                                 AppConfig.MyIPAddr.Val = AppConfig.DefaultIPAddr.Val;
+   265:                                 AppConfig.MyMask.Val = AppConfig.DefaultMask.Val;
+   266:                                 AppConfig.Flags.bInConfigMode = TRUE;
+   267:                                 DHCPInit(0);
+   268:                         }
+   269:                 }
+   270:         
+   271:                 // DHCP must be called all the time even after IP configuration is
+   272:                 // discovered.
+   273:                 // DHCP has to account lease expiration time and renew the configuration
+   274:                 // time.
+   275:                 DHCPTask();
+   276:                 
+   277:                 if(DHCPIsBound(0))
+   278:                         AppConfig.Flags.bInConfigMode = FALSE;
+   279:         }
+   280:         #endif
+   281: 
+   282:     #if defined (STACK_USE_AUTO_IP)
+   283:     AutoIPTasks();
+   284:     #endif
+   285: 
+   286:         #if defined(STACK_USE_TCP)
+   287:         // Perform all TCP time related tasks (retransmit, send acknowledge, close connection, etc)
+   288:         TCPTick();
+   289:         #endif
+   290: 
+   291: 
+   292:         #if defined(STACK_USE_UDP)
+   293:         UDPTask();
+   294:         #endif
+   295: 
+   296:         // Process as many incomming packets as we can
+   297:         while(1)
+   298:         {
+   299:                 //if using the random module, generate entropy
+   300:                 #if defined(STACK_USE_RANDOM)
+   301:                         RandomAdd(remoteNode.MACAddr.v[5]);
+   302:                 #endif
+   303: 
+   304:                 // We are about to fetch a new packet, make sure that the 
+   305:                 // UDP module knows that any old RX data it has laying 
+   306:                 // around will now be gone.
+   307:                 #if defined(STACK_USE_UDP)
+   308:                         UDPDiscard();
+   309:                 #endif
+   310: 
+   311:                 // Fetch a packet (throws old one away, if not thrown away 
+   312:                 // yet)
+   313:                 if(!MACGetHeader(&remoteNode.MACAddr, &cFrameType))
+   314:                         break;
+   315: 
+   316:                 // When using a WiFi module, filter out all incoming packets that have 
+   317:                 // the same source MAC address as our own MAC address.  This is to 
+   318:                 // prevent receiving and passing our own broadcast packets up to other 
+   319:                 // layers and avoid, for example, having our own gratuitous ARPs get 
+   320:                 // answered by ourself.
+   321:                 #if defined(WF_CS_TRIS)
+   322:                         if(memcmp((void*)&remoteNode.MACAddr, (void*)&AppConfig.MyMACAddr, 6) == 0u)
+   323:                                 continue;
+   324:                 #endif
+   325: 
+   326:                 // Dispatch the packet to the appropriate handler
+   327:                 switch(cFrameType)
+   328:                 {
+   329:                         case MAC_ARP:
+   330:                                 ARPProcess();
+   331:                                 break;
+   332:         
+   333:                         case MAC_IP:
+   334:                                 if(!IPGetHeader(&tempLocalIP, &remoteNode, &cIPFrameType, &dataCount))
+   335:                                         break;
+   336: 
+   337:                                 #if defined(STACK_USE_ICMP_SERVER) || defined(STACK_USE_ICMP_CLIENT)
+   338:                                 if(cIPFrameType == IP_PROT_ICMP)
+   339:                                 {
+   340:                                         #if defined(STACK_USE_IP_GLEANING)
+   341:                                         if(AppConfig.Flags.bInConfigMode && AppConfig.Flags.bIsDHCPEnabled)
+   342:                                         {
+   343:                                                 // According to "IP Gleaning" procedure,
+   344:                                                 // when we receive an ICMP packet with a valid
+   345:                                                 // IP address while we are still in configuration
+   346:                                                 // mode, accept that address as ours and conclude
+   347:                                                 // configuration mode.
+   348:                                                 if(tempLocalIP.Val != 0xffffffff)
+   349:                                                 {
+   350:                                                         AppConfig.Flags.bInConfigMode = FALSE;
+   351:                                                         AppConfig.MyIPAddr = tempLocalIP;
+   352:                                                 }
+   353:                                         }
+   354:                                         #endif
+   355: 
+   356:                                         // Process this ICMP packet if it the destination IP address matches our address or one of the broadcast IP addressees
+   357:                                         if( (tempLocalIP.Val == AppConfig.MyIPAddr.Val) ||
+   358:                                                 (tempLocalIP.Val == 0xFFFFFFFF) ||
+   359: #if defined(STACK_USE_ZEROCONF_LINK_LOCAL) || defined(STACK_USE_ZEROCONF_MDNS_SD)
+   360:                                                 (tempLocalIP.Val == 0xFB0000E0) ||
+   361: #endif
+   362:                                                 (tempLocalIP.Val == ((AppConfig.MyIPAddr.Val & AppConfig.MyMask.Val) | ~AppConfig.MyMask.Val)))
+   363:                                         {
+   364:                                                 ICMPProcess(&remoteNode, dataCount);
+   365:                                         }
+   366: 
+   367:                                         break;
+   368:                                 }
+   369:                                 #endif
+   370:                                 
+   371:                                 #if defined(STACK_USE_TCP)
+   372:                                 if(cIPFrameType == IP_PROT_TCP)
+   373:                                 {
+   374:                                         TCPProcess(&remoteNode, &tempLocalIP, dataCount);
+   375:                                         break;
+   376:                                 }
+   377:                                 #endif
+   378:                                 
+   379:                                 #if defined(STACK_USE_UDP)
+   380:                                 if(cIPFrameType == IP_PROT_UDP)
+   381:                                 {
+   382:                                         // Stop processing packets if we came upon a UDP frame with application data in it
+   383:                                         if(UDPProcess(&remoteNode, &tempLocalIP, dataCount))
+   384:                                                 return;
+   385:                                 }
+   386:                                 #endif
+   387: 
+   388:                                 break;
+   389:                 }
+   390:         }
+   391: }
+   392: 
+   393: /*********************************************************************
+   394:  * Function:        void StackApplications(void)
+   395:  *
+   396:  * PreCondition:    StackInit() is already called.
+   397:  *
+   398:  * Input:           None
+   399:  *
+   400:  * Output:          Calls all loaded application modules.
+   401:  *
+   402:  * Side Effects:    None
+   403:  *
+   404:  * Note:            This function must be called periodically to
+   405:  *                  ensure timely responses.
+   406:  *
+   407:  ********************************************************************/
+   408: void StackApplications(void)
+   409: {
+   410:         #if defined(STACK_USE_HTTP2_SERVER)
+   411:         HTTPServer();
+   412:         #endif
+   413:         
+   414:         #if defined(STACK_USE_FTP_SERVER) && defined(STACK_USE_MPFS2)
+   415:         FTPServer();
+   416:         #endif
+   417:         
+   418:         #if defined(STACK_USE_SNMP_SERVER)
+   419:         SNMPTask();
+   420:         #endif
+   421:         
+   422:         #if defined(STACK_USE_ANNOUNCE)
+   423:         DiscoveryTask();
+   424:         #endif
+   425:         
+   426:         #if defined(STACK_USE_NBNS)
+   427:         NBNSTask();
+   428:         #endif
+   429:         
+   430:         #if defined(STACK_USE_DHCP_SERVER)
+   431:         DHCPServerTask();
+   432:         #endif
+   433:         
+   434:         #if defined(STACK_USE_DNS_SERVER)
+   435:         DNSServerTask();
+   436:         #endif
+   437:         
+   438:         #if defined (STACK_USE_DYNAMICDNS_CLIENT)
+   439:         DDNSTask();
+   440:         #endif
+   441:         
+   442:         #if defined(STACK_USE_TELNET_SERVER)
+   443:         TelnetTask();
+   444:         #endif
+   445:         
+   446:         #if defined(STACK_USE_REBOOT_SERVER)
+   447:         RebootTask();
+   448:         #endif
+   449:         
+   450:         #if defined(STACK_USE_SNTP_CLIENT)
+   451:         SNTPClient();
+   452:         #endif
+   453:         
+   454:         #if defined(STACK_USE_UDP_PERFORMANCE_TEST)
+   455:         UDPPerformanceTask();
+   456:         #endif
+   457:         
+   458:         #if defined(STACK_USE_TCP_PERFORMANCE_TEST)
+   459:         TCPPerformanceTask();
+   460:         #endif
+   461:         
+   462:         #if defined(STACK_USE_SMTP_CLIENT)
+   463:         SMTPTask();
+   464:         #endif
+   465:         
+   466:         #if defined(STACK_USE_UART2TCP_BRIDGE)
+   467:         UART2TCPBridgeTask();
+   468:         #endif
+   469: }
+   470: 
+   471: #if defined(WF_CS_TRIS) && defined(STACK_USE_DHCP_CLIENT)
+   472: void RenewDhcp(void)
+   473: {
+   474:     g_DhcpRenew = TRUE;
+   475:     SetDhcpProgressState();
+   476: }    
+   477: #endif
+   478: 

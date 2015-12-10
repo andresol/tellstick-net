@@ -1,0 +1,495 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S317 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S317 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S316 `S317 1 :8 `uc 1 ]
+[n S316 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S316 1 e ]
+"19 /home/andresol/tellstick-net/rf/receive.c
+[v _data `Vuc -> 512 `i e ]
+"20 /home/andresol/tellstick-net/rf/receive.c
+[v _dataP `Vus 1 s ]
+"3 /home/andresol/tellstick-net/rf/oregon.h
+[v _streamOregon `(v 0 ef2`uc`uc ]
+"3 /home/andresol/tellstick-net/rf/oregonv3.h
+[v _streamOregonV3 `(v 0 ef2`uc`uc ]
+"1 /home/andresol/tellstick-net/rf/hasta.h
+[v _streamHasta `(v 0 ef2`uc`uc ]
+"3 /home/andresol/tellstick-net/rf/arctech.h
+[v _parseArcTechSelflearning `(uc 0 ef2`us`uc ]
+"2 /home/andresol/tellstick-net/rf/arctech.h
+[v _parseArcTechCodeSwitch `(uc 0 ef2`us`uc ]
+"1 /home/andresol/tellstick-net/rf/fineoffset.h
+[v _parseFineOffset `(uc 0 ef2`us`uc ]
+"1 /home/andresol/tellstick-net/rf/everflourish.h
+[v _parseEverFlourish `(uc 0 ef2`us`uc ]
+"1 /home/andresol/tellstick-net/rf/mandolyn.h
+[v _parseMandolyn `(uc 0 ef2`us`uc ]
+"2 /home/andresol/tellstick-net/rf/x10.h
+[v _parseX10 `(uc 0 ef2`us`uc ]
+[i _dataP
+"20 /home/andresol/tellstick-net/rf/receive.c
+-> -> 0 `i `us
+]
+"25
+[v _rfReceiveUpdate `(v 1 ef1`uc ]
+{
+[e :U _rfReceiveUpdate ]
+[v _antenna `uc 1 r1 ]
+[f ]
+"26
+[v F3862 `uc 1 s buffer ]
+[i F3862
+-> -> 0 `i `uc
+]
+[v F3863 `uc 1 s cnt ]
+[i F3863
+-> -> 0 `i `uc
+]
+"27
+[v F3864 `uc 1 s preFilterBuffer ]
+[i F3864
+-> -> 0 `i `uc
+]
+[v F3865 `uc 1 s preFilterCnt ]
+[i F3865
+-> -> 0 `i `uc
+]
+"30
+[e =<< F3864 -> 1 `i ]
+"31
+[e $ ! != -> _antenna `i -> -> -> 0 `i `uc `i 324  ]
+{
+"32
+[e =+ F3865 -> -> 1 `i `uc ]
+"33
+[e $ ! == -> F3865 `i -> 3 `i 325  ]
+{
+"34
+[e =| F3864 -> -> 7 `i `uc ]
+"35
+}
+[e $U 326  ]
+[e :U 325 ]
+[e $ ! > -> F3865 `i -> 3 `i 327  ]
+{
+"36
+[e =| F3864 -> -> 1 `i `uc ]
+"37
+}
+[e :U 327 ]
+"38
+[e :U 326 ]
+}
+[e $U 328  ]
+[e :U 324 ]
+{
+"39
+[e = F3865 -> -> 0 `i `uc ]
+"40
+}
+[e :U 328 ]
+"43
+[e =<< F3862 -> 1 `i ]
+"44
+[e =+ F3863 -> -> 1 `i `uc ]
+"45
+[e $ ! != & -> F3864 `i << -> 1 `i -> 7 `i -> 0 `i 329  ]
+{
+"46
+[e =| F3862 -> -> 1 `i `uc ]
+"48
+}
+[e $U 330  ]
+[e :U 329 ]
+{
+"50
+}
+[e :U 330 ]
+"51
+[e $ ! == -> F3863 `i -> 8 `i 331  ]
+{
+"53
+[e = F3863 -> -> 0 `i `uc ]
+"54
+[e = *U + &U _data * -> _dataP `ux -> -> # *U &U _data `ui `ux F3862 ]
+"55
+[e =+ _dataP -> -> 1 `i `us ]
+"56
+[e $ ! == -> _dataP `ui -> -> 512 `i `ui 332  ]
+{
+"58
+[e = _dataP -> -> 0 `i `us ]
+"59
+}
+[e :U 332 ]
+"60
+}
+[e :U 331 ]
+"61
+[e :UE 323 ]
+}
+"76
+[v _rfRetreatBit `(v 1 ef2`*us`*uc ]
+{
+[e :U _rfRetreatBit ]
+[v _scanP `*us 1 r1 ]
+[v _scanBit `*uc 1 r2 ]
+[f ]
+"77
+[e =<< *U _scanBit -> 1 `i ]
+"78
+[e $ ! == -> *U _scanBit `i -> 0 `i 334  ]
+{
+"79
+[e = *U _scanBit -> -> 1 `i `uc ]
+"80
+[e $ ! == -> *U _scanP `ui -> -> 0 `i `ui 335  ]
+{
+"81
+[e = *U _scanP -> -> 512 `i `us ]
+"82
+}
+[e :U 335 ]
+"83
+[e =- *U _scanP -> -> 1 `i `us ]
+"84
+}
+[e :U 334 ]
+"86
+[e :UE 333 ]
+}
+"88
+[v _getBit `(b 1 ef2`s`c ]
+{
+[e :U _getBit ]
+[v _scanP `s 1 r1 ]
+[v _scanBit `c 1 r2 ]
+[f ]
+"89
+[v _buf `uc 1 a ]
+[e = _buf *U + &U _data * -> -> _scanP `us `ux -> -> # *U &U _data `ui `ux ]
+"90
+[e $ ! != & -> _scanBit `i -> _buf `i -> 0 `i 337  ]
+{
+"91
+[e ) -> -> 1 `i `b ]
+[e $UE 336  ]
+"92
+}
+[e :U 337 ]
+"93
+[e ) -> -> 0 `i `b ]
+[e $UE 336  ]
+"94
+[e :UE 336 ]
+}
+"96
+[v _rfCountSimilar `(uc 1 ef2`*us`*uc ]
+{
+[e :U _rfCountSimilar ]
+[v _scanP `*us 1 r1 ]
+[v _scanBit `*uc 1 r2 ]
+[f ]
+"97
+[v _count `uc 1 a ]
+[e = _count -> -> 0 `i `uc ]
+"98
+[v _test `uc 1 a ]
+[e = _test -> -> ( _getBit (2 , -> *U _scanP `s -> *U _scanBit `c `i `uc ]
+"99
+[e :U 340 ]
+{
+"100
+[e =+ _count -> -> 1 `i `uc ]
+"101
+[e ( _rfRetreatBit (2 , _scanP _scanBit ]
+"102
+[e $ ! != -> ( _getBit (2 , -> *U _scanP `s -> *U _scanBit `c `i -> _test `i 342  ]
+{
+"103
+[e ) _count ]
+[e $UE 338  ]
+"104
+}
+[e :U 342 ]
+"105
+[e $ ! == -> _count `i -> 255 `i 343  ]
+{
+"107
+[e ) -> -> 0 `i `uc ]
+[e $UE 338  ]
+"108
+}
+[e :U 343 ]
+"109
+}
+[e :U 339 ]
+"99
+[e $U 340  ]
+[e :U 341 ]
+"110
+[e ) -> -> 0 `i `uc ]
+[e $UE 338  ]
+"111
+[e :UE 338 ]
+}
+"113
+[v _calculateDistance `(i 1 ef2`s`s ]
+{
+[e :U _calculateDistance ]
+[v _start `s 1 r1 ]
+[v _stop `s 1 r2 ]
+[f ]
+"114
+[e $ ! == -> _start `i -U -> 1 `i 345  ]
+{
+"115
+[e ) -U -> 1 `i ]
+[e $UE 344  ]
+"116
+}
+[e :U 345 ]
+"117
+[e $ ! >= -> _stop `i -> _start `i 346  ]
+{
+"118
+[e ) - -> _stop `i -> _start `i ]
+[e $UE 344  ]
+"119
+}
+[e :U 346 ]
+"120
+[e ) + - -> 512 `i -> _start `i -> _stop `i ]
+[e $UE 344  ]
+"121
+[e :UE 344 ]
+}
+"126
+[v _rfReceiveTask `(v 1 ef ]
+{
+[e :U _rfReceiveTask ]
+[f ]
+"127
+[v F3879 `us 1 s scanP ]
+[i F3879
+-> -> 0 `i `us
+]
+"128
+[v F3880 `uc 1 s scanBit ]
+[i F3880
+-> << -> 1 `i -> 7 `i `uc
+]
+"129
+[v F3881 `s 1 s startSilenceP ]
+[i F3881
+-> -U -> 1 `i `s
+]
+[v F3882 `s 1 s stopSilenceP ]
+[i F3882
+-> -U -> 13 `i `s
+]
+"130
+[v F3883 `uc 1 s startSilenceBit ]
+[i F3883
+-> -> 0 `i `uc
+]
+[v F3884 `uc 1 s stopSilenceBit ]
+[i F3884
+-> -U -> 1 `i `uc
+]
+"131
+[v F3885 `uc 1 s count0 ]
+[i F3885
+-> -> 0 `i `uc
+]
+[v F3886 `uc 1 s count1 ]
+[i F3886
+-> -> 0 `i `uc
+]
+"132
+[v _found `uc 1 a ]
+[e = _found -> -> 0 `i `uc ]
+"133
+[v F3888 `uc 1 s parsed ]
+[i F3888
+-> -> 0 `i `uc
+]
+"135
+[e $U 348  ]
+[e :U 349 ]
+{
+"137
+[e $ ! ( _getBit (2 , -> F3879 `s -> F3880 `c 351  ]
+{
+"138
+[e $ ! > -> F3885 `i -> 150 `i 352  ]
+{
+"139
+[e = F3882 -> F3879 `s ]
+"140
+[e = F3884 F3880 ]
+"141
+}
+[e :U 352 ]
+"142
+[e $ ! > -> F3885 `i -> 0 `i 353  ]
+{
+"143
+[e ( _streamOregon (2 , -> -> 0 `i `uc F3885 ]
+"144
+[e ( _streamOregonV3 (2 , -> -> 0 `i `uc F3885 ]
+"145
+[e ( _streamHasta (2 , -> -> 0 `i `uc F3885 ]
+"146
+}
+[e :U 353 ]
+"147
+[e =+ F3886 -> -> 1 `i `uc ]
+"148
+[e = F3885 -> -> 0 `i `uc ]
+"149
+[e = F3888 -> -> 0 `i `uc ]
+"150
+}
+[e $U 354  ]
+[e :U 351 ]
+{
+"151
+[e $ ! == -> F3885 `i -> 0 `i 355  ]
+{
+"152
+[e = F3881 -> F3879 `s ]
+"153
+[e = F3883 F3880 ]
+"154
+}
+[e :U 355 ]
+"155
+[e $ ! > -> F3886 `i -> 0 `i 356  ]
+{
+"156
+[e ( _streamOregon (2 , -> -> 1 `i `uc F3886 ]
+"157
+[e ( _streamOregonV3 (2 , -> -> 1 `i `uc F3886 ]
+"158
+[e ( _streamHasta (2 , -> -> 1 `i `uc F3886 ]
+"159
+}
+[e :U 356 ]
+"160
+[e =+ F3885 -> -> 1 `i `uc ]
+"161
+[e = F3886 -> -> 0 `i `uc ]
+"162
+}
+[e :U 354 ]
+"165
+[e =>> F3880 -> 1 `i ]
+"166
+[e $ ! == -> F3880 `i -> 0 `i 357  ]
+{
+"167
+[e = F3880 -> << -> 1 `i -> 7 `i `uc ]
+"168
+[e =+ F3879 -> -> 1 `i `us ]
+"169
+[e $ ! == -> F3879 `ui -> -> 512 `i `ui 358  ]
+{
+"170
+[e = F3879 -> -> 0 `i `us ]
+"171
+}
+[e :U 358 ]
+"172
+}
+[e :U 357 ]
+"174
+[e $ ! && == -> F3882 `ui -> F3879 `ui == -> F3884 `i -> F3880 `i 359  ]
+{
+"176
+[e = F3882 -> -U -> 1 `i `s ]
+"178
+}
+[e :U 359 ]
+"181
+[e $ ! == -> F3885 `i -> 150 `i 360  ]
+{
+"183
+[e = _found -> -> 1 `i `uc ]
+"184
+[e $U 350  ]
+"185
+}
+[e :U 360 ]
+"186
+}
+[e :U 348 ]
+"135
+[e $ != -> F3879 `ui -> _dataP `ui 349  ]
+[e :U 350 ]
+"188
+[e $ ! ! != -> _found `i -> -> -> 0 `i `uc `i 361  ]
+{
+"189
+[e $UE 347  ]
+"190
+}
+[e :U 361 ]
+"191
+[e $ ! != -> F3888 `i -> -> -> 0 `i `uc `i 362  ]
+{
+"192
+[e $UE 347  ]
+"193
+}
+[e :U 362 ]
+"196
+[v _dist `i 1 a ]
+[e = _dist ( _calculateDistance (2 , F3882 F3881 ]
+"198
+[e $ ! && >= _dist -> 0 `i < _dist -> 50 `i 363  ]
+{
+"199
+[e $UE 347  ]
+"200
+}
+[e :U 363 ]
+"201
+[e $ ! || < _dist -> 158 `i > _dist -> 162 `i 364  ]
+{
+"204
+}
+[e :U 364 ]
+"205
+[v _matched `uc 1 a ]
+[e = _matched -> -> 0 `i `uc ]
+"206
+[e =+ _matched ( _parseArcTechSelflearning (2 , -> F3881 `us F3883 ]
+"207
+[e =+ _matched ( _parseArcTechCodeSwitch (2 , -> F3881 `us F3883 ]
+"208
+[e =+ _matched ( _parseFineOffset (2 , -> F3881 `us F3883 ]
+"210
+[e =+ _matched ( _parseEverFlourish (2 , -> F3881 `us F3883 ]
+"211
+[e =+ _matched ( _parseMandolyn (2 , -> F3881 `us F3883 ]
+"212
+[e =+ _matched ( _parseX10 (2 , -> F3881 `us F3883 ]
+"213
+[e = F3888 -> -> 1 `i `uc ]
+"214
+[e $ ! != -> _matched `i -> -> -> 0 `i `uc `i 365  ]
+{
+"215
+[e = F3879 -> -> 0 `i `us ]
+"216
+[e = _dataP -> -> 0 `i `us ]
+"217
+}
+[e :U 365 ]
+"218
+[e $UE 347  ]
+"219
+[e :UE 347 ]
+}

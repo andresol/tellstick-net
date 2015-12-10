@@ -1,0 +1,44 @@
+     1: //
+     2: // Copyright (C) 2012 Telldus Technologies AB. All rights reserved.
+     3: //
+     4: // Copyright: See COPYING file that comes with this distribution
+     5: //
+     6: //
+     7: 
+     8: #include <htc.h>
+     9: #include "eeprom.h"
+    10: 
+    11: void clearEEPROM(unsigned int size) {
+    12:         unsigned char i;
+    13: 
+    14:         for(i = 0 ; i < size; i++) {
+    15:                 EEByteWrite(0xA0, i, 0xFF);
+    16:                 EEAckPolling(0xA0);
+    17:         }
+    18: }
+    19: 
+    20: void initEEPROM() {
+    21:         TRISC3 = 1; //Inputs
+    22:         TRISC4 = 1;
+    23:         OpenI2C(MASTER, SLEW_OFF);
+    24:         SSPADD = 67; //100 kHz
+    25: }
+    26: 
+    27: void saveEEPROM(unsigned char *ptr, unsigned int size) {
+    28:         unsigned char i;
+    29: 
+    30:         for(i = 0 ; i < size; i++) {
+    31:                 EEByteWrite(0xA0, i, *ptr++);
+    32:                 EEAckPolling(0xA0);
+    33:         }
+    34: }
+    35: 
+    36: void loadEEPROM(unsigned char *ptr, unsigned int size ) {
+    37:         /*
+    38:         * read configuration from EEPROM
+    39:         */
+    40:         unsigned char   i ;
+    41:         for(i = 0 ; i < size; i++) {
+    42:                 *ptr++ = EERandomRead(0xA0,i);
+    43:         }
+    44: }

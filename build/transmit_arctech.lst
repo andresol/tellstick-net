@@ -1,0 +1,120 @@
+     1: //
+     2: // Copyright (C) 2012 Telldus Technologies AB. All rights reserved.
+     3: //
+     4: // Copyright: See COPYING file that comes with this distribution
+     5: //
+     6: //
+     7: 
+     8: #include <htc.h>
+     9: 
+    10: #include "TCPIP Stack/TCPIP.h"
+    11: #include "livemessage.h"
+    12: #include "pwm.h"
+    13: #include "send.h"
+    14: #include "transmit.h"
+    15: 
+    16: #define LO(param) ((char *)&param)[0]
+    17: #define HI(param) ((char *)&param)[1]
+    18: #define HIGHER(param) ((char *)&param)[2]
+    19: #define HIGHEST(param) ((char *)&param)[3]
+    20: 
+    21: #define START_LONG_P  3130  //2,72 ms
+    22: #define SHORT_P       310   //270 us
+    23: #define LONG_P        1510  //1,31 ms
+    24: 
+    25: static long house = 0;
+    26: static int unit = 0, method = 0;
+    27: 
+    28: static void sendOne() {
+    29:         SENDER = 1;
+    30:         __delay_us(SHORT_P);
+    31:         SENDER = 0;
+    32:         __delay_us(LONG_P);
+    33:         SENDER = 1;
+    34:         __delay_us(SHORT_P);
+    35:         SENDER = 0;
+    36:         __delay_us(SHORT_P);
+    37: }
+    38: 
+    39: static void sendZero() {
+    40:         SENDER = 1;
+    41:         __delay_us(SHORT_P);
+    42:         SENDER = 0;
+    43:         __delay_us(SHORT_P);
+    44:         SENDER = 1;
+    45:         __delay_us(SHORT_P);
+    46:         SENDER = 0;
+    47:         __delay_us(LONG_P);
+    48: }
+    49: 
+    50: static void sendBits( unsigned char chCode, char bits ) {
+    51:         char mask = 1;
+    52:         char i = 0;
+    53: 
+    54:         mask = 1<<(bits-1);
+    55:         for (i = 0; i < bits; ++i) {
+    56:                 if (chCode & mask) {
+    57:                         sendOne();
+    58:                 } else {
+    59:                         sendZero();
+    60:                 }
+    61:                 mask = mask >> 1;
+    62:         }
+    63: }
+    64: 
+    65: static void sendArctechCommand() {
+    66:         //Start pulse
+    67:         SENDER = 1;
+    68:         __delay_us(SHORT_P);
+    69:         SENDER = 0;
+    70:         __delay_us(START_LONG_P);
+    71: 
+    72:         //Housecode
+    73:         sendBits(HIGHEST(house), 2);
+    74:         sendBits(HIGHER(house), 8);
+    75:         sendBits(HI(house), 8);
+    76:         sendBits(LO(house), 8);
+    77: 
+    78:         //Group
+    79:         sendZero();
+    80: 
+    81:         //On or Off
+    82:         if (method == 1) {
+    83:                 sendOne();
+    84:         } else {
+    85:                 sendZero();
+    86:         }
+    87: 
+    88:         //Button
+    89:         sendBits(unit, 4);
+    90: 
+    91:         //Stop pulse
+    92:         SENDER = 1;
+    93:         __delay_us(SHORT_P);
+    94:         SENDER = 0;
+    95: }
+    96: 
+    97: void sendArctechSelflearning() {
+    98:         if (!LMFindHashString("house")) {
+    99:                 return;
+   100:         }
+   101:         house = LMTakeInt();
+   102:         if (!LMFindHashString("unit")) {
+   103:                 return;
+   104:         }
+   105:         unit = LMTakeInt();
+   106:         if (!LMFindHashString("method")) {
+   107:                 return;
+   108:         }
+   109:         method = LMTakeInt();
+   110: 
+   111:         rfStartTransmit();
+   112:         for(unsigned char i = 0; i < DEFAULT_REPEATS; ++i) {
+   113:                 setTXPulses(2);
+   114:                 sendArctechCommand();
+   115:                 for(unsigned char j = 0; j < DEFAULT_PAUSE; ++j) {
+   116:                         __delay_ms(1);
+   117:                 }
+   118:         }
+   119:         rfStopTransmit();
+   120: }

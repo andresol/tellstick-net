@@ -1,0 +1,168 @@
+     1: //
+     2: // Copyright (C) 2012 Telldus Technologies AB. All rights reserved.
+     3: //
+     4: // Copyright: See COPYING file that comes with this distribution
+     5: //
+     6: //
+     7: 
+     8: #define THIS_IS_STACK_APPLICATION
+     9: #include "TCPIP Stack/Tick.h"
+    10: 
+    11: #include <htc.h>
+    12: #include "common.h"
+    13: #include "config.h"
+    14: #include "debug.h"
+    15: #include "discovery.h"
+    16: #include "eeprom.h"
+    17: #include "localaccess.h"
+    18: #include "pwm.h"
+    19: #include "receive.h"
+    20: #include "transmit.h"
+    21: #include "usart.h"
+    22: 
+    23: #include "rf.h"
+    24: 
+    25: __CONFIG(1, WDTDIS & XINSTDIS);
+    26: __CONFIG(2, HSPLL);
+    27: 
+    28: APP_CONFIG AppConfig;
+    29: eepromConfig config;
+    30: 
+    31: void interrupt low_priority LowISR(void) {
+    32:         if(INTCONbits.TMR0IF) {
+    33:                 TickUpdate();
+    34:         }
+    35:         if (TMR2IF) {
+    36:                 pwmUpdate();
+    37:                 TMR2IF = 0;
+    38:         }
+    39: }
+    40: 
+    41: void interrupt HighISR(void) {
+    42:         if (TMR4IF) {
+    43:                 TMR4 = 0xE2;
+    44:                 rfReceiveUpdate(RECEIVER);
+    45: 
+    46:                 //Reset timer
+    47:                 TMR4IF=0;
+    48:         }
+    49:         if (TMR3IF) {
+    50:                 TMR3H = 0xFF;
+    51:                 TMR3L = 0xC4;
+    52:                 rfTransmitUpdate();
+    53:                 TMR3IF = 0;
+    54:         }
+    55: }
+    56: 
+    57: void initInterrupts() {
+    58:         //Enable interrupt priority
+    59:         RCONbits.IPEN = 1;
+    60: 
+    61:         //Enable interrupts
+    62:         GIEH = 1; //High priority
+    63:         GIEL = 1; //Low priority
+    64: }
+    65: 
+    66: void initWDT() {
+    67:         SWDTEN = 1;
+    68: }
+    69: 
+    70: static void initAppConfig(void) {
+    71:         initEEPROM();
+    72:         loadEEPROM((unsigned char*)&config, sizeof(config));
+    73: 
+    74:         if (config.MACAddr[0] == 0xFF) {
+    75:                 //Empty EEProm, fallback MAC
+    76:                 config.MACAddr[5] = 0x00;
+    77:                 config.MACAddr[4] = 0x00;
+    78:                 config.MACAddr[3] = 0x00;
+    79:                 config.MACAddr[2] = 0x54;
+    80:                 config.MACAddr[1] = 0xCA;
+    81:                 config.MACAddr[0] = 0xAC;
+    82:         }
+    83: 
+    84:         memcpy((void*)&AppConfig.MyMACAddr, (ROM void*)config.MACAddr, sizeof(AppConfig.MyMACAddr));
+    85:         AppConfig.DefaultIPAddr.Val = MY_DEFAULT_IP_ADDR_BYTE1 | MY_DEFAULT_IP_ADDR_BYTE2<<8ul | MY_DEFAULT_IP_ADDR_BYTE3<<16ul | MY_DEFAULT_IP_ADDR_BYTE4<<24ul;
+    86:         AppConfig.DefaultMask.Val = MY_DEFAULT_MASK_BYTE1 | MY_DEFAULT_MASK_BYTE2<<8ul | MY_DEFAULT_MASK_BYTE3<<16ul | MY_DEFAULT_MASK_BYTE4<<24ul;
+    87: 
+    88:         if (config.ipAddr.byte.LB == 0xFF ||
+    89:                         config.ipAddr.byte.HB == 0xFF ||
+    90:                         config.ipAddr.byte.UB == 0xFF ||
+    91:                         config.ipAddr.byte.MB == 0xFF) {
+    92:                 AppConfig.Flags.bIsDHCPEnabled = TRUE;
+    93:                 AppConfig.Flags.bInConfigMode = TRUE;
+    94:                 AppConfig.MyIPAddr.Val = MY_DEFAULT_IP_ADDR_BYTE1 | MY_DEFAULT_IP_ADDR_BYTE2<<8ul | MY_DEFAULT_IP_ADDR_BYTE3<<16ul | MY_DEFAULT_IP_ADDR_BYTE4<<24ul;
+    95:                 AppConfig.MyMask.Val = MY_DEFAULT_MASK_BYTE1 | MY_DEFAULT_MASK_BYTE2<<8ul | MY_DEFAULT_MASK_BYTE3<<16ul | MY_DEFAULT_MASK_BYTE4<<24ul;
+    96:                 AppConfig.MyGateway.Val = MY_DEFAULT_GATE_BYTE1 | MY_DEFAULT_GATE_BYTE2<<8ul | MY_DEFAULT_GATE_BYTE3<<16ul | MY_DEFAULT_GATE_BYTE4<<24ul;
+    97:                 AppConfig.PrimaryDNSServer.Val = MY_DEFAULT_PRIMARY_DNS_BYTE1 | MY_DEFAULT_PRIMARY_DNS_BYTE2<<8ul  | MY_DEFAULT_PRIMARY_DNS_BYTE3<<16ul  | MY_DEFAULT_PRIMARY_DNS_BYTE4<<24ul;
+    98:                 AppConfig.SecondaryDNSServer.Val = MY_DEFAULT_SECONDARY_DNS_BYTE1 | MY_DEFAULT_SECONDARY_DNS_BYTE2<<8ul  | MY_DEFAULT_SECONDARY_DNS_BYTE3<<16ul  | MY_DEFAULT_SECONDARY_DNS_BYTE4<<24ul;
+    99:         } else {
+   100:                 AppConfig.Flags.bIsDHCPEnabled = FALSE;
+   101:                 AppConfig.Flags.bInConfigMode = FALSE;
+   102:                 AppConfig.MyIPAddr = config.ipAddr;
+   103:                 AppConfig.MyMask = config.netmask;
+   104:                 AppConfig.MyGateway = config.gateway;
+   105:                 AppConfig.PrimaryDNSServer = config.dns1;
+   106:                 AppConfig.SecondaryDNSServer = config.dns2;
+   107:         }
+   108: }
+   109: 
+   110: int main() {
+   111:         DWORD t = 0;
+   112: 
+   113:         //Needed because a bug in picc-18?
+   114:         MIWRL=0;
+   115:         MIWRH=0;
+   116: 
+   117:         TRISA = 0;
+   118:         TRISB = 0;
+   119:         TRISC = 0;
+   120:         TRISD = 0;
+   121:         TRISE = 0;
+   122:         TRISF = 0;
+   123:         TRISG = 0;
+   124:         PORTA=0;
+   125:         PORTB=0;
+   126:         PORTC=0;
+   127:         PORTD=0;
+   128:         PORTE=0;
+   129:         PORTF=0;
+   130: 
+   131:         OSCTUNE = 0x40; //Speed up to 41.67 MHz
+   132: 
+   133:         //Turn off AD
+   134:         ADCON1 = 0x0F;
+   135: 
+   136: #if defined(DEBUG) && defined(_18F87J60)
+   137:         initUsart2();
+   138: #endif
+   139: 
+   140:         initTransmitter();
+   141:         initReceiver();
+   142:         initPwm();
+   143:         initInterrupts();
+   144:         initAppConfig();
+   145:         initWDT();
+   146:         TickInit();
+   147:         StackInit();
+   148:         //Set the LED on the connector
+   149:         SetLEDConfig(0x3742); //See MAC.h for the values
+   150: 
+   151:         printf("Telldus TellStick Net v%s\r\n", FIRMWARE_VERSION);
+   152: 
+   153:         while(1) {
+   154:                 StackTask();
+   155:                 StackApplications();
+   156:                 if(TickGet() - t >= TICK_SECOND) {
+   157:                         t = TickGet();
+   158:                 }
+   159: #if defined(DEBUG)
+   160:                 debugTask();
+   161: #endif
+   162:                 rfReceiveTask();
+   163:                 discoveryTask();
+   164:                 localAccessTask();
+   165:                 ClrWdt();
+   166:         }
+   167:         return 42;
+   168: }

@@ -1,0 +1,1365 @@
+     1: /*********************************************************************
+     2:  *
+     3:  *      User Datagram Protocol (UDP) Communications Layer
+     4:  *  Module for Microchip TCP/IP Stack
+     5:  *       -Provides unreliable, minimum latency transport of application 
+     6:  *    datagram (packet) oriented data
+     7:  *       -Reference: RFC 768
+     8:  *
+     9:  *********************************************************************
+    10:  * FileName:        UDP.c
+    11:  * Dependencies:    IP, Ethernet (ENC28J60.c or ETH97J60.c)
+    12:  * Processor:       PIC18, PIC24F, PIC24H, dsPIC30F, dsPIC33F, PIC32
+    13:  * Compiler:        Microchip C32 v1.05 or higher
+    14:  *                                      Microchip C30 v3.12 or higher
+    15:  *                                      Microchip C18 v3.30 or higher
+    16:  *                                      HI-TECH PICC-18 PRO 9.63PL2 or higher
+    17:  * Company:         Microchip Technology, Inc.
+    18:  *
+    19:  * Software License Agreement
+    20:  *
+    21:  * Copyright (C) 2002-2009 Microchip Technology Inc.  All rights
+    22:  * reserved.
+    23:  *
+    24:  * Microchip licenses to you the right to use, modify, copy, and
+    25:  * distribute:
+    26:  * (i)  the Software when embedded on a Microchip microcontroller or
+    27:  *      digital signal controller product ("Device") which is
+    28:  *      integrated into Licensee's product; or
+    29:  * (ii) ONLY the Software driver source files ENC28J60.c, ENC28J60.h,
+    30:  *              ENCX24J600.c and ENCX24J600.h ported to a non-Microchip device
+    31:  *              used in conjunction with a Microchip ethernet controller for
+    32:  *              the sole purpose of interfacing with the ethernet controller.
+    33:  *
+    34:  * You should refer to the license agreement accompanying this
+    35:  * Software for additional information regarding your rights and
+    36:  * obligations.
+    37:  *
+    38:  * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT
+    39:  * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+    40:  * LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+    41:  * PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL
+    42:  * MICROCHIP BE LIABLE FOR ANY INCIDENTAL, SPECIAL, INDIRECT OR
+    43:  * CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF
+    44:  * PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES, ANY CLAIMS
+    45:  * BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE
+    46:  * THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION, OR OTHER
+    47:  * SIMILAR COSTS, WHETHER ASSERTED ON THE BASIS OF CONTRACT, TORT
+    48:  * (INCLUDING NEGLIGENCE), BREACH OF WARRANTY, OR OTHERWISE.
+    49:  *
+    50:  *
+    51:  * Author               Date    Comment
+    52:  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    53:  * Nilesh Rajbharti     3/19/01  Original        (Rev 1.0)
+    54:  * Nilesh Rajbharti     2/26/03  Fixed UDPGet and UDPProcess bugs
+    55:  *                               as discovered and fixed by John Owen
+    56:  *                               of Powerwave.
+    57:  *                               1. UDPGet would return FALSE on last good byte
+    58:  *                               2. UDPProcess was incorrectly calculating length.
+    59:  * Nilesh Rajbharti     5/19/03  Added bFirstRead flag similar to TCP
+    60:  *                               to detect very first UDPGet and
+    61:  *                               reset MAC Rx pointer to begining of
+    62:  *                               UDP data area.  This would ensure that
+    63:  *                               if UDP socket has pending Rx data and
+    64:  *                               another module resets MAC Rx pointer,
+    65:  *                               next UDP socket Get would get correct
+    66:  *                               data.
+    67:  * Robert Sloan (RSS)    5/29/03 Improved FindMatchingSocket()
+    68:  * Nilesh Rajbharti     12/2/03  Added UDPChecksum logic in UDPProcess()
+    69:  * Nilesh Rajbharti     12/5/03  Modified UDPProcess() and FindMatchingSocket()
+    70:  *                               to include localIP as new parameter.
+    71:  *                               This corrects pseudo header checksum
+    72:  *                               logic in UDPProcess().
+    73:  *                               It also corrects broadcast packet
+    74:  *                               matching correct in FindMatchingSocket().
+    75:  * Howard Schlunder             1/16/06  Fixed an imporbable RX checksum bug 
+    76:  *                                                               when using a Microchip Ethernet controller)
+    77:  * Howard Schlunder             6/02/06  Fixed a bug where all RXed UDP packets 
+    78:  *                                                               without a checksum (0x0000) were thrown
+    79:  *                                                               away.  No checksum is legal in UDP.
+    80:  * Howard Schlunder             8/10/06  Fixed a bug where UDP sockets would 
+    81:  *                                                               unintentionally keep the remote MAC 
+    82:  *                                                               address cached, even after calling 
+    83:  *                                                               UDPInit(), UDPClose(), or reseting 
+    84:  *                                                               the part without clearing all the 
+    85:  *                                                               PIC memory.
+    86:  ********************************************************************/
+    87: #define __UDP_C
+    88: 
+    89: #include "TCPIP Stack/TCPIP.h"
+    90: 
+    91: #if defined(STACK_USE_UDP)
+    92: 
+    93: /****************************************************************************
+    94:   Section:
+    95:         Configuration Parameters
+    96:   ***************************************************************************/
+    97: 
+    98: // First port number for randomized local port number selection
+    99: #define LOCAL_UDP_PORT_START_NUMBER (4096u)
+   100: 
+   101: // Last port number for randomized local port number selection
+   102: #define LOCAL_UDP_PORT_END_NUMBER   (8192u)
+   103: 
+   104: /****************************************************************************
+   105:   Section:
+   106:         UDP Global Variables
+   107:   ***************************************************************************/
+   108: 
+   109: // Stores an array of information pertaining to each UDP socket
+   110: UDP_SOCKET_INFO         UDPSocketInfo[MAX_UDP_SOCKETS];
+   111: 
+   112: // Indicates which UDP socket is currently active
+   113: UDP_SOCKET                      activeUDPSocket;
+   114: 
+   115: WORD UDPTxCount;        // Number of bytes written to this UDP segment
+   116: WORD UDPRxCount;        // Number of bytes read from this UDP segment
+   117: static UDP_SOCKET       LastPutSocket = INVALID_UDP_SOCKET;     // Indicates the last socket to which data was written
+   118: static WORD wPutOffset;         // Offset from beginning of payload where data is to be written.
+   119: static WORD wGetOffset;         // Offset from beginning of payload from where data is to be read.
+   120: 
+   121: // Stores various flags for the UDP module
+   122: static struct
+   123: {
+   124:         unsigned char bFirstRead : 1;           // No data has been read from this segment yet
+   125:         unsigned char bWasDiscarded : 1;        // The data in this segment has been discarded
+   126: } Flags;
+   127: 
+   128: // Indicates which socket has currently received data for this loop
+   129: static UDP_SOCKET SocketWithRxData = INVALID_UDP_SOCKET;
+   130: 
+   131: /****************************************************************************
+   132:   Section:
+   133:         Function Prototypes
+   134:   ***************************************************************************/
+   135: 
+   136: static UDP_SOCKET FindMatchingSocket(UDP_HEADER *h, NODE_INFO *remoteNode,
+   137:                                     IP_ADDR *localIP);
+   138: 
+   139: /****************************************************************************
+   140:   Section:
+   141:         Connection Management Functions
+   142:   ***************************************************************************/
+   143: 
+   144: /*****************************************************************************
+   145:   Function:
+   146:         void UDPInit(void)
+   147: 
+   148:   Summary:
+   149:         Initializes the UDP module.
+   150: 
+   151:   Description:
+   152:         Initializes the UDP module.  This function initializes all the UDP 
+   153:         sockets to the closed state.
+   154: 
+   155:   Precondition:
+   156:         None
+   157: 
+   158:   Parameters:
+   159:         None
+   160: 
+   161:   Returns:
+   162:         None
+   163:         
+   164:   Remarks:
+   165:         This function is called only one during lifetime of the application.
+   166:   ***************************************************************************/
+   167: void UDPInit(void)
+   168: {
+   169:     UDP_SOCKET s;
+   170: 
+   171:     for ( s = 0; s < MAX_UDP_SOCKETS; s++ )
+   172:     {
+   173:                 UDPClose(s);
+   174:     }
+   175:         Flags.bWasDiscarded = 1;
+   176: }
+   177: 
+   178: 
+   179: /*****************************************************************************
+   180: Function:
+   181:         UDP_SOCKET UDPOpenEx(DWORD remoteHost, BYTE remoteHostType, UDP_PORT localPort,
+   182:         UDP_PORT remotePort)
+   183: 
+   184:  Summary:
+   185:     Opens a UDP socket for a client.
+   186: 
+   187:  Description:
+   188:     Provides a unified method for opening UDP sockets. This function can open both client and 
+   189:     server   sockets. For client sockets, it can accept a host name string to query in DNS, an IP
+   190:     address as a string, an IP address in binary form, or a previously resolved NODE_INFO 
+   191:     structure containing the remote IP address and associated MAC address. When a host name
+   192:     or IP address only is provided, UDP module will internally perform the necessary DNSResolve
+   193:     and/or ARP resolution steps before reporting that the UDP socket is connected (via a call to
+   194:     UDPISOpen returning TRUE). Server sockets ignore this destination parameter and listen 
+   195:     only on the indicated port. Sockets are statically allocated on boot, but can be claimed with
+   196:     this function and freed using UDPClose .
+   197: 
+   198: Conditions:
+   199: UDPInit should be called.
+   200: 
+   201: Input:
+   202:     remoteHost -     Pointer to remote node info (MAC and IP address) for this connection.  
+   203:     If this is a     server socket (receives the first packet) or the destination is the broadcast 
+   204:     address, then this parameter should be NULL. For client sockets only. Provide a pointer to
+   205:     a null-terminated string of the remote host name (ex\:"www.microchip.com" or 
+   206:     "192.168.1.123"), a literal destination IP address (ex\: 0x7B01A8C0 or an IP_ADDR data type),
+   207:     or a pointer to a NODE_INFO structure with the remote IP address and remote node or gateway
+   208:     MAC address specified, If a string is provided.
+   209:     
+   210:     remoteHostType - Any one of the following flags to identify the meaning of the remoteHost parameter:
+   211:         - UDP_OPEN_SERVER   = Open a server socket and ignore the remoteHost parameter. 
+   212:                 (e.g. - SNMP agent, DHCP server, Announce)
+   213:         - UDP_OPEN_IP_ADDRESS = Open a client socket and connect it to a remote IP address.
+   214:                 Ex: 0x7B01A8C0 for 192.168.1.123 (DWORD type). Note that the byte ordering is big endian.
+   215:         - UDP_OPEN_NODE_INFO = Open a client socket and connect it to a remote IP and MAC 
+   216:                 addresses pair stored in a NODE_INFO structure.
+   217:         - UDP_OPEN_RAM_HOST = Open a client socket and connect it to a remote host who's 
+   218:                 name is stored as a null terminated string in a RAM array. Ex:"www.microchip.com" or
+   219:                 "192.168.0.123"
+   220:         - UDP_OPEN_ROM_HOST = Open a client socket and connect it to a remote host who's
+   221:                 name is stored as a null terminated string in a literal string or ROM array. Ex: 
+   222:                 "www.microchip.com" or "192.168.0.123" 
+   223: 
+   224:     localPort - UDP port number to listen on.  If 0, stack will dynamically assign a unique port 
+   225:     number to use.
+   226: 
+   227:     remotePort - For client sockets, the remote port number.
+   228: 
+   229: Return Values:
+   230:         Success - 
+   231:                 A UDP socket handle that can be used for subsequent UDP API calls.
+   232:         Failure -
+   233:                 INVALID_UDP_SOCKET.  This function fails when no more UDP socket
+   234:                 handles are available.  Increase MAX_UDP_SOCKETS to make more sockets   available.
+   235: Remarks:
+   236:         When finished using the UDP socket handle, call the UDPClose() function to free the 
+   237:         socket and delete the handle.
+   238: 
+   239: *****************************************************************************/
+   240: UDP_SOCKET UDPOpenEx(DWORD remoteHost, BYTE remoteHostType, UDP_PORT localPort,
+   241:                 UDP_PORT remotePort)
+   242: {
+   243:         UDP_SOCKET s;
+   244:         UDP_SOCKET_INFO *p;
+   245: 
+   246:         // Local temp port numbers.
+   247:         static WORD NextPort __attribute__((persistent));
+   248: 
+   249: 
+   250:         p = UDPSocketInfo;
+   251:         for ( s = 0; s < MAX_UDP_SOCKETS; s++ )
+   252:         {
+   253:                 if(p->localPort == INVALID_UDP_PORT)
+   254:                 {
+   255:                         p->localPort = localPort;  
+   256:                         if(localPort == 0x0000u)
+   257:                         {
+   258:                            if(NextPort > LOCAL_UDP_PORT_END_NUMBER || NextPort < LOCAL_UDP_PORT_START_NUMBER)
+   259:                                    NextPort = LOCAL_UDP_PORT_START_NUMBER;
+   260: 
+   261:                            p->localPort    = NextPort++;
+   262:                         }
+   263:                         if((remoteHostType == UDP_OPEN_SERVER) || (remoteHost == 0))
+   264:                         {
+   265:                                   //Set remote node as 0xFF ( broadcast address)
+   266:                                   // else Set broadcast address
+   267:                                   memset((void*)&p->remote.remoteNode, 0xFF, sizeof(p->remote));
+   268:                                   p->smState = UDP_OPENED;
+   269:                         }
+   270:                         else
+   271:                         {
+   272:                                 switch(remoteHostType)
+   273:                                 {
+   274: #if defined (STACK_CLIENT_MODE)
+   275: #if defined (STACK_USE_DNS)
+   276:                                         case UDP_OPEN_RAM_HOST:
+   277:                                         case UDP_OPEN_ROM_HOST:
+   278:                                                 //set the UDP state to UDP_GET_DNS_MODULE
+   279:                                                 p->remote.remoteHost = remoteHost;
+   280:                                                 p->flags.bRemoteHostIsROM = (remoteHostType == UDP_OPEN_ROM_HOST);
+   281:                                                 p->smState = UDP_DNS_RESOLVE;
+   282:                                         break;
+   283: #endif
+   284:                                         case UDP_OPEN_IP_ADDRESS:
+   285:                                         // remoteHost is a literal IP address.  This doesn't need DNS and can skip directly to the Gateway ARPing step.         
+   286:                                         //Next UDP state UDP_GATEWAY_SEND_ARP;
+   287:                                         p->remote.remoteNode.IPAddr.Val = remoteHost;
+   288:                                         p->retryCount = 0;
+   289:                                         p->retryInterval = (TICK_SECOND/4)/256;
+   290:                                         p->smState = UDP_GATEWAY_SEND_ARP;
+   291:                                         break;
+   292: #endif                                          
+   293:                                         case UDP_OPEN_NODE_INFO:
+   294:                                         //skip DNS and ARP resolution steps if connecting to a remote node which we've already
+   295:                                                 memcpy((void*)(BYTE*)&p->remote,(void*)(BYTE*)(PTR_BASE)remoteHost,sizeof(p->remote));
+   296:                                                 p->smState = UDP_OPENED;
+   297:                                         // CALL UDPFlushto transmit incluind peding data.
+   298:                                         break;
+   299:                                         default:
+   300:                                                 break;
+   301:                                 }
+   302:                         }
+   303:                         p->remotePort   = remotePort;
+   304: 
+   305:                         // Mark this socket as active.
+   306:                         // Once an active socket is set, subsequent operation can be
+   307:                         // done without explicitely supply socket identifier.
+   308:                         activeUDPSocket = s;
+   309:                         return s;
+   310:                 }
+   311:                 p++;
+   312:         }
+   313: 
+   314:         return (UDP_SOCKET)INVALID_UDP_SOCKET;
+   315: 
+   316: }
+   317: 
+   318: 
+   319: /******************************************************************************
+   320: Function:
+   321:         void UDPTask(void)
+   322: 
+   323:   Summary:
+   324:         Performs periodic UDP tasks.
+   325: 
+   326:   Description:
+   327:         This function performs any required periodic UDP tasks.  Each socket's state machine is 
+   328:         checked, and any elapsed timeout periods are handled.
+   329: 
+   330:   Precondition:
+   331:         UDP is initialized.
+   332: 
+   333:   Parameters:
+   334:         None
+   335: 
+   336:   Returns:
+   337:         None
+   338: 
+   339: ******************************************************************************/
+   340: void UDPTask(void)
+   341: {
+   342:         UDP_SOCKET ss;
+   343:         
+   344:         for ( ss = 0; ss < MAX_UDP_SOCKETS; ss++ )
+   345:         {
+   346: 
+   347:                 // need to put Extra check if UDP has opened or NOT
+   348: 
+   349:                 if((UDPSocketInfo[ss].smState == UDP_OPENED) ||
+   350:                         (UDPSocketInfo[ss].smState == UDP_CLOSED))
+   351:                         continue;
+   352:                 // A timeout has occured.  Respond to this timeout condition
+   353:                 // depending on what state this socket is in.
+   354:                 switch(UDPSocketInfo[ss].smState)
+   355:                 {
+   356:                         #if defined(STACK_CLIENT_MODE)
+   357:                         #if defined(STACK_USE_DNS)
+   358:                         case UDP_DNS_RESOLVE:
+   359:                         if(DNSBeginUsage())
+   360:                         {
+   361:                                 // call DNS Resolve function and move to UDP next State machine
+   362:                                 UDPSocketInfo[ss].smState = UDP_DNS_IS_RESOLVED;
+   363:                                 if(UDPSocketInfo[ss].flags.bRemoteHostIsROM)
+   364:                                         DNSResolveROM((ROM BYTE*)(ROM_PTR_BASE)UDPSocketInfo[ss].remote.remoteHost, DNS_TYPE_A);
+   365:                                 else
+   366:                                         DNSResolve((BYTE*)(PTR_BASE)UDPSocketInfo[ss].remote.remoteHost, DNS_TYPE_A);
+   367:                         }
+   368:                         break;                          
+   369:                         case UDP_DNS_IS_RESOLVED:
+   370:                         {
+   371:                                 IP_ADDR ipResolvedDNSIP;
+   372:                                 // See if DNS resolution has finished.  Note that if the DNS 
+   373:                                 // fails, the &ipResolvedDNSIP will be written with 0x00000000. 
+   374:                                 // MyTCB.remote.dwRemoteHost is unioned with 
+   375:                                 // MyTCB.remote.niRemoteMACIP.IPAddr, so we can't directly write 
+   376:                                 // the DNS result into MyTCB.remote.niRemoteMACIP.IPAddr.  We 
+   377:                                 // must copy it over only if the DNS is resolution step was 
+   378:                                 // successful.
+   379:                                 
+   380:                                 if(DNSIsResolved(&ipResolvedDNSIP))
+   381:                                 {
+   382:                                         if(DNSEndUsage())
+   383:                                         {
+   384:                                                 UDPSocketInfo[ss].remote.remoteNode.IPAddr.Val = ipResolvedDNSIP.Val;
+   385:                                                 UDPSocketInfo[ss].smState = UDP_GATEWAY_SEND_ARP;
+   386:                                                 UDPSocketInfo[ss].retryCount = 0;
+   387:                                                 UDPSocketInfo[ss].retryInterval = (TICK_SECOND/4)/256;
+   388:                                         }
+   389:                                         else
+   390:                                         {
+   391:                                                 UDPSocketInfo[ss].smState = UDP_DNS_RESOLVE;
+   392:                                         }
+   393:                                 }                       
+   394:                         }
+   395:                         break;
+   396:                         #endif // #if defined(STACK_USE_DNS)
+   397: 
+   398:                         case UDP_GATEWAY_SEND_ARP:
+   399:                                 // Obtain the MAC address associated with the server's IP address 
+   400:                                 //(either direct MAC address on same subnet, or the MAC address of the Gateway machine)
+   401:                                 UDPSocketInfo[ss].eventTime = (WORD)TickGetDiv256();
+   402:                                 ARPResolve(&UDPSocketInfo[ss].remote.remoteNode.IPAddr);
+   403:                                 UDPSocketInfo[ss].smState = UDP_GATEWAY_GET_ARP;
+   404:                                 break;
+   405: 
+   406:                         case UDP_GATEWAY_GET_ARP:
+   407:                         if(!ARPIsResolved(&UDPSocketInfo[ss].remote.remoteNode.IPAddr, 
+   408:                                                                 &UDPSocketInfo[ss].remote.remoteNode.MACAddr))
+   409:                         {
+   410:                                 // Time out if too much time is spent in this state
+   411:                                 // Note that this will continuously send out ARP 
+   412:                                 // requests for an infinite time if the Gateway 
+   413:                                 // never responds
+   414:                                 if((WORD)TickGetDiv256() - UDPSocketInfo[ss].eventTime> (WORD)UDPSocketInfo[ss].retryInterval)
+   415:                                 {
+   416:                                         // Exponentially increase timeout until we reach 6 attempts then stay constant
+   417:                                         if(UDPSocketInfo[ss].retryCount < 6u)
+   418:                                         {
+   419:                                                 UDPSocketInfo[ss].retryCount++;
+   420:                                                 UDPSocketInfo[ss].retryInterval <<= 1;
+   421:                                         }
+   422:                                         // Retransmit ARP request
+   423:                                         UDPSocketInfo[ss].smState = UDP_GATEWAY_SEND_ARP;
+   424:                                 }                               
+   425:                         }
+   426:                         else
+   427:                         {
+   428:                                 UDPSocketInfo[ss].smState = UDP_OPENED;
+   429:                         }
+   430:                         break;
+   431:                         default:
+   432:                         case UDP_OPENED:
+   433:                         case UDP_CLOSED:
+   434:                         // not used
+   435:                         break;
+   436: #endif // #if defined(STACK_CLIENT_MODE)
+   437:                 }
+   438:         }
+   439: } 
+   440: 
+   441: /******************************************************************************
+   442:  
+   443:   Function:
+   444:           BOOL UDPISOpened(UDP_SOCKET socket)
+   445:   
+   446:  Summary:
+   447:           Determines if a socket has an established connection.
+   448: 
+   449:  Description:
+   450:         This function determines if a socket has an established connection to a remote node .  
+   451:         Call this function after calling UDPOpen to determine when the connection is set up 
+   452:         and ready for use.  
+   453: 
+   454:  Precondition:
+   455:         UDP is initialized.
+   456: 
+   457:  Parameters:
+   458:         socket - The socket to check.
+   459: 
+   460:  Return Values:
+   461:         TRUE - The socket has been opened and ARP has been resolved.
+   462:         FALSE - The socket is not currently connected.
+   463: 
+   464:  Remarks:
+   465:         None
+   466:  
+   467:  *****************************************************************************/
+   468: BOOL UDPIsOpened(UDP_SOCKET socket)
+   469: {
+   470:         return (UDPSocketInfo[socket].smState == UDP_OPENED);
+   471: }
+   472: 
+   473: 
+   474: #if 0
+   475: /*****************************************************************************
+   476:   Function:
+   477:         void UDPTask(void)
+   478: 
+   479:   Summary:
+   480:         Performs state management and housekeeping for UDP.
+   481:         
+   482:   Description:
+   483:         Performs state management and housekeeping for UDP.  This is an internal
+   484:         function meant to be called by StackTask() (not a user API).
+   485: 
+   486:   Precondition:
+   487:         None
+   488: 
+   489:   Parameters:
+   490:         None
+   491: 
+   492:   Return Values:
+   493:         None
+   494:         
+   495:   Remarks:
+   496:         UDPTask() is called once per StackTask() iteration to ensure that calls 
+   497:         to UDPIsPutReady() always update the Ethernet Write pointer location 
+   498:         between StackTask() iterations.
+   499:   ***************************************************************************/
+   500: void UDPTask(void)
+   501: {
+   502:         LastPutSocket = INVALID_UDP_SOCKET;
+   503: }
+   504: 
+   505: 
+   506: /*****************************************************************************
+   507:   Function:
+   508:         UDP_SOCKET UDPOpen(UDP_PORT localPort, NODE_INFO* remoteNode, 
+   509:                                                 UDP_PORT remotePort)
+   510: 
+   511:   Summary:
+   512:         Creates a UDP socket handle for transmiting or receiving UDP packets.
+   513:         
+   514:   Description:
+   515:         Creates a UDP socket handle for transmiting or receiving UDP packets.  
+   516:         Call this function to obtain a handle required by other UDP function.
+   517: 
+   518:   Precondition:
+   519:         UDPInit() must have been previously called.
+   520: 
+   521:   Parameters:
+   522:         localPort - UDP port number to listen on.  If 0, stack will dynamically 
+   523:                 assign a unique port number to use.
+   524:         remoteNode - Pointer to remote node info (MAC and IP address) for this
+   525:                 connection.  If this is a server socket (receives the first packet) 
+   526:                 or the destination is the broadcast address, then this parameter
+   527:                 should be NULL.
+   528:         remotePort - For client sockets, the remote port number.
+   529: 
+   530:   Return Values:
+   531:         Success -
+   532:                 A UDP socket handle that can be used for subsequent UDP API calls.
+   533:         Failure -
+   534:                 INVALID_UDP_SOCKET.  This function fails when no more UDP socket 
+   535:                 handles are available.  Increase MAX_UDP_SOCKETS to make more sockets 
+   536:                 available.
+   537:         
+   538:   Remarks:
+   539:         When finished using the UDP socket handle, call the UDPClose() function 
+   540:         to free the socket and delete the handle.
+   541:   ***************************************************************************/
+   542: UDP_SOCKET UDPOpen(UDP_PORT localPort,
+   543:                    NODE_INFO *remoteNode,
+   544:                    UDP_PORT remotePort)
+   545: {
+   546:     UDP_SOCKET s;
+   547:     UDP_SOCKET_INFO *p;
+   548: 
+   549:         // Local temp port numbers.
+   550:         static WORD NextPort __attribute__((persistent));
+   551: 
+   552: 
+   553:     p = UDPSocketInfo;
+   554:     for ( s = 0; s < MAX_UDP_SOCKETS; s++ )
+   555:     {
+   556:         if(p->localPort == INVALID_UDP_PORT)
+   557:         {
+   558:                         p->localPort = localPort;       
+   559: 
+   560:                         if(localPort == 0x0000u)
+   561:                         {
+   562:                                 if(NextPort > LOCAL_UDP_PORT_END_NUMBER || NextPort < LOCAL_UDP_PORT_START_NUMBER)
+   563:                                         NextPort = LOCAL_UDP_PORT_START_NUMBER;
+   564:         
+   565:                     p->localPort    = NextPort++;
+   566:                         }
+   567: 
+   568:             // If remoteNode is supplied, remember it.
+   569:             if(remoteNode)
+   570:             {
+   571:                 memcpy((void*)&p->remoteNode,
+   572:                         (const void*)remoteNode,
+   573:                         sizeof(p->remoteNode));
+   574:             }
+   575:             else
+   576:                         {
+   577:                                 // else Set broadcast address
+   578:                                 memset((void*)&p->remoteNode, 0xFF, sizeof(p->remoteNode));
+   579:                         }
+   580: 
+   581:             p->remotePort   = remotePort;
+   582: 
+   583:             // Mark this socket as active.
+   584:             // Once an active socket is set, subsequent operation can be
+   585:             // done without explicitely supply socket identifier.
+   586:             activeUDPSocket = s;
+   587:             return s;
+   588:         }
+   589:         p++;
+   590:     }
+   591: 
+   592:     return (UDP_SOCKET)INVALID_UDP_SOCKET;
+   593: }
+   594: 
+   595: #endif
+   596: 
+   597: 
+   598: /*****************************************************************************
+   599:   Function:
+   600:         void UDPClose(UDP_SOCKET s)
+   601: 
+   602:   Summary:
+   603:         Closes a UDP socket and frees the handle.
+   604:         
+   605:   Description:
+   606:         Closes a UDP socket and frees the handle.  Call this function to release
+   607:         a socket and return it to the pool for use by future communications.
+   608: 
+   609:   Precondition:
+   610:         UDPInit() must have been previously called.
+   611: 
+   612:   Parameters:
+   613:         s - The socket handle to be released.  If an illegal handle value is 
+   614:                 provided, the function safely does nothing.
+   615: 
+   616:   Returns:
+   617:         None
+   618:         
+   619:   Remarks:
+   620:         This function does not affect the previously designated active socket.
+   621:   ***************************************************************************/
+   622: void UDPClose(UDP_SOCKET s)
+   623: {
+   624:         if(s >= MAX_UDP_SOCKETS)
+   625:                 return;
+   626: 
+   627:         UDPSocketInfo[s].localPort = INVALID_UDP_PORT;
+   628:         UDPSocketInfo[s].remote.remoteNode.IPAddr.Val = 0x00000000;
+   629:         UDPSocketInfo[s].smState = UDP_CLOSED;
+   630: }
+   631: 
+   632: 
+   633: /*****************************************************************************
+   634:   Function:
+   635:         void UDPSetTxBuffer(WORD wOffset)
+   636: 
+   637:   Summary:
+   638:         Moves the pointer within the TX buffer.
+   639:         
+   640:   Description:
+   641:         This function allows the write location within the TX buffer to be 
+   642:         specified.  Future calls to UDPPut, UDPPutArray, UDPPutString, etc will
+   643:         write data from the indicated location.
+   644: 
+   645:   Precondition:
+   646:         UDPInit() must have been previously called and a socket is currently 
+   647:         active.
+   648: 
+   649:   Parameters:
+   650:         wOffset - Offset from beginning of UDP packet data payload to place the
+   651:                 write pointer.
+   652: 
+   653:   Returns:
+   654:         None
+   655:   ***************************************************************************/
+   656: void UDPSetTxBuffer(WORD wOffset)
+   657: {
+   658:         IPSetTxBuffer(wOffset+sizeof(UDP_HEADER));
+   659:         wPutOffset = wOffset;
+   660: }
+   661: 
+   662: 
+   663: /*****************************************************************************
+   664:   Function:
+   665:         void UDPSetRxBuffer(WORD wOffset)
+   666: 
+   667:   Summary:
+   668:         Moves the pointer within the RX buffer.
+   669:         
+   670:   Description:
+   671:         This function allows the read location within the RX buffer to be 
+   672:         specified.  Future calls to UDPGet and UDPGetArray will read data from
+   673:         the indicated location forward.
+   674: 
+   675:   Precondition:
+   676:         UDPInit() must have been previously called and a socket is currently 
+   677:         active.
+   678: 
+   679:   Parameters:
+   680:         wOffset - Offset from beginning of UDP packet data payload to place the
+   681:                 read pointer.
+   682: 
+   683:   Returns:
+   684:         None
+   685:   ***************************************************************************/
+   686: void UDPSetRxBuffer(WORD wOffset)
+   687: {
+   688:         IPSetRxBuffer(wOffset+sizeof(UDP_HEADER));
+   689:         wGetOffset = wOffset;
+   690: }
+   691: 
+   692: 
+   693: 
+   694: /****************************************************************************
+   695:   Section:
+   696:         Transmit Functions
+   697:   ***************************************************************************/
+   698:   
+   699: /*****************************************************************************
+   700:   Function:
+   701:         WORD UDPIsPutReady(UDP_SOCKET s)
+   702: 
+   703:   Summary:
+   704:         Determines how many bytes can be written to the UDP socket.
+   705:         
+   706:   Description:
+   707:         This function determines if bytes can be written to the specified UDP
+   708:         socket.  It also prepares the UDP module for writing by setting the 
+   709:         indicated socket as the currently active connection.
+   710: 
+   711:   Precondition:
+   712:         UDPInit() must have been previously called.
+   713: 
+   714:   Parameters:
+   715:         s - The socket to be made active
+   716: 
+   717:   Returns:
+   718:         The number of bytes that can be written to this socket.
+   719:   ***************************************************************************/
+   720: WORD UDPIsPutReady(UDP_SOCKET s)
+   721: {
+   722:         if(!MACIsTxReady())
+   723:                 return 0;
+   724: 
+   725:         if(LastPutSocket != s)
+   726:         {
+   727:                 LastPutSocket = s;
+   728:                 UDPTxCount = 0;
+   729:                 UDPSetTxBuffer(0);
+   730:         }
+   731: 
+   732:         activeUDPSocket = s;
+   733: 
+   734:         return MAC_TX_BUFFER_SIZE - sizeof(IP_HEADER) - sizeof(UDP_HEADER) - UDPTxCount;
+   735: }
+   736: 
+   737: /*****************************************************************************
+   738:   Function:
+   739:         BOOL UDPPut(BYTE v)
+   740: 
+   741:   Summary:
+   742:         Writes a byte to the currently active socket.
+   743:         
+   744:   Description:
+   745:         This function writes a single byte to the currently active UDP socket, 
+   746:         while incrementing the buffer length.  UDPIsPutReady should be used 
+   747:         before calling this function to specify the currently active socket.
+   748: 
+   749:   Precondition:
+   750:         UDPIsPutReady() was previously called to specify the current socket.
+   751: 
+   752:   Parameters:
+   753:         v - The byte to be loaded into the transmit buffer.
+   754: 
+   755:   Return Values:
+   756:         TRUE - The byte was successfully written to the socket.
+   757:         FALSE - The transmit buffer is already full and so the write failed.
+   758:   ***************************************************************************/
+   759: BOOL UDPPut(BYTE v)
+   760: {
+   761:         // See if we are out of transmit space.
+   762:         if(wPutOffset >= (MAC_TX_BUFFER_SIZE - sizeof(IP_HEADER) - sizeof(UDP_HEADER)))
+   763:         {
+   764:                 return FALSE;
+   765:         }
+   766: 
+   767:     // Load application data byte
+   768:     MACPut(v);
+   769:         wPutOffset++;
+   770:         if(wPutOffset > UDPTxCount)
+   771:                 UDPTxCount = wPutOffset;
+   772: 
+   773:     return TRUE;
+   774: }
+   775: 
+   776: /*****************************************************************************
+   777:   Function:
+   778:         WORD UDPPutArray(BYTE *cData, WORD wDataLen)
+   779: 
+   780:   Summary:
+   781:         Writes an array of bytes to the currently active socket.
+   782:         
+   783:   Description:
+   784:         This function writes an array of bytes to the currently active UDP socket, 
+   785:         while incrementing the buffer length.  UDPIsPutReady should be used 
+   786:         before calling this function to specify the currently active socket.
+   787: 
+   788:   Precondition:
+   789:         UDPIsPutReady() was previously called to specify the current socket.
+   790: 
+   791:   Parameters:
+   792:         cData - The array to write to the socket.
+   793:         wDateLen - Number of bytes from cData to be written.
+   794:         
+   795:   Returns:
+   796:         The number of bytes successfully placed in the UDP transmit buffer.  If
+   797:         this value is less than wDataLen, then the buffer became full and the
+   798:         input was truncated.
+   799:   ***************************************************************************/
+   800: WORD UDPPutArray(BYTE *cData, WORD wDataLen)
+   801: {
+   802:         WORD wTemp;
+   803: 
+   804:         wTemp = (MAC_TX_BUFFER_SIZE - sizeof(IP_HEADER) - sizeof(UDP_HEADER)) - wPutOffset;
+   805:         if(wTemp < wDataLen)
+   806:                 wDataLen = wTemp;
+   807: 
+   808:         wPutOffset += wDataLen;
+   809:         if(wPutOffset > UDPTxCount)
+   810:                 UDPTxCount = wPutOffset;
+   811: 
+   812:     // Load application data bytes
+   813:     MACPutArray(cData, wDataLen);
+   814: 
+   815:     return wDataLen;
+   816: }
+   817: 
+   818: /*****************************************************************************
+   819:   Function:
+   820:         WORD UDPPutROMArray(ROM BYTE *cData, WORD wDataLen)
+   821: 
+   822:   Summary:
+   823:         Writes an array of bytes from ROM to the currently active socket.
+   824:         
+   825:   Description:
+   826:         This function writes an array of bytes from ROM to the currently active 
+   827:         UDP socket, while incrementing the buffer length.  UDPIsPutReady should 
+   828:         be used before calling this function to specify the currently active 
+   829:         socket.
+   830: 
+   831:   Precondition:
+   832:         UDPIsPutReady() was previously called to specify the current socket.
+   833: 
+   834:   Parameters:
+   835:         cData - The array to write to the socket.
+   836:         wDateLen - Number of bytes from cData to be written.
+   837:         
+   838:   Returns:
+   839:         The number of bytes successfully placed in the UDP transmit buffer.  If
+   840:         this value is less than wDataLen, then the buffer became full and the
+   841:         input was truncated.
+   842:         
+   843:   Remarks:
+   844:         This function is aliased to UDPPutArray on non-PIC18 platforms.
+   845:   ***************************************************************************/
+   846: #if defined(__18CXX)
+   847: WORD UDPPutROMArray(ROM BYTE *cData, WORD wDataLen)
+   848: {
+   849:         WORD wTemp;
+   850: 
+   851:         wTemp = (MAC_TX_BUFFER_SIZE - sizeof(IP_HEADER) - sizeof(UDP_HEADER)) - wPutOffset;
+   852:         if(wTemp < wDataLen)
+   853:                 wDataLen = wTemp;
+   854: 
+   855:         wPutOffset += wDataLen;
+   856:         if(wPutOffset > UDPTxCount)
+   857:                 UDPTxCount = wPutOffset;
+   858: 
+   859:     // Load application data bytes
+   860:     MACPutROMArray(cData, wDataLen);
+   861: 
+   862:     return wDataLen;
+   863: }
+   864: #endif
+   865: 
+   866: /*****************************************************************************
+   867:   Function:
+   868:         BYTE* UDPPutString(BYTE *strData)
+   869: 
+   870:   Summary:
+   871:         Writes null-terminated string to the currently active socket.
+   872:         
+   873:   Description:
+   874:         This function writes a null-terminated string to the currently active 
+   875:         UDP socket, while incrementing the buffer length.  UDPIsPutReady should 
+   876:         be used before calling this function to specify the currently active
+   877:         socket.
+   878: 
+   879:   Precondition:
+   880:         UDPIsPutReady() was previously called to specify the current socket.
+   881: 
+   882:   Parameters:
+   883:         cData - Pointer to the string to be written to the socket.
+   884:         
+   885:   Returns:
+   886:         A pointer to the byte following the last byte written.  Note that this
+   887:         is different than the UDPPutArray functions.  If this pointer does not
+   888:         dereference to a NULL byte, then the buffer became full and the input
+   889:         data was truncated.
+   890:   ***************************************************************************/
+   891: BYTE* UDPPutString(BYTE *strData)
+   892: {
+   893:         return strData + UDPPutArray(strData, strlen((char*)strData));
+   894: }
+   895: 
+   896: /*****************************************************************************
+   897:   Function:
+   898:         BYTE* UDPPutString(BYTE *strData)
+   899: 
+   900:   Summary:
+   901:         Writes null-terminated string from ROM to the currently active socket.
+   902:         
+   903:   Description:
+   904:         This function writes a null-terminated string from ROM to the currently
+   905:         active UDP socket, while incrementing the buffer length.  UDPIsPutReady
+   906:         should be used before calling this function to specify the currently
+   907:         active socket.
+   908: 
+   909:   Precondition:
+   910:         UDPIsPutReady() was previously called to specify the current socket.
+   911: 
+   912:   Parameters:
+   913:         cData - Pointer to the string to be written to the socket.
+   914:         
+   915:   Returns:
+   916:         A pointer to the byte following the last byte written.  Note that this
+   917:         is different than the UDPPutArray functions.  If this pointer does not
+   918:         dereference to a NULL byte, then the buffer became full and the input
+   919:         data was truncated.
+   920:   
+   921:   Remarks:
+   922:         This function is aliased to UDPPutString on non-PIC18 platforms.
+   923:   ***************************************************************************/
+   924: #if defined(__18CXX)
+   925: ROM BYTE* UDPPutROMString(ROM BYTE *strData)
+   926: {
+   927:         return strData + UDPPutROMArray(strData, strlenpgm((ROM char*)strData));
+   928: }
+   929: #endif
+   930: 
+   931: /*****************************************************************************
+   932:   Function:
+   933:         void UDPFlush(void)
+   934: 
+   935:   Summary:
+   936:         Transmits all pending data in a UDP socket.
+   937:         
+   938:   Description:
+   939:         This function builds a UDP packet with the pending TX data and marks it 
+   940:         for transmission over the network interface.  Since UDP is a frame-based
+   941:         protocol, this function must be called before returning to the main
+   942:         stack loop whenever any data is written.
+   943: 
+   944:   Precondition:
+   945:         UDPIsPutReady() was previously called to specify the current socket, and
+   946:         data has been written to the socket using the UDPPut family of functions.
+   947: 
+   948:   Parameters:
+   949:         None
+   950:         
+   951:   Returns:
+   952:         None
+   953: 
+   954:   Remarks:
+   955:         Note that unlike TCPFlush, UDPFlush must be called before returning to 
+   956:         the main stack loop.  There is no auto transmit for UDP segments.
+   957:   ***************************************************************************/
+   958: void UDPFlush(void)
+   959: {
+   960:     UDP_HEADER      h;
+   961:     UDP_SOCKET_INFO *p;
+   962:     WORD                        wUDPLength;
+   963: 
+   964:     p = &UDPSocketInfo[activeUDPSocket];
+   965: 
+   966:         wUDPLength = UDPTxCount + sizeof(UDP_HEADER);
+   967: 
+   968:         // Generate the correct UDP header
+   969:     h.SourcePort        = swaps(p->localPort);
+   970:     h.DestinationPort   = swaps(p->remotePort);
+   971:     h.Length            = swaps(wUDPLength);
+   972:         h.Checksum                      = 0x0000;
+   973:     
+   974:         // Calculate IP pseudoheader checksum if we are going to enable 
+   975:         // the checksum field
+   976:         #if defined(UDP_USE_TX_CHECKSUM)
+   977:         {
+   978:                 PSEUDO_HEADER   pseudoHeader;
+   979:                 
+   980:                 pseudoHeader.SourceAddress      = AppConfig.MyIPAddr;
+   981:                 pseudoHeader.DestAddress    = p->remote.remoteNode.IPAddr;
+   982:                 pseudoHeader.Zero           = 0x0;
+   983:                 pseudoHeader.Protocol       = IP_PROT_UDP;
+   984:                 pseudoHeader.Length                     = wUDPLength;
+   985:                 SwapPseudoHeader(pseudoHeader);
+   986:                 h.Checksum = ~CalcIPChecksum((BYTE*)&pseudoHeader, sizeof(pseudoHeader));
+   987:         }
+   988:         #endif
+   989: 
+   990:         // Position the hardware write pointer where we will need to 
+   991:         // begin writing the IP header
+   992:         MACSetWritePtr(BASE_TX_ADDR + sizeof(ETHER_HEADER));
+   993:         
+   994:         // Write IP header to packet
+   995:         IPPutHeader(&p->remote.remoteNode, IP_PROT_UDP, wUDPLength);
+   996: 
+   997:     // Write UDP header to packet
+   998:     MACPutArray((BYTE*)&h, sizeof(h));
+   999:     
+  1000:         // Calculate the final UDP checksum and write it in, if enabled
+  1001:         #if defined(UDP_USE_TX_CHECKSUM)
+  1002:         {
+  1003:         PTR_BASE        wReadPtrSave;
+  1004:         WORD            wChecksum;
+  1005: 
+  1006:                 wReadPtrSave = MACSetReadPtr(BASE_TX_ADDR + sizeof(ETHER_HEADER) + sizeof(IP_HEADER));
+  1007:                 wChecksum = CalcIPBufferChecksum(wUDPLength);
+  1008:                 if(wChecksum == 0x0000u)
+  1009:                         wChecksum = 0xFFFF;
+  1010:                 MACSetReadPtr(wReadPtrSave);
+  1011:                 MACSetWritePtr(BASE_TX_ADDR + sizeof(ETHER_HEADER) + sizeof(IP_HEADER) + 6);    // 6 is the offset to the Checksum field in UDP_HEADER
+  1012:                 MACPutArray((BYTE*)&wChecksum, sizeof(wChecksum));
+  1013:         }
+  1014:         #endif
+  1015:     
+  1016:         // Transmit the packet
+  1017:     MACFlush();
+  1018: 
+  1019:         // Reset packet size counter for the next TX operation
+  1020:     UDPTxCount = 0;
+  1021:         LastPutSocket = INVALID_UDP_SOCKET;
+  1022: }
+  1023: 
+  1024: 
+  1025: 
+  1026: /****************************************************************************
+  1027:   Section:
+  1028:         Receive Functions
+  1029:   ***************************************************************************/
+  1030: 
+  1031: /*****************************************************************************
+  1032:   Function:
+  1033:         WORD UDPIsGetReady(UDP_SOCKET s)
+  1034: 
+  1035:   Summary:
+  1036:         Determines how many bytes can be read from the UDP socket.
+  1037:         
+  1038:   Description:
+  1039:         This function determines if bytes can be read from the specified UDP
+  1040:         socket.  It also prepares the UDP module for reading by setting the 
+  1041:         indicated socket as the currently active connection.
+  1042: 
+  1043:   Precondition:
+  1044:         UDPInit() must have been previously called.
+  1045: 
+  1046:   Parameters:
+  1047:         s - The socket to be made active (which has already been opened or is
+  1048:                 listening)
+  1049: 
+  1050:   Returns:
+  1051:         The number of bytes that can be read from this socket.
+  1052:   ***************************************************************************/
+  1053: WORD UDPIsGetReady(UDP_SOCKET s)
+  1054: {
+  1055:     activeUDPSocket = s;
+  1056:         if(SocketWithRxData != s)
+  1057:                 return 0;
+  1058: 
+  1059:     // If this is the very first time we are accessing this packet, 
+  1060:     // move the read point to the begining of the packet.
+  1061:     if(Flags.bFirstRead)
+  1062:     {
+  1063:         Flags.bFirstRead = 0;
+  1064:         UDPSetRxBuffer(0);
+  1065:     }
+  1066: 
+  1067:     return UDPRxCount - wGetOffset;
+  1068: }
+  1069: 
+  1070: /*****************************************************************************
+  1071:   Function:
+  1072:         BOOL UDPGet(BYTE *v)
+  1073: 
+  1074:   Summary:
+  1075:         Reads a byte from the currently active socket.
+  1076:         
+  1077:   Description:
+  1078:         This function reads a single byte from the currently active UDP socket, 
+  1079:         while decrementing the remaining buffer length.  UDPIsGetReady should be 
+  1080:         used before calling this function to specify the currently active socket.
+  1081: 
+  1082:   Precondition:
+  1083:         UDPIsGetReady() was previously called to specify the current socket.
+  1084: 
+  1085:   Parameters:
+  1086:         v - The buffer to receive the data being read.
+  1087: 
+  1088:   Return Values:
+  1089:         TRUE - A byte was successfully read
+  1090:         FALSE - No data remained in the read buffer
+  1091:   ***************************************************************************/
+  1092: BOOL UDPGet(BYTE *v)
+  1093: {
+  1094:         // Make sure that there is data to return
+  1095:     if((wGetOffset >= UDPRxCount) || (SocketWithRxData != activeUDPSocket))
+  1096:         return FALSE;
+  1097: 
+  1098:     *v = MACGet();
+  1099:     wGetOffset++;
+  1100: 
+  1101:     return TRUE;
+  1102: }
+  1103: 
+  1104: 
+  1105: /*****************************************************************************
+  1106:   Function:
+  1107:         WORD UDPGetArray(BYTE *cData, WORD wDataLen)
+  1108: 
+  1109:   Summary:
+  1110:         Reads an array of bytes from the currently active socket.
+  1111:         
+  1112:   Description:
+  1113:         This function reads an array of bytes from the currently active UDP socket, 
+  1114:         while decrementing the remaining bytes available. UDPIsGetReady should be 
+  1115:         used before calling this function to specify the currently active socket.
+  1116: 
+  1117:   Precondition:
+  1118:         UDPIsGetReady() was previously called to specify the current socket.
+  1119: 
+  1120:   Parameters:
+  1121:         cData - The buffer to receive the bytes being read.  If NULL, the bytes are 
+  1122:                         simply discarded without being written anywhere (effectively skips 
+  1123:                         over the bytes in the RX buffer, although if you need to skip a lot 
+  1124:                         of data, seeking using the UDPSetRxBuffer() will be more efficient).
+  1125:         wDateLen - Number of bytes to be read from the socket.
+  1126:         
+  1127:   Returns:
+  1128:         The number of bytes successfully read from the UDP buffer.  If this
+  1129:         value is less than wDataLen, then the buffer was emptied and no more 
+  1130:         data is available.
+  1131:   ***************************************************************************/
+  1132: WORD UDPGetArray(BYTE *cData, WORD wDataLen)
+  1133: {
+  1134:         WORD wBytesAvailable;
+  1135:         
+  1136:         // Make sure that there is data to return
+  1137:     if((wGetOffset >= UDPRxCount) || (SocketWithRxData != activeUDPSocket))
+  1138:                 return 0;
+  1139: 
+  1140:         // Make sure we don't try to read more data than exists
+  1141:         wBytesAvailable = UDPRxCount - wGetOffset;
+  1142:         if(wBytesAvailable < wDataLen)
+  1143:                 wDataLen = wBytesAvailable;
+  1144: 
+  1145:         wDataLen = MACGetArray(cData, wDataLen);
+  1146:     wGetOffset += wDataLen;
+  1147: 
+  1148:     return wDataLen;
+  1149: }
+  1150: 
+  1151: /*****************************************************************************
+  1152:   Function:
+  1153:         void UDPDiscard(void)
+  1154: 
+  1155:   Summary:
+  1156:         Discards any remaining RX data from a UDP socket.
+  1157:         
+  1158:   Description:
+  1159:         This function discards any remaining received data in the currently 
+  1160:         active UDP socket.
+  1161: 
+  1162:   Precondition:
+  1163:         UDPIsGetReady() was previously called to select the currently active
+  1164:         socket.
+  1165: 
+  1166:   Parameters:
+  1167:         None
+  1168:         
+  1169:   Returns:
+  1170:         None
+  1171: 
+  1172:   Remarks:
+  1173:         It is safe to call this function more than is necessary.  If no data is
+  1174:         available, this function does nothing.
+  1175:   ***************************************************************************/
+  1176: void UDPDiscard(void)
+  1177: {
+  1178:         if(!Flags.bWasDiscarded)
+  1179:         {
+  1180:                 MACDiscardRx();
+  1181:                 UDPRxCount = 0;
+  1182:                 SocketWithRxData = INVALID_UDP_SOCKET;
+  1183:                 Flags.bWasDiscarded = 1;
+  1184:         }
+  1185: }
+  1186: 
+  1187: 
+  1188: 
+  1189: /****************************************************************************
+  1190:   Section:
+  1191:         Data Processing Functions
+  1192:   ***************************************************************************/
+  1193: 
+  1194: /*****************************************************************************
+  1195:   Function:
+  1196:         BOOL UDPProcess(NODE_INFO *remoteNode, IP_ADDR *localIP, WORD len)
+  1197: 
+  1198:   Summary:
+  1199:         Handles an incoming UDP segment.
+  1200:         
+  1201:   Description:
+  1202:         This function handles an incoming UDP segment to determine if it is 
+  1203:         acceptable and should be handed to one of the stack applications for
+  1204:         processing.
+  1205: 
+  1206:   Precondition:
+  1207:         UDPInit() has been called an a UDP segment is ready in the MAC buffer.
+  1208: 
+  1209:   Parameters:
+  1210:         remoteNode - The remote node that sent this segment.
+  1211:         localIP - The destination IP address for this segment.
+  1212:         len - Total length of the UDP segment.
+  1213:         
+  1214:   Return Values:
+  1215:         TRUE - A valid packet is waiting and the stack applications should be
+  1216:                 called to handle it.
+  1217:         FALSE - The packet was discarded.
+  1218:   ***************************************************************************/
+  1219: BOOL UDPProcess(NODE_INFO *remoteNode, IP_ADDR *localIP, WORD len)
+  1220: {
+  1221:     UDP_HEADER          h;
+  1222:     UDP_SOCKET          s;
+  1223:     PSEUDO_HEADER       pseudoHeader;
+  1224:     DWORD_VAL           checksums;
+  1225: 
+  1226:         UDPRxCount = 0;
+  1227: 
+  1228:     // Retrieve UDP header.
+  1229:     MACGetArray((BYTE*)&h, sizeof(h));
+  1230: 
+  1231:     h.SourcePort        = swaps(h.SourcePort);
+  1232:     h.DestinationPort   = swaps(h.DestinationPort);
+  1233:     h.Length            = swaps(h.Length) - sizeof(UDP_HEADER);
+  1234: 
+  1235:         // See if we need to validate the checksum field (0x0000 is disabled)
+  1236:         if(h.Checksum)
+  1237:         {
+  1238:             // Calculate IP pseudoheader checksum.
+  1239:             pseudoHeader.SourceAddress          = remoteNode->IPAddr;
+  1240:             pseudoHeader.DestAddress.Val        = localIP->Val;
+  1241:             pseudoHeader.Zero                           = 0x0;
+  1242:             pseudoHeader.Protocol                       = IP_PROT_UDP;
+  1243:             pseudoHeader.Length                         = len;
+  1244: 
+  1245:             SwapPseudoHeader(pseudoHeader);
+  1246:         
+  1247:             checksums.w[0] = ~CalcIPChecksum((BYTE*)&pseudoHeader,
+  1248:                                             sizeof(pseudoHeader));
+  1249:         
+  1250:         
+  1251:             // Now calculate UDP packet checksum in NIC RAM -- should match pseudoHeader
+  1252:             IPSetRxBuffer(0);
+  1253:             checksums.w[1] = CalcIPBufferChecksum(len);
+  1254:         
+  1255:             if(checksums.w[0] != checksums.w[1])
+  1256:             {
+  1257:                 MACDiscardRx();
+  1258:                 return FALSE;
+  1259:             }
+  1260:         }
+  1261: 
+  1262:     s = FindMatchingSocket(&h, remoteNode, localIP);
+  1263:     if(s == INVALID_UDP_SOCKET)
+  1264:     {
+  1265:         // If there is no matching socket, There is no one to handle
+  1266:         // this data.  Discard it.
+  1267:         MACDiscardRx();
+  1268:                 return FALSE;
+  1269:     }
+  1270:     else
+  1271:     {
+  1272:                 SocketWithRxData = s;
+  1273:         UDPRxCount = h.Length;
+  1274:         Flags.bFirstRead = 1;
+  1275:                 Flags.bWasDiscarded = 0;
+  1276:     }
+  1277: 
+  1278: 
+  1279:     return TRUE;
+  1280: }
+  1281: 
+  1282: /*****************************************************************************
+  1283:   Function:
+  1284:         static UDP_SOCKET FindMatchingSocket(UDP_HEADER *h, NODE_INFO *remoteNode,
+  1285:                                                 IP_ADDR *localIP)
+  1286: 
+  1287:   Summary:
+  1288:         Matches an incoming UDP segment to a currently active socket.
+  1289:         
+  1290:   Description:
+  1291:         This function attempts to match an incoming UDP segment to a currently
+  1292:         active socket for processing.
+  1293: 
+  1294:   Precondition:
+  1295:         UDP segment header and IP header have both been retrieved.
+  1296: 
+  1297:   Parameters:
+  1298:         h - The UDP header that was received.
+  1299:         remoteNode - IP and MAC of the remote node that sent this segment.
+  1300:         localIP - IP address that this segment was destined for.
+  1301:         
+  1302:   Returns:
+  1303:         A UDP_SOCKET handle of a matching socket, or INVALID_UDP_SOCKET when no
+  1304:         match could be made.
+  1305:   ***************************************************************************/
+  1306: static UDP_SOCKET FindMatchingSocket(UDP_HEADER *h,
+  1307:                                      NODE_INFO *remoteNode,
+  1308:                                      IP_ADDR *localIP)
+  1309: {
+  1310:         UDP_SOCKET s;
+  1311:         UDP_SOCKET partialMatch;
+  1312:         UDP_SOCKET_INFO *p;
+  1313: 
+  1314: // This is commented out because most applications don't need this type of filtering.  It comes at a performance cost.
+  1315: //      // Filter out unicast packets that aren't for our IP address, but accept 
+  1316: //      // all multicast and broadcast traffic
+  1317: //      if(!((localIP->Val == AppConfig.MyIPAddr.Val) || (localIP->v[0] & 0x80) || (localIP->Val == (AppConfig.MyIPAddr.Val | (~AppConfig.MyMask.Val)))))
+  1318: //              return INVALID_UDP_SOCKET;
+  1319: 
+  1320:         // Discard any packets received that were generated by ourself.  In 
+  1321:         // structured Wi-Fi networks, the Access Point rebroadcasts our broadcast 
+  1322:         // and multicast packets, causing self-reception to occur unless filtered 
+  1323:         // out.
+  1324:         if(remoteNode->IPAddr.Val == AppConfig.MyIPAddr.Val)
+  1325:                 return INVALID_UDP_SOCKET;
+  1326: 
+  1327:         partialMatch = INVALID_UDP_SOCKET;
+  1328: 
+  1329:         p = UDPSocketInfo;
+  1330:     for(s = 0; s < MAX_UDP_SOCKETS; s++)
+  1331:         {
+  1332:                 // This packet is said to be matching with current socket:
+  1333:                 // 1. If its destination port matches with our local port and
+  1334:                 // 2. Packet source IP address matches with previously saved socket remote IP address and
+  1335:                 // 3. Packet source port number matches with previously saved socket remote port number
+  1336:                 if(p->localPort == h->DestinationPort)
+  1337:                 {
+  1338:                         if(p->remotePort == h->SourcePort)
+  1339:                         {
+  1340:                                 if(p->remote.remoteNode.IPAddr.Val == remoteNode->IPAddr.Val)
+  1341:                                 {
+  1342:                                         return s;
+  1343:                                 }
+  1344:                         }
+  1345: 
+  1346:                         partialMatch = s;
+  1347:                 }
+  1348:                 p++;
+  1349:         }
+  1350: 
+  1351:         if(partialMatch != INVALID_UDP_SOCKET)
+  1352:         {
+  1353:                 p = &UDPSocketInfo[partialMatch];
+  1354: 
+  1355:                 memcpy((void*)&p->remote.remoteNode,
+  1356:                                 (const void*)remoteNode, sizeof(p->remote.remoteNode) );
+  1357: 
+  1358:                 p->remotePort = h->SourcePort;
+  1359:         }
+  1360: 
+  1361:         return partialMatch;
+  1362: }
+  1363: 
+  1364: 
+  1365: #endif //#if defined(STACK_USE_UDP)

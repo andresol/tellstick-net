@@ -1,0 +1,311 @@
+     1: /*********************************************************************
+     2:  *
+     3:  *  Internet Protocol (IP) Version 4 Communications Layer
+     4:  *  Module for Microchip TCP/IP Stack
+     5:  *   -Provides a transport for TCP, UDP, and ICMP messages
+     6:  *       -Reference: RFC 791
+     7:  *
+     8:  *********************************************************************
+     9:  * FileName:        IP.c
+    10:  * Dependencies:    Network Layer interface (ENC28J60.c, ETH97J60.c, 
+    11:  *                                      ENCX24J600.c or WFMac.c)
+    12:  * Processor:       PIC18, PIC24F, PIC24H, dsPIC30F, dsPIC33F, PIC32
+    13:  * Compiler:        Microchip C32 v1.05 or higher
+    14:  *                                      Microchip C30 v3.12 or higher
+    15:  *                                      Microchip C18 v3.30 or higher
+    16:  *                                      HI-TECH PICC-18 PRO 9.63PL2 or higher
+    17:  * Company:         Microchip Technology, Inc.
+    18:  *
+    19:  * Software License Agreement
+    20:  *
+    21:  * Copyright (C) 2002-2009 Microchip Technology Inc.  All rights
+    22:  * reserved.
+    23:  *
+    24:  * Microchip licenses to you the right to use, modify, copy, and
+    25:  * distribute:
+    26:  * (i)  the Software when embedded on a Microchip microcontroller or
+    27:  *      digital signal controller product ("Device") which is
+    28:  *      integrated into Licensee's product; or
+    29:  * (ii) ONLY the Software driver source files ENC28J60.c, ENC28J60.h,
+    30:  *              ENCX24J600.c and ENCX24J600.h ported to a non-Microchip device
+    31:  *              used in conjunction with a Microchip ethernet controller for
+    32:  *              the sole purpose of interfacing with the ethernet controller.
+    33:  *
+    34:  * You should refer to the license agreement accompanying this
+    35:  * Software for additional information regarding your rights and
+    36:  * obligations.
+    37:  *
+    38:  * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT
+    39:  * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+    40:  * LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+    41:  * PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL
+    42:  * MICROCHIP BE LIABLE FOR ANY INCIDENTAL, SPECIAL, INDIRECT OR
+    43:  * CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF
+    44:  * PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES, ANY CLAIMS
+    45:  * BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE
+    46:  * THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION, OR OTHER
+    47:  * SIMILAR COSTS, WHETHER ASSERTED ON THE BASIS OF CONTRACT, TORT
+    48:  * (INCLUDING NEGLIGENCE), BREACH OF WARRANTY, OR OTHERWISE.
+    49:  *
+    50:  *
+    51:  * Author               Date    Comment
+    52:  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    53:  * Nilesh Rajbharti     4/27/01 Original        (Rev 1.0)
+    54:  * Nilesh Rajbharti     2/9/02  Cleanup
+    55:  * Nilesh Rajbharti     5/22/02 Rev 2.0 (See version.log for detail)
+    56:  * Howard Schlunder             8/31/04 Beta Rev 0.9 (See version.log for detail)
+    57:  * Howard Schlunder             1/5/06  Improved DMA checksum efficiency
+    58:  * Darren Rook                  9/21/06 Corrected IPHeaderLen not being 
+    59:  *                                                              initialized when NON_MCHP_MAC defined.
+    60:  ********************************************************************/
+    61: #define __IP_C
+    62: 
+    63: #include "TCPIP Stack/TCPIP.h"
+    64: 
+    65: // This is left shifted by 4.  Actual value is 0x04.
+    66: #define IPv4                (0x40u)
+    67: #define IP_VERSION          IPv4
+    68: 
+    69: // IHL (Internet Header Length) is # of DWORDs in a header.
+    70: // Since, we do not support options, our IP header length will be
+    71: // minimum i.e. 20 bytes : IHL = 20 / 4 = 5.
+    72: #define IP_IHL              (0x05)
+    73: 
+    74: #define IP_SERVICE_NW_CTRL  (0x07)
+    75: #define IP_SERVICE_IN_CTRL  (0x06)
+    76: #define IP_SERVICE_ECP      (0x05)
+    77: #define IP_SERVICE_OVR      (0x04)
+    78: #define IP_SERVICE_FLASH    (0x03)
+    79: #define IP_SERVICE_IMM      (0x02)
+    80: #define IP_SERVICE_PRIOR    (0x01)
+    81: #define IP_SERVICE_ROUTINE  (0x00)
+    82: 
+    83: #define IP_SERVICE_N_DELAY  (0x00)
+    84: #define IP_SERCICE_L_DELAY  (0x08)
+    85: #define IP_SERVICE_N_THRPT  (0x00)
+    86: #define IP_SERVICE_H_THRPT  (0x10)
+    87: #define IP_SERVICE_N_RELIB  (0x00)
+    88: #define IP_SERVICE_H_RELIB  (0x20)
+    89: 
+    90: #define IP_SERVICE          (IP_SERVICE_ROUTINE | IP_SERVICE_N_DELAY)
+    91: 
+    92: #if defined(STACK_USE_ZEROCONF_MDNS_SD)
+    93:   #define MY_IP_TTL           (255)  // Time-To-Live in hops 
+    94:   // IP TTL is set to 255 for Multicast DNS compatibility. See mDNS-draft-08, section 4.
+    95: #else
+    96:   #define MY_IP_TTL           (100)  // Time-To-Live in hops
+    97: #endif
+    98: 
+    99: 
+   100: 
+   101: static WORD _Identifier = 0;
+   102: static BYTE IPHeaderLen;
+   103: 
+   104: 
+   105: static void SwapIPHeader(IP_HEADER* h);
+   106: 
+   107: 
+   108: 
+   109: 
+   110: /*********************************************************************
+   111:  * Function:        BOOL IPGetHeader( IP_ADDR    *localIP,
+   112:  *                                    NODE_INFO  *remote,
+   113:  *                                    BYTE        *Protocol,
+   114:  *                                    WORD        *len)
+   115:  *
+   116:  * PreCondition:    MACGetHeader() == TRUE
+   117:  *
+   118:  * Input:           localIP     - Local node IP Address as received
+   119:  *                                in current IP header.
+   120:  *                                If this information is not required
+   121:  *                                caller may pass NULL value.
+   122:  *                  remote      - Remote node info
+   123:  *                  Protocol    - Current packet protocol
+   124:  *                  len         - Current packet data length
+   125:  *
+   126:  * Output:          TRUE, if valid packet was received
+   127:  *                  FALSE otherwise
+   128:  *
+   129:  * Side Effects:    None
+   130:  *
+   131:  * Note:            Only one IP message can be received.
+   132:  *                  Caller may not transmit and receive a message
+   133:  *                  at the same time.
+   134:  *
+   135:  ********************************************************************/
+   136: BOOL IPGetHeader(IP_ADDR *localIP,
+   137:                  NODE_INFO *remote,
+   138:                  BYTE *protocol,
+   139:                  WORD *len)
+   140: {
+   141:     WORD_VAL    CalcChecksum;
+   142:     IP_HEADER   header;
+   143: 
+   144: #if defined(NON_MCHP_MAC)
+   145:     WORD_VAL    ReceivedChecksum;
+   146:     WORD        checksums[2];
+   147:     BYTE        optionsLen;
+   148:         #define MAX_OPTIONS_LEN     (40u)            // As per RFC 791.
+   149:     BYTE        options[MAX_OPTIONS_LEN];
+   150: #endif
+   151: 
+   152:     // Read IP header.
+   153:     MACGetArray((BYTE*)&header, sizeof(header));
+   154: 
+   155:     // Make sure that this is an IPv4 packet.
+   156:     if((header.VersionIHL & 0xf0) != IP_VERSION)
+   157:         return FALSE;
+   158: 
+   159:         // Throw this packet away if it is a fragment.  
+   160:         // We don't have enough RAM for IP fragment reconstruction.
+   161:         if(header.FragmentInfo & 0xFF1F)
+   162:                 return FALSE;
+   163: 
+   164:         IPHeaderLen = (header.VersionIHL & 0x0f) << 2;
+   165: 
+   166: #if !defined(NON_MCHP_MAC)
+   167:         // Validate the IP header.  If it is correct, the checksum 
+   168:         // will come out to 0x0000 (because the header contains a 
+   169:         // precomputed checksum).  A corrupt header will have a 
+   170:         // nonzero checksum.
+   171:         CalcChecksum.Val = MACCalcRxChecksum(0, IPHeaderLen);
+   172: 
+   173:         // Seek to the end of the IP header
+   174:         MACSetReadPtrInRx(IPHeaderLen);
+   175: 
+   176:     if(CalcChecksum.Val)
+   177: #else
+   178:     // Calculate options length in this header, if there is any.
+   179:     // IHL is in terms of numbers of 32-bit DWORDs; i.e. actual
+   180:     // length is 4 times IHL.
+   181:     optionsLen = IPHeaderLen - sizeof(header);
+   182: 
+   183:     // If there is any option(s), read it so that we can include them
+   184:     // in checksum calculation.
+   185:     if ( optionsLen > MAX_OPTIONS_LEN )
+   186:         return FALSE;
+   187: 
+   188:     if ( optionsLen > 0u )
+   189:         MACGetArray(options, optionsLen);
+   190: 
+   191:     // Save header checksum; clear it and recalculate it ourselves.
+   192:     ReceivedChecksum.Val = header.HeaderChecksum;
+   193:     header.HeaderChecksum = 0;
+   194: 
+   195:     // Calculate checksum of header including options bytes.
+   196:     checksums[0] = ~CalcIPChecksum((BYTE*)&header, sizeof(header));
+   197: 
+   198:     // Calculate Options checksum too, if they are present.
+   199:     if ( optionsLen > 0u )
+   200:         checksums[1] = ~CalcIPChecksum((BYTE*)options, optionsLen);
+   201:     else
+   202:         checksums[1] = 0;
+   203: 
+   204:     CalcChecksum.Val  = CalcIPChecksum((BYTE*)checksums,
+   205:                                             2 * sizeof(WORD));
+   206: 
+   207:     // Make sure that checksum is correct
+   208:     if ( ReceivedChecksum.Val != CalcChecksum.Val )
+   209: #endif
+   210:     {
+   211:         // Bad packet. The function caller will be notified by means of the FALSE 
+   212:         // return value and it should discard the packet.
+   213:         return FALSE;
+   214:     }
+   215: 
+   216:     // Network to host conversion.
+   217:     SwapIPHeader(&header);
+   218: 
+   219:     // If caller is intrested, return destination IP address
+   220:     // as seen in this IP header.
+   221:     if ( localIP )
+   222:         localIP->Val    = header.DestAddress.Val;
+   223: 
+   224:     remote->IPAddr.Val  = header.SourceAddress.Val;
+   225:     *protocol           = header.Protocol;
+   226:     *len                                = header.TotalLength - IPHeaderLen;
+   227: 
+   228:     return TRUE;
+   229: }
+   230: 
+   231: 
+   232: 
+   233: 
+   234: /*********************************************************************
+   235:  * Function: WORD IPPutHeader(NODE_INFO *remote,
+   236:  *                                        BYTE protocol,
+   237:  *                                        WORD len)
+   238:  *
+   239:  * PreCondition:    IPIsTxReady() == TRUE
+   240:  *
+   241:  * Input:           *remote     - Destination node address
+   242:  *                  protocol    - Current packet protocol
+   243:  *                  len         - Current packet data length
+   244:  *
+   245:  * Output:          (WORD)0
+   246:  *
+   247:  * Side Effects:    None
+   248:  *
+   249:  * Note:            Only one IP message can be transmitted at any
+   250:  *                  time.
+   251:  ********************************************************************/
+   252: WORD IPPutHeader(NODE_INFO *remote,
+   253:                  BYTE protocol,
+   254:                  WORD len)
+   255: {
+   256:     IP_HEADER   header;
+   257:     
+   258:     IPHeaderLen = sizeof(IP_HEADER);
+   259: 
+   260:     header.VersionIHL       = IP_VERSION | IP_IHL;
+   261:     header.TypeOfService    = IP_SERVICE;
+   262:     header.TotalLength      = sizeof(header) + len;
+   263:     header.Identification   = ++_Identifier;
+   264:     header.FragmentInfo     = 0;
+   265:     header.TimeToLive       = MY_IP_TTL;
+   266:     header.Protocol         = protocol;
+   267:     header.HeaderChecksum   = 0;
+   268:         header.SourceAddress    = AppConfig.MyIPAddr;
+   269: 
+   270:     header.DestAddress.Val = remote->IPAddr.Val;
+   271: 
+   272:     SwapIPHeader(&header);
+   273: 
+   274:     header.HeaderChecksum   = CalcIPChecksum((BYTE*)&header, sizeof(header));
+   275: 
+   276:     MACPutHeader(&remote->MACAddr, MAC_IP, (sizeof(header)+len));
+   277:     MACPutArray((BYTE*)&header, sizeof(header));
+   278: 
+   279:     return 0x0000;
+   280: 
+   281: }
+   282: 
+   283: /*********************************************************************
+   284:  * Function:        IPSetRxBuffer(WORD Offset)
+   285:  *
+   286:  * PreCondition:    IPHeaderLen must have been intialized by 
+   287:  *                                      IPGetHeader() or IPPutHeader()
+   288:  *
+   289:  * Input:           Offset from beginning of IP data field
+   290:  *
+   291:  * Output:          Next Read/Write access to receive buffer is
+   292:  *                  set to Offset 
+   293:  *
+   294:  * Side Effects:    None
+   295:  *
+   296:  * Note:            None
+   297:  *
+   298:  ********************************************************************/
+   299: void IPSetRxBuffer(WORD Offset) 
+   300: {
+   301:         MACSetReadPtrInRx(Offset+IPHeaderLen);
+   302: }
+   303: 
+   304: 
+   305: 
+   306: static void SwapIPHeader(IP_HEADER* h)
+   307: {
+   308:     h->TotalLength      = swaps(h->TotalLength);
+   309:     h->Identification   = swaps(h->Identification);
+   310:     h->HeaderChecksum   = swaps(h->HeaderChecksum);
+   311: }

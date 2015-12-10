@@ -1,0 +1,154 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+"8 /home/andresol/tellstick-net/rf/receive.h
+[v _rfRetreatBit `(v 0 ef2`*us`*uc ]
+"3 /home/andresol/tellstick-net/rf/receive.h
+[v _rfCountSimilar `(uc 0 ef2`*us`*uc ]
+"3 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageBeginRaw `(v 0 ef ]
+"8 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddString `(v 0 ef2`*Cuc`*Cuc ]
+"7 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddLong `(v 0 ef2`*Cuc`ul ]
+"4 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageEnd `(v 0 ef1`uc ]
+"10 /home/andresol/tellstick-net/rf/x10.c
+[v _x10Bit `(uc 1 ef2`uc`uc ]
+{
+[e :U _x10Bit ]
+[v _b1 `uc 1 r1 ]
+[v _b2 `uc 1 r2 ]
+[f ]
+"12
+[e $ ! && <= -> _b1 `i -> 12 `i <= -> _b2 `i -> 12 `i 324  ]
+{
+"13
+[e ) -> -> 0 `i `uc ]
+[e $UE 323  ]
+"14
+}
+[e :U 324 ]
+"16
+[e $ ! && >= -> _b1 `i -> 25 `i <= -> _b2 `i -> 12 `i 325  ]
+{
+"17
+[e ) -> -> 1 `i `uc ]
+[e $UE 323  ]
+"18
+}
+[e :U 325 ]
+"19
+[e ) -> -> 2 `i `uc ]
+[e $UE 323  ]
+"20
+[e :UE 323 ]
+}
+"22
+[v _parseX10 `(uc 1 ef2`us`uc ]
+{
+[e :U _parseX10 ]
+[v _scanP `us 1 r1 ]
+[v _scanBit `uc 1 r2 ]
+[f ]
+"23
+[v _code `ul 1 a ]
+[e = _code -> -> -> 0 `i `l `ul ]
+"25
+[e ( _rfRetreatBit (2 , &U _scanP &U _scanBit ]
+"26
+[e ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"28
+[v _mask `ul 1 a ]
+[e = _mask -> -> -> 1 `i `l `ul ]
+"29
+{
+[v _i `i 1 a ]
+[e = _i -> 0 `i ]
+[e $ < _i -> 32 `i 327  ]
+[e $U 328  ]
+[e :U 327 ]
+{
+"30
+[v _b1 `uc 1 a ]
+[e = _b1 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"31
+[v _b2 `uc 1 a ]
+[e = _b2 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"32
+[e $U 331  ]
+{
+"33
+[e :U 332 ]
+"34
+[e $U 330  ]
+"35
+[e :U 333 ]
+"36
+[e =| _code _mask ]
+"37
+[e $U 330  ]
+"38
+[e :U 334 ]
+"39
+[e ) -> -> 0 `i `uc ]
+[e $UE 326  ]
+"40
+}
+[e $U 330  ]
+"32
+[e :U 331 ]
+[e [\ ( _x10Bit (2 , _b1 _b2 , $ -> -> 0 `i `uc 332
+ , $ -> -> 1 `i `uc 333
+ 334 ]
+"40
+[e :U 330 ]
+"41
+[e =<< _mask -> 1 `i ]
+"42
+}
+"29
+[e =+ _i -> 1 `i ]
+[e $ < _i -> 32 `i 327  ]
+[e :U 328 ]
+"42
+}
+"45
+[e $ ! != & >> _code -> 24 `i -> -> -> 255 `i `l `ul & >> ~ _code -> 16 `i -> -> -> 255 `i `l `ul 335  ]
+{
+"46
+[e ) -> -> 0 `i `uc ]
+[e $UE 326  ]
+"47
+}
+[e :U 335 ]
+"48
+[e $ ! != & >> _code -> 8 `i -> -> -> 255 `i `l `ul & ~ _code -> -> -> 255 `i `l `ul 336  ]
+{
+"49
+[e ) -> -> 0 `i `uc ]
+[e $UE 326  ]
+"50
+}
+[e :U 336 ]
+"52
+[e ( _rfMessageBeginRaw ..  ]
+"53
+[e ( _rfMessageAddString (2 , :s 1C :s 2C ]
+"54
+[e ( _rfMessageAddLong (2 , :s 3C _code ]
+"55
+[e ( _rfMessageEnd (1 -> -> 2 `i `uc ]
+"57
+[e ) -> -> 1 `i `uc ]
+[e $UE 326  ]
+"58
+[e :UE 326 ]
+}
+[a 1C 112 114 111 116 111 99 111 108 0 ]
+[a 3C 100 97 116 97 0 ]
+[a 2C 120 49 48 0 ]

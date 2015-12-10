@@ -1,0 +1,1271 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+[c E208 0 1 .. ]
+[n E208 _BOOL FALSE TRUE  ]
+"139 /home/andresol/tellstick-net/tcpip/DHCP.c
+[v _DHCPClientInitializedOnce `E208 1 e ]
+[c E5204 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 .. ]
+[n E5204 . SM_DHCP_DISABLED SM_DHCP_GET_SOCKET SM_DHCP_SEND_DISCOVERY SM_DHCP_GET_OFFER SM_DHCP_SEND_REQUEST SM_DHCP_GET_REQUEST_ACK SM_DHCP_SEND_REQUEST2 SM_DHCP_GET_REQUEST_ACK2 SM_DHCP_SEND_REQUEST3 SM_DHCP_GET_REQUEST_ACK3 SM_DHCP_SEND_REQUEST4 SM_DHCP_GET_REQUEST_ACK4 SM_DHCP_BOUND SM_DHCP_SEND_RENEW SM_DHCP_GET_RENEW_ACK SM_DHCP_SEND_RENEW2 SM_DHCP_GET_RENEW_ACK2 SM_DHCP_SEND_RENEW3 SM_DHCP_GET_RENEW_ACK3  ]
+[s S391 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S391 . bIsBound bEvent bOfferReceived bDHCPServerDetected bUseUnicastMode ]
+[u S390 `S391 1 `uc 1 ]
+[n S390 . bits val ]
+[s S25 `us 1 `us 1 ]
+[n S25 . LW HW ]
+[s S26 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S26 . LB HB UB MB ]
+[s S22 `uc 1 `uc 1 ]
+[n S22 . LB HB ]
+[s S23 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S23 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S21 `us 1 `uc -> 2 `i `S22 1 `S23 1 ]
+[n S21 . Val v byte bits ]
+[s S27 `S21 1 `S21 1 ]
+[n S27 . low high ]
+[s S28 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S28 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S24 `ul 1 `us -> 2 `i `uc -> 4 `i `S25 1 `S26 1 `S27 1 `S28 1 ]
+[n S24 . Val w v word byte wordUnion bits ]
+[s S393 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S393 . IPAddress Gateway Mask DNS DNS2 HostName ]
+[u S392 `S393 1 `uc 1 ]
+[n S392 . bits val ]
+[s S389 `uc 1 `E5204 1 `S390 1 `ul 1 `ul 1 `ul 1 `ul 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S392 1 ]
+[n S389 . hDHCPSocket smState flags dwTimer dwSecs dwLeaseTime dwServerID tempIPAddress tempGateway tempMask tempDNS tempDNS2 validValues ]
+"184 /home/andresol/tellstick-net/tcpip/DHCP.c
+[v _DHCPClient `S389 1 s ]
+"150 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPClose `(v 0 ef1`uc ]
+"147 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPOpenEx `(uc 0 ef4`ul`uc`us`us ]
+"288 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACIsLinked `(E208 0 ef ]
+"155 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPIsPutReady `(us 0 ef1`uc ]
+"30 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _memset `(*v 0 ef3`*v`i`ui ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S356 `S24 1 `S355 1 ]
+[n S356 . IPAddr MACAddr ]
+[u S378 `S356 1 `ul 1 ]
+[n S378 . remoteNode remoteHost ]
+[c E4932 0 1 2 3 4 5 .. ]
+[n E4932 . UDP_DNS_IS_RESOLVED UDP_DNS_RESOLVE UDP_GATEWAY_SEND_ARP UDP_GATEWAY_GET_ARP UDP_CLOSED UDP_OPENED  ]
+[s S379 :1 `uc 1 ]
+[n S379 . bRemoteHostIsROM ]
+[s S377 `S378 1 `us 1 `us 1 `E4932 1 `ul 1 `uc 1 `S379 1 `us 1 ]
+[n S377 . remote remotePort localPort smState retryInterval retryCount flags eventTime ]
+"104 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPSocketInfo `S377 -> 0 `x e ]
+"142 /home/andresol/tellstick-net/tcpip/DHCP.c
+[v __DHCPSend `(v 0 sf2`uc`E208 ]
+"81 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Tick.h
+[v _TickGet `(ul 0 ef ]
+"170 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPIsGetReady `(us 0 ef1`uc ]
+"141 /home/andresol/tellstick-net/tcpip/DHCP.c
+[v __DHCPReceive `(uc 0 sf ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S357 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S357 0 e ]
+"171 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPGet `(E208 0 ef1`*uc ]
+"154 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPSetRxBuffer `(v 0 ef1`us ]
+"172 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPGetArray `(us 0 ef2`*uc`us ]
+"173 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPDiscard `(v 0 ef ]
+"156 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPPut `(E208 0 ef1`uc ]
+"157 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPPutArray `(us 0 ef2`*uc`us ]
+"105 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPTxCount `us 0 e ]
+"159 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPFlush `(v 0 ef ]
+[i _DHCPClientInitializedOnce
+"139 /home/andresol/tellstick-net/tcpip/DHCP.c
+. `E208 0
+]
+"216
+[v _DHCPInit `(v 1 ef1`uc ]
+{
+[e :U _DHCPInit ]
+[v _vInterface `uc 1 r1 ]
+[f ]
+"217
+[v _i `uc 1 a ]
+"221
+[e $ ! ! != -> _DHCPClientInitializedOnce `i -> -> -> 0 `i `E208 `i 395  ]
+"222
+{
+"223
+[e = _DHCPClientInitializedOnce . `E208 1 ]
+"224
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `ui -> 1 `ui 396  ]
+[e $U 397  ]
+"225
+[e :U 396 ]
+{
+"227
+[e = . _DHCPClient 0 -> -> 255 `ui `uc ]
+"228
+}
+"224
+[e ++ _i -> -> 1 `i `uc ]
+[e $ < -> _i `ui -> 1 `ui 396  ]
+[e :U 397 ]
+"228
+}
+"229
+}
+[e :U 395 ]
+"234
+[e $ ! != -> . _DHCPClient 0 `ui -> 255 `ui 399  ]
+"235
+{
+"236
+[e ( _UDPClose (1 . _DHCPClient 0 ]
+"237
+[e = . _DHCPClient 0 -> -> 255 `ui `uc ]
+"238
+}
+[e :U 399 ]
+"241
+[e = . _DHCPClient 1 . `E5204 1 ]
+"242
+[e = . . _DHCPClient 2 1 -> -> 0 `i `uc ]
+"243
+[e = . . . _DHCPClient 2 0 4 -> . `E208 1 `uc ]
+"244
+[e = . . . _DHCPClient 2 0 1 -> . `E208 1 `uc ]
+"245
+[e :UE 394 ]
+}
+"278
+[v _DHCPDisable `(v 1 ef1`uc ]
+{
+[e :U _DHCPDisable ]
+[v _vInterface `uc 1 r1 ]
+[f ]
+"281
+[e $ ! != -> . _DHCPClient 0 `ui -> 255 `ui 401  ]
+"282
+{
+"283
+[e ( _UDPClose (1 . _DHCPClient 0 ]
+"284
+[e = . _DHCPClient 0 -> -> 255 `ui `uc ]
+"285
+}
+[e :U 401 ]
+"287
+[e = . _DHCPClient 1 . `E5204 0 ]
+"288
+[e :UE 400 ]
+}
+"313
+[v _DHCPEnable `(v 1 ef1`uc ]
+{
+[e :U _DHCPEnable ]
+[v _vInterface `uc 1 r1 ]
+[f ]
+"316
+[e $ ! == -> . _DHCPClient 1 `i -> . `E5204 0 `i 403  ]
+"317
+{
+"318
+[e = . _DHCPClient 1 . `E5204 1 ]
+"319
+[e = . . . _DHCPClient 2 0 0 -> . `E208 0 `uc ]
+"320
+}
+[e :U 403 ]
+"321
+[e :UE 402 ]
+}
+"344
+[v _DHCPIsEnabled `(E208 1 ef1`uc ]
+{
+[e :U _DHCPIsEnabled ]
+[v _vInterface `uc 1 r1 ]
+[f ]
+"346
+[e ) -> -> != -> . _DHCPClient 1 `i -> . `E5204 0 `i `i `E208 ]
+[e $UE 404  ]
+"347
+[e :UE 404 ]
+}
+"375
+[v _DHCPIsBound `(E208 1 ef1`uc ]
+{
+[e :U _DHCPIsBound ]
+[v _vInterface `uc 1 r1 ]
+[f ]
+"377
+[e ) -> . . . _DHCPClient 2 0 0 `E208 ]
+[e $UE 405  ]
+"378
+[e :UE 405 ]
+}
+"409
+[v _DHCPStateChanged `(E208 1 ef1`uc ]
+{
+[e :U _DHCPStateChanged ]
+[v _vInterface `uc 1 r1 ]
+[f ]
+"411
+[e $ ! != -> . . . _DHCPClient 2 0 1 `i -> -> -> 0 `i `uc `i 407  ]
+"412
+{
+"413
+[e = . . . _DHCPClient 2 0 1 -> -> 0 `i `uc ]
+"414
+[e ) . `E208 1 ]
+[e $UE 406  ]
+"415
+}
+[e :U 407 ]
+"416
+[e ) . `E208 0 ]
+[e $UE 406  ]
+"417
+[e :UE 406 ]
+}
+"446
+[v _DHCPIsServerDetected `(E208 1 ef1`uc ]
+{
+[e :U _DHCPIsServerDetected ]
+[v _vInterface `uc 1 r1 ]
+[f ]
+"448
+[e ) -> . . . _DHCPClient 2 0 3 `E208 ]
+[e $UE 408  ]
+"449
+[e :UE 408 ]
+}
+"474
+[v _DHCPTask `(v 1 ef ]
+{
+[e :U _DHCPTask ]
+[f ]
+"475
+[v _i `uc 1 a ]
+"477
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `ui -> 1 `ui 410  ]
+[e $U 411  ]
+"478
+[e :U 410 ]
+{
+"480
+[e $U 414  ]
+"481
+{
+"482
+[e :U 415 ]
+"484
+[e $U 413  ]
+"486
+[e :U 416 ]
+"490
+[e = . _DHCPClient 0 ( _UDPOpenEx (4 , , , -> -> -> 0 `i `l `ul -> -> 0 `ui `uc -> -> 68 `ui `us -> -> 67 `ui `us ]
+"491
+[e $ ! == -> . _DHCPClient 0 `ui -> 255 `ui 417  ]
+"492
+[e $U 413  ]
+[e :U 417 ]
+"494
+[e = . _DHCPClient 1 . `E5204 2 ]
+"495
+[e = . _DHCPClient 4 -> -> -> 0 `i `l `ul ]
+"498
+[e :U 418 ]
+"503
+[e = . _DHCPClient 5 -> -> -> 60 `i `l `ul ]
+"504
+[e = . . _DHCPClient 12 1 -> -> 0 `i `uc ]
+"505
+[e = . . . _DHCPClient 2 0 0 -> . `E208 0 `uc ]
+"506
+[e = . . . _DHCPClient 2 0 2 -> . `E208 0 `uc ]
+"510
+[e $ ! ! != -> ( _MACIsLinked ..  `i -> -> -> 0 `i `E208 `i 419  ]
+"511
+[e $U 413  ]
+[e :U 419 ]
+"520
+[e $ ! < -> ( _UDPIsPutReady (1 . _DHCPClient 0 `ui -> 300 `ui 420  ]
+"521
+[e $U 413  ]
+[e :U 420 ]
+"527
+[e =^ . . . _DHCPClient 2 0 4 -> -> 1 `i `uc ]
+"531
+[e ( _memset (3 , , -> &U . . *U + &U _UDPSocketInfo * -> . _DHCPClient 0 `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 0 `*v -> 255 `i -> # . . *U + &U _UDPSocketInfo * -> -> -> 0 `i `ui `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 0 `ui ]
+"534
+[e ( __DHCPSend (2 , -> -> 1 `ui `uc . `E208 0 ]
+"537
+[e = . _DHCPClient 3 ( _TickGet ..  ]
+"538
+[e $ ! == . _DHCPClient 4 -> -> -> 0 `i `l `ul 421  ]
+{
+"539
+[e = . _DHCPClient 4 ( _TickGet ..  ]
+"540
+}
+[e :U 421 ]
+"541
+[e = . _DHCPClient 1 . `E5204 3 ]
+"542
+[e $U 413  ]
+"544
+[e :U 422 ]
+"546
+[e $ ! < -> ( _UDPIsGetReady (1 . _DHCPClient 0 `ui -> 250 `ui 423  ]
+"547
+{
+"549
+[e $ ! >= - ( _TickGet ..  . _DHCPClient 3 * -> 2 `ul / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul 424  ]
+{
+"550
+[e = . _DHCPClient 1 . `E5204 2 ]
+"551
+[e = . . _DHCPClient 7 0 -> -> -> 0 `i `l `ul ]
+"552
+}
+[e :U 424 ]
+"553
+[e $U 413  ]
+"554
+}
+[e :U 423 ]
+"558
+[e = . . . _DHCPClient 2 0 3 -> . `E208 1 `uc ]
+"561
+[e $ ! != -> ( __DHCPReceive ..  `ui -> 2 `ui 425  ]
+"562
+[e $U 413  ]
+[e :U 425 ]
+"564
+[e = . _DHCPClient 1 . `E5204 4 ]
+"565
+[e = . _DHCPClient 4 -> -> -> 0 `i `l `ul ]
+"568
+[e :U 426 ]
+"569
+[e :U 427 ]
+"570
+[e :U 428 ]
+"571
+[e :U 429 ]
+"572
+[e $ ! < -> ( _UDPIsPutReady (1 . _DHCPClient 0 `ui -> 258 `ui 430  ]
+"573
+[e $U 413  ]
+[e :U 430 ]
+"580
+[e ( _memset (3 , , -> &U . . *U + &U _UDPSocketInfo * -> . _DHCPClient 0 `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 0 `*v -> 255 `i -> # . . *U + &U _UDPSocketInfo * -> -> -> 0 `i `ui `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 0 `ui ]
+"583
+[e ( __DHCPSend (2 , -> -> 3 `ui `uc . `E208 0 ]
+"586
+[e = . _DHCPClient 3 ( _TickGet ..  ]
+"587
+[e =+ . _DHCPClient 1 -> -> 1 `i `E5204 ]
+"588
+[e $U 413  ]
+"590
+[e :U 431 ]
+"591
+[e :U 432 ]
+"592
+[e :U 433 ]
+"593
+[e :U 434 ]
+"595
+[e $ ! < -> ( _UDPIsGetReady (1 . _DHCPClient 0 `ui -> 250 `ui 435  ]
+"596
+{
+"598
+[e $ ! >= - ( _TickGet ..  . _DHCPClient 3 * -> 15 `ul / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul 436  ]
+{
+"599
+[e $ ! > -> =+ . _DHCPClient 1 -> -> 1 `i `E5204 `i -> . `E5204 11 `i 437  ]
+{
+"601
+[e = . _DHCPClient 1 . `E5204 2 ]
+"602
+}
+[e :U 437 ]
+"603
+}
+[e :U 436 ]
+"604
+[e $U 413  ]
+"605
+}
+[e :U 435 ]
+"608
+[e $U 439  ]
+"609
+{
+"610
+[e :U 440 ]
+"611
+[e ( _UDPClose (1 . _DHCPClient 0 ]
+"612
+[e = . _DHCPClient 0 -> -> 255 `ui `uc ]
+"613
+[e = . _DHCPClient 3 ( _TickGet ..  ]
+"614
+[e = . _DHCPClient 1 . `E5204 12 ]
+"615
+[e = . . . _DHCPClient 2 0 1 -> -> 1 `i `uc ]
+"616
+[e = . . . _DHCPClient 2 0 0 -> . `E208 1 `uc ]
+"618
+[e $ ! != -> . . . _DHCPClient 12 0 0 `i -> -> -> 0 `i `uc `i 441  ]
+"619
+{
+"620
+[e = . _AppConfig 0 . _DHCPClient 7 ]
+"627
+}
+[e :U 441 ]
+"628
+[e $ ! != -> . . . _DHCPClient 12 0 2 `i -> -> -> 0 `i `uc `i 442  ]
+"629
+[e = . _AppConfig 1 . _DHCPClient 9 ]
+[e :U 442 ]
+"630
+[e $ ! != -> . . . _DHCPClient 12 0 1 `i -> -> -> 0 `i `uc `i 443  ]
+"631
+[e = . _AppConfig 2 . _DHCPClient 8 ]
+[e :U 443 ]
+"633
+[e $ ! != -> . . . _DHCPClient 12 0 3 `i -> -> -> 0 `i `uc `i 444  ]
+"634
+[e = . . _AppConfig 3 0 . . _DHCPClient 10 0 ]
+[e :U 444 ]
+"635
+[e = . . _AppConfig 4 0 -> 0 `ul ]
+"636
+[e $ ! != -> . . . _DHCPClient 12 0 4 `i -> -> -> 0 `i `uc `i 445  ]
+"637
+[e = . . _AppConfig 4 0 . . _DHCPClient 11 0 ]
+[e :U 445 ]
+"642
+[e $U 438  ]
+"644
+[e :U 446 ]
+"645
+[e = . _DHCPClient 1 . `E5204 2 ]
+"646
+[e $U 438  ]
+"647
+}
+[e $U 438  ]
+"608
+[e :U 439 ]
+[e [\ ( __DHCPReceive ..  , $ -> -> 5 `ui `uc 440
+ , $ -> -> 6 `ui `uc 446
+ 438 ]
+"647
+[e :U 438 ]
+"648
+[e $U 413  ]
+"650
+[e :U 447 ]
+"651
+[e $ ! < - ( _TickGet ..  . _DHCPClient 3 / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul 448  ]
+"652
+[e $U 413  ]
+[e :U 448 ]
+"656
+[e $ ! >= . _DHCPClient 5 -> 2 `ul 449  ]
+"657
+{
+"658
+[e =+ . _DHCPClient 3 / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul ]
+"659
+[e -- . _DHCPClient 5 -> -> -> 1 `i `l `ul ]
+"660
+[e $U 413  ]
+"661
+}
+[e :U 449 ]
+"666
+[e = . _DHCPClient 0 ( _UDPOpenEx (4 , , , -> -> -> 0 `i `l `ul -> -> 0 `ui `uc -> -> 68 `ui `us -> -> 67 `ui `us ]
+"667
+[e $ ! == -> . _DHCPClient 0 `ui -> 255 `ui 450  ]
+"668
+[e $U 413  ]
+[e :U 450 ]
+"670
+[e = . _DHCPClient 1 . `E5204 13 ]
+"673
+[e :U 451 ]
+"674
+[e :U 452 ]
+"675
+[e :U 453 ]
+"676
+[e $ ! < -> ( _UDPIsPutReady (1 . _DHCPClient 0 `ui -> 258 `ui 454  ]
+"677
+[e $U 413  ]
+[e :U 454 ]
+"680
+[e ( __DHCPSend (2 , -> -> 3 `ui `uc . `E208 1 ]
+"681
+[e = . . . _DHCPClient 2 0 2 -> . `E208 0 `uc ]
+"684
+[e = . _DHCPClient 3 ( _TickGet ..  ]
+"685
+[e ++ . _DHCPClient 1 -> -> 1 `i `E5204 ]
+"686
+[e $U 413  ]
+"688
+[e :U 455 ]
+"689
+[e :U 456 ]
+"690
+[e :U 457 ]
+"692
+[e $ ! < -> ( _UDPIsGetReady (1 . _DHCPClient 0 `ui -> 250 `ui 458  ]
+"693
+{
+"695
+[e $ ! >= - ( _TickGet ..  . _DHCPClient 3 * -> 15 `ul / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul 459  ]
+"696
+{
+"697
+[e $ ! > -> =+ . _DHCPClient 1 -> -> 1 `i `E5204 `i -> . `E5204 18 `i 460  ]
+"698
+[e = . _DHCPClient 1 . `E5204 2 ]
+[e :U 460 ]
+"699
+}
+[e :U 459 ]
+"700
+[e $U 413  ]
+"701
+}
+[e :U 458 ]
+"704
+[e $U 462  ]
+"705
+{
+"706
+[e :U 463 ]
+"707
+[e ( _UDPClose (1 . _DHCPClient 0 ]
+"708
+[e = . _DHCPClient 0 -> -> 255 `ui `uc ]
+"709
+[e = . _DHCPClient 3 ( _TickGet ..  ]
+"710
+[e = . _DHCPClient 1 . `E5204 12 ]
+"711
+[e = . . . _DHCPClient 2 0 1 -> -> 1 `i `uc ]
+"712
+[e $U 461  ]
+"714
+[e :U 464 ]
+"715
+[e = . _DHCPClient 1 . `E5204 2 ]
+"716
+[e $U 461  ]
+"717
+}
+[e $U 461  ]
+"704
+[e :U 462 ]
+[e [\ ( __DHCPReceive ..  , $ -> -> 5 `ui `uc 463
+ , $ -> -> 6 `ui `uc 464
+ 461 ]
+"717
+[e :U 461 ]
+"718
+[e $U 413  ]
+"719
+}
+[e $U 413  ]
+"480
+[e :U 414 ]
+[e [\ . _DHCPClient 1 , $ . `E5204 0 415
+ , $ . `E5204 1 416
+ , $ . `E5204 2 418
+ , $ . `E5204 3 422
+ , $ . `E5204 4 426
+ , $ . `E5204 6 427
+ , $ . `E5204 8 428
+ , $ . `E5204 10 429
+ , $ . `E5204 5 431
+ , $ . `E5204 7 432
+ , $ . `E5204 9 433
+ , $ . `E5204 11 434
+ , $ . `E5204 12 447
+ , $ . `E5204 13 451
+ , $ . `E5204 15 452
+ , $ . `E5204 17 453
+ , $ . `E5204 14 455
+ , $ . `E5204 16 456
+ , $ . `E5204 18 457
+ 413 ]
+"719
+[e :U 413 ]
+"720
+}
+"477
+[e ++ _i -> -> 1 `i `uc ]
+[e $ < -> _i `ui -> 1 `ui 410  ]
+[e :U 411 ]
+"720
+}
+"721
+[e :UE 409 ]
+}
+"742
+[v __DHCPReceive `(uc 1 sf ]
+{
+[e :U __DHCPReceive ]
+[f ]
+"779
+[v _v `uc 1 a ]
+"780
+[v _i `uc 1 a ]
+[v _j `uc 1 a ]
+"781
+[v _type `uc 1 a ]
+"782
+[v _lbDone `E208 1 a ]
+"783
+[v _tempServerID `ul 1 a ]
+"787
+[e = _type -> -> 0 `ui `uc ]
+"789
+[e ( _UDPGet (1 &U _v ]
+"792
+[e $ ! == -> _v `ui -> 2 `ui 466  ]
+"793
+{
+"797
+[e ( _UDPSetRxBuffer (1 -> -> 28 `i `us ]
+"798
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `ui -> 6 `ui 467  ]
+[e $U 468  ]
+"799
+[e :U 467 ]
+{
+"800
+[e ( _UDPGet (1 &U _v ]
+"801
+[e $ ! != -> _v `i -> *U + &U . . _AppConfig 9 0 * -> _i `ux -> -> # *U &U . . _AppConfig 9 0 `ui `ux `i 470  ]
+"802
+[e $U 471  ]
+[e :U 470 ]
+"803
+}
+"798
+[e ++ _i -> -> 1 `i `uc ]
+[e $ < -> _i `ui -> 6 `ui 467  ]
+[e :U 468 ]
+"803
+}
+"808
+[e $ ! ! != -> . . . _DHCPClient 2 0 2 `i -> -> -> 0 `i `uc `i 472  ]
+"809
+{
+"810
+[e ( _UDPSetRxBuffer (1 -> -> 16 `i `us ]
+"811
+[e ( _UDPGetArray (2 , -> &U . _DHCPClient 7 `*uc -> -> # . _DHCPClient 7 `ui `us ]
+"812
+[e = . . . _DHCPClient 12 0 0 -> -> 1 `i `uc ]
+"813
+}
+[e :U 472 ]
+"818
+[e ( _UDPSetRxBuffer (1 -> -> 240 `i `us ]
+"820
+[e = _lbDone . `E208 0 ]
+"821
+[e :U 475 ]
+"822
+{
+"826
+[e $ ! ! != -> ( _UDPGet (1 &U _v `i -> -> -> 0 `i `E208 `i 476  ]
+"827
+{
+"828
+[e = _lbDone . `E208 1 ]
+"829
+[e $U 474  ]
+"830
+}
+[e :U 476 ]
+"832
+[e $U 478  ]
+"833
+{
+"834
+[e :U 479 ]
+"835
+[e ( _UDPGet (1 &U _v ]
+"837
+[e $ ! == -> _v `ui -> 1 `ui 480  ]
+"838
+{
+"839
+[e ( _UDPGet (1 &U _type ]
+"842
+[e $ ! && != -> . . . _DHCPClient 2 0 2 `i -> -> -> 0 `i `uc `i == -> _type `ui -> 2 `ui 481  ]
+"843
+{
+"844
+[e $U 471  ]
+"845
+}
+[e :U 481 ]
+"846
+}
+[e $U 482  ]
+"847
+[e :U 480 ]
+"848
+[e $U 471  ]
+[e :U 482 ]
+"849
+[e $U 477  ]
+"851
+[e :U 483 ]
+"852
+[e ( _UDPGet (1 &U _v ]
+"854
+[e $ ! == -> _v `ui -> 4 `ui 484  ]
+"855
+{
+"857
+[e $ ! != -> . . . _DHCPClient 2 0 2 `i -> -> -> 0 `i `uc `i 485  ]
+"858
+{
+"860
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `ui -> 4 `ui 486  ]
+[e $U 487  ]
+"861
+[e :U 486 ]
+[e ( _UDPGet (1 &U _v ]
+"860
+[e ++ _i -> -> 1 `i `uc ]
+[e $ < -> _i `ui -> 4 `ui 486  ]
+[e :U 487 ]
+"861
+}
+"862
+}
+[e $U 489  ]
+"863
+[e :U 485 ]
+"864
+{
+"865
+[e ( _UDPGetArray (2 , -> &U . _DHCPClient 9 `*uc -> -> # . _DHCPClient 9 `ui `us ]
+"866
+[e = . . . _DHCPClient 12 0 2 -> -> 1 `i `uc ]
+"867
+}
+[e :U 489 ]
+"868
+}
+[e $U 490  ]
+"869
+[e :U 484 ]
+"870
+[e $U 471  ]
+[e :U 490 ]
+"871
+[e $U 477  ]
+"873
+[e :U 491 ]
+"874
+[e ( _UDPGet (1 &U _j ]
+"876
+[e $ ! >= -> _j `ui -> 4 `ui 492  ]
+"877
+{
+"879
+[e $ ! != -> . . . _DHCPClient 2 0 2 `i -> -> -> 0 `i `uc `i 493  ]
+"880
+{
+"882
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `ui -> 4 `ui 494  ]
+[e $U 495  ]
+"883
+[e :U 494 ]
+[e ( _UDPGet (1 &U _v ]
+"882
+[e ++ _i -> -> 1 `i `uc ]
+[e $ < -> _i `ui -> 4 `ui 494  ]
+[e :U 495 ]
+"883
+}
+"884
+}
+[e $U 497  ]
+"885
+[e :U 493 ]
+"886
+{
+"887
+[e ( _UDPGetArray (2 , -> &U . _DHCPClient 8 `*uc -> -> # . _DHCPClient 8 `ui `us ]
+"888
+[e = . . . _DHCPClient 12 0 1 -> -> 1 `i `uc ]
+"889
+}
+[e :U 497 ]
+"890
+}
+[e $U 498  ]
+"891
+[e :U 492 ]
+"892
+[e $U 471  ]
+[e :U 498 ]
+"895
+[e =- _j -> -> 4 `i `uc ]
+"896
+[e $U 499  ]
+[e :U 500 ]
+"897
+[e ( _UDPGet (1 &U _v ]
+[e :U 499 ]
+"896
+[e $ != -> -- _j -> -> 1 `i `uc `i -> -> -> 0 `i `uc `i 500  ]
+[e :U 501 ]
+"898
+[e $U 477  ]
+"901
+[e :U 502 ]
+"902
+[e ( _UDPGet (1 &U _j ]
+"904
+[e $ ! < -> _j `ui -> 4 `ui 503  ]
+"905
+[e $U 471  ]
+[e :U 503 ]
+"908
+[e $ ! ! != -> . . . _DHCPClient 2 0 2 `i -> -> -> 0 `i `uc `i 504  ]
+"909
+{
+"910
+[e ( _UDPGetArray (2 , -> &U . _DHCPClient 10 `*uc -> -> # . _DHCPClient 10 `ui `us ]
+"911
+[e = . . . _DHCPClient 12 0 3 -> -> 1 `i `uc ]
+"912
+[e =- _j -> -> 4 `i `uc ]
+"913
+}
+[e :U 504 ]
+"916
+[e $ ! >= -> _j `ui -> 4 `ui 505  ]
+"917
+{
+"919
+[e $ ! ! != -> . . . _DHCPClient 2 0 2 `i -> -> -> 0 `i `uc `i 506  ]
+"920
+{
+"921
+[e ( _UDPGetArray (2 , -> &U . _DHCPClient 11 `*uc -> -> # . _DHCPClient 11 `ui `us ]
+"922
+[e = . . . _DHCPClient 12 0 4 -> -> 1 `i `uc ]
+"923
+[e =- _j -> -> 4 `i `uc ]
+"924
+}
+[e :U 506 ]
+"925
+}
+[e :U 505 ]
+"928
+[e $U 507  ]
+[e :U 508 ]
+"929
+[e ( _UDPGet (1 &U _v ]
+[e :U 507 ]
+"928
+[e $ != -> -- _j -> -> 1 `i `uc `i -> -> -> 0 `i `uc `i 508  ]
+[e :U 509 ]
+"930
+[e $U 477  ]
+"961
+[e :U 510 ]
+"962
+[e ( _UDPGet (1 &U _v ]
+"964
+[e $ ! == -> _v `ui -> 4 `ui 511  ]
+"965
+{
+"966
+[e ( _UDPGet (1 &U *U + -> &U _tempServerID `*uc * -> -> 3 `i `x -> -> # *U -> &U _tempServerID `*uc `i `x ]
+"967
+[e ( _UDPGet (1 &U *U + -> &U _tempServerID `*uc * -> -> 2 `i `x -> -> # *U -> &U _tempServerID `*uc `i `x ]
+"968
+[e ( _UDPGet (1 &U *U + -> &U _tempServerID `*uc * -> -> 1 `i `x -> -> # *U -> &U _tempServerID `*uc `i `x ]
+"969
+[e ( _UDPGet (1 &U *U + -> &U _tempServerID `*uc * -> -> 0 `i `x -> -> # *U -> &U _tempServerID `*uc `i `x ]
+"970
+}
+[e $U 512  ]
+"971
+[e :U 511 ]
+"972
+[e $U 471  ]
+[e :U 512 ]
+"973
+[e $U 477  ]
+"975
+[e :U 513 ]
+"976
+[e = _lbDone . `E208 1 ]
+"977
+[e $U 477  ]
+"979
+[e :U 514 ]
+"980
+[e ( _UDPGet (1 &U _v ]
+"982
+[e $ ! == -> _v `ui -> 4 `ui 515  ]
+"983
+{
+"985
+[e $ ! != -> . . . _DHCPClient 2 0 2 `i -> -> -> 0 `i `uc `i 516  ]
+"986
+{
+"988
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `ui -> 4 `ui 517  ]
+[e $U 518  ]
+"989
+[e :U 517 ]
+[e ( _UDPGet (1 &U _v ]
+"988
+[e ++ _i -> -> 1 `i `uc ]
+[e $ < -> _i `ui -> 4 `ui 517  ]
+[e :U 518 ]
+"989
+}
+"990
+}
+[e $U 520  ]
+"991
+[e :U 516 ]
+"992
+{
+"993
+[e ( _UDPGet (1 &U *U + -> &U . _DHCPClient 5 `*uc * -> -> 3 `i `x -> -> # *U -> &U . _DHCPClient 5 `*uc `i `x ]
+"994
+[e ( _UDPGet (1 &U *U + -> &U . _DHCPClient 5 `*uc * -> -> 2 `i `x -> -> # *U -> &U . _DHCPClient 5 `*uc `i `x ]
+"995
+[e ( _UDPGet (1 &U *U + -> &U . _DHCPClient 5 `*uc * -> -> 1 `i `x -> -> # *U -> &U . _DHCPClient 5 `*uc `i `x ]
+"996
+[e ( _UDPGet (1 &U *U + -> &U . _DHCPClient 5 `*uc * -> -> 0 `i `x -> -> # *U -> &U . _DHCPClient 5 `*uc `i `x ]
+"1001
+[e =- . _DHCPClient 5 >> . _DHCPClient 5 -> 5 `i ]
+"1002
+}
+[e :U 520 ]
+"1003
+}
+[e $U 521  ]
+"1004
+[e :U 515 ]
+"1005
+[e $U 471  ]
+[e :U 521 ]
+"1006
+[e $U 477  ]
+"1008
+[e :U 522 ]
+"1010
+[e ( _UDPGet (1 &U _j ]
+"1011
+[e $U 523  ]
+[e :U 524 ]
+"1012
+[e ( _UDPGet (1 &U _v ]
+[e :U 523 ]
+"1011
+[e $ != -> -- _j -> -> 1 `i `uc `i -> -> -> 0 `i `uc `i 524  ]
+[e :U 525 ]
+"1013
+}
+[e $U 477  ]
+"832
+[e :U 478 ]
+[e [\ _v , $ -> -> 53 `ui `uc 479
+ , $ -> -> 1 `ui `uc 483
+ , $ -> -> 3 `ui `uc 491
+ , $ -> -> 6 `ui `uc 502
+ , $ -> -> 54 `ui `uc 510
+ , $ -> -> 255 `ui `uc 513
+ , $ -> -> 51 `ui `uc 514
+ 522 ]
+"1013
+[e :U 477 ]
+"1014
+}
+[e $ ! != -> _lbDone `i -> -> -> 0 `i `E208 `i 475  ]
+[e :U 474 ]
+"1015
+}
+[e :U 466 ]
+"1018
+[e $ ! == -> _type `ui -> 2 `ui 526  ]
+"1019
+{
+"1020
+[e = . _DHCPClient 6 _tempServerID ]
+"1021
+[e = . . . _DHCPClient 2 0 2 -> . `E208 1 `uc ]
+"1022
+}
+[e $U 527  ]
+"1023
+[e :U 526 ]
+"1024
+{
+"1027
+[e $ ! != . _DHCPClient 6 _tempServerID 528  ]
+"1028
+[e = _type -> -> 0 `ui `uc ]
+[e :U 528 ]
+"1029
+}
+[e :U 527 ]
+"1031
+[e ( _UDPDiscard ..  ]
+"1032
+[e ) _type ]
+[e $UE 465  ]
+"1034
+[e :U 471 ]
+"1035
+[e ( _UDPDiscard ..  ]
+"1036
+[e ) -> -> 0 `ui `uc ]
+[e $UE 465  ]
+"1037
+[e :UE 465 ]
+}
+"1060
+[v __DHCPSend `(v 1 sf2`uc`E208 ]
+{
+[e :U __DHCPSend ]
+[v _messageType `uc 1 r1 ]
+[v _bRenewing `E208 1 r2 ]
+[f ]
+"1061
+[v _i `uc 1 a ]
+"1062
+[v _MyIP `S24 1 a ]
+"1064
+[v _s `ul 1 a ]
+[e = _s -> -> -> 0 `i `l `ul ]
+"1065
+[e $ ! != . _DHCPClient 4 -> -> 0 `i `ul 530  ]
+{
+"1066
+[e = _s / - ( _TickGet ..  . _DHCPClient 4 / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul ]
+"1067
+}
+[e :U 530 ]
+"1069
+[e ( _UDPPut (1 -> -> 1 `ui `uc ]
+"1070
+[e ( _UDPPut (1 -> -> 1 `ui `uc ]
+"1071
+[e ( _UDPPut (1 -> -> 6 `ui `uc ]
+"1072
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"1073
+[e ( _UDPPut (1 -> -> 18 `i `uc ]
+"1074
+[e ( _UDPPut (1 -> -> 35 `i `uc ]
+"1075
+[e ( _UDPPut (1 -> -> 52 `i `uc ]
+"1076
+[e ( _UDPPut (1 -> -> 86 `i `uc ]
+"1077
+[e ( _UDPPut (1 *U + -> &U _s `*uc * -> -> 1 `i `x -> -> # *U -> &U _s `*uc `i `x ]
+"1078
+[e ( _UDPPut (1 *U + -> &U _s `*uc * -> -> 0 `i `x -> -> # *U -> &U _s `*uc `i `x ]
+"1079
+[e ( _UDPPut (1 -> ? != -> . . . _DHCPClient 2 0 4 `i -> -> -> 0 `i `uc `i : -> 0 `i -> 128 `i `uc ]
+"1080
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"1083
+[e $ ! && == -> _messageType `ui -> 3 `ui != -> _bRenewing `i -> -> -> 0 `i `E208 `i 531  ]
+"1084
+{
+"1085
+[e ( _UDPPutArray (2 , -> &U . _DHCPClient 7 `*uc -> -> # . _DHCPClient 7 `ui `us ]
+"1086
+}
+[e $U 532  ]
+"1087
+[e :U 531 ]
+"1088
+{
+"1089
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"1090
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"1091
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"1092
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"1093
+}
+[e :U 532 ]
+"1096
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `ui -> 12 `ui 533  ]
+[e $U 534  ]
+"1097
+[e :U 533 ]
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"1096
+[e ++ _i -> -> 1 `i `uc ]
+[e $ < -> _i `ui -> 12 `ui 533  ]
+[e :U 534 ]
+"1097
+}
+"1100
+[e ( _UDPPutArray (2 , -> &U . _AppConfig 9 `*uc -> -> # . _AppConfig 9 `ui `us ]
+"1103
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `ui -> 202 `ui 536  ]
+[e $U 537  ]
+"1104
+[e :U 536 ]
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"1103
+[e ++ _i -> -> 1 `i `uc ]
+[e $ < -> _i `ui -> 202 `ui 536  ]
+[e :U 537 ]
+"1104
+}
+"1107
+[e ( _UDPPut (1 -> -> 99 `i `uc ]
+"1108
+[e ( _UDPPut (1 -> -> 130 `i `uc ]
+"1109
+[e ( _UDPPut (1 -> -> 83 `i `uc ]
+"1110
+[e ( _UDPPut (1 -> -> 99 `i `uc ]
+"1113
+[e ( _UDPPut (1 -> -> 53 `ui `uc ]
+"1114
+[e ( _UDPPut (1 -> -> 1 `ui `uc ]
+"1115
+[e ( _UDPPut (1 _messageType ]
+"1117
+[e $ ! == -> _messageType `ui -> 1 `ui 539  ]
+"1118
+{
+"1120
+[e = . . . _DHCPClient 2 0 2 -> . `E208 0 `uc ]
+"1121
+}
+[e :U 539 ]
+"1124
+[e $ ! && == -> _messageType `ui -> 3 `ui ! != -> _bRenewing `i -> -> -> 0 `i `E208 `i 540  ]
+"1125
+{
+"1132
+[e ( _UDPPut (1 -> -> 54 `ui `uc ]
+"1133
+[e ( _UDPPut (1 -> -> 4 `ui `uc ]
+"1134
+[e ( _UDPPut (1 *U + -> &U . _DHCPClient 6 `*uc * -> -> 3 `i `x -> -> # *U -> &U . _DHCPClient 6 `*uc `i `x ]
+"1135
+[e ( _UDPPut (1 *U + -> &U . _DHCPClient 6 `*uc * -> -> 2 `i `x -> -> # *U -> &U . _DHCPClient 6 `*uc `i `x ]
+"1136
+[e ( _UDPPut (1 *U + -> &U . _DHCPClient 6 `*uc * -> -> 1 `i `x -> -> # *U -> &U . _DHCPClient 6 `*uc `i `x ]
+"1137
+[e ( _UDPPut (1 *U + -> &U . _DHCPClient 6 `*uc * -> -> 0 `i `x -> -> # *U -> &U . _DHCPClient 6 `*uc `i `x ]
+"1138
+}
+[e :U 540 ]
+"1143
+[e ( _UDPPut (1 -> -> 55 `ui `uc ]
+"1144
+[e ( _UDPPut (1 -> -> 4 `ui `uc ]
+"1145
+[e ( _UDPPut (1 -> -> 1 `ui `uc ]
+"1146
+[e ( _UDPPut (1 -> -> 3 `ui `uc ]
+"1147
+[e ( _UDPPut (1 -> -> 6 `ui `uc ]
+"1148
+[e ( _UDPPut (1 -> -> 12 `ui `uc ]
+"1152
+[e $ ! || && == -> _messageType `ui -> 3 `ui ! != -> _bRenewing `i -> -> -> 0 `i `E208 `i && == -> _messageType `ui -> 1 `ui != . . _DHCPClient 7 0 -> -> 0 `i `ul 541  ]
+"1153
+{
+"1154
+[e ( _UDPPut (1 -> -> 50 `ui `uc ]
+"1155
+[e ( _UDPPut (1 -> -> 4 `ui `uc ]
+"1156
+[e ( _UDPPutArray (2 , -> &U . _DHCPClient 7 `*uc -> -> 4 `ui `us ]
+"1157
+}
+[e :U 541 ]
+"1162
+[e ( _UDPPut (1 -> -> 255 `ui `uc ]
+"1165
+[e $U 542  ]
+[e :U 543 ]
+"1166
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+[e :U 542 ]
+"1165
+[e $ < -> _UDPTxCount `ui -> 300 `ui 543  ]
+[e :U 544 ]
+"1169
+[e = . _MyIP 0 . . _AppConfig 0 0 ]
+"1170
+[e $ ! ! != -> _bRenewing `i -> -> -> 0 `i `E208 `i 545  ]
+"1171
+[e = . . _AppConfig 0 0 -> -> -> 0 `i `l `ul ]
+[e :U 545 ]
+"1172
+[e ( _UDPFlush ..  ]
+"1173
+[e = . . _AppConfig 0 0 . _MyIP 0 ]
+"1175
+[e :UE 529 ]
+}

@@ -1,0 +1,227 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+"1569 /usr/hitech/picc-18/pro/9.66/include/pic18.h
+[v __delay `(v 0 ef1`ul ]
+[p i __delay ]
+[c E3956 0 1 .. ]
+[n E3956 _BOOL FALSE TRUE  ]
+"141 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DHCP.h
+[v _DHCPIsBound `(E3956 0 ef1`uc ]
+[s S346 `us 1 `us 1 ]
+[n S346 . LW HW ]
+[s S347 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S347 . LB HB UB MB ]
+[s S343 `uc 1 `uc 1 ]
+[n S343 . LB HB ]
+[s S344 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S344 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S342 `us 1 `uc -> 2 `i `S343 1 `S344 1 ]
+[n S342 . Val v byte bits ]
+[s S348 `S342 1 `S342 1 ]
+[n S348 . low high ]
+[s S349 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S349 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S345 `ul 1 `us -> 2 `i `uc -> 4 `i `S346 1 `S347 1 `S348 1 `S349 1 ]
+[n S345 . Val w v word byte wordUnion bits ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S357 `S345 1 `S345 1 `S345 1 `S345 1 `S345 1 `S345 1 `S345 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S357 0 e ]
+"288 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACIsLinked `(E3956 0 ef ]
+"12 /home/andresol/tellstick-net/firmware/common.c
+[v _delay_ms `(v 1 ef1`i ]
+{
+[e :U _delay_ms ]
+[v _ms `i 1 r1 ]
+[f ]
+"13
+[e $U 390  ]
+[e :U 391 ]
+{
+"14
+[e ( __delay (1 -> * -> -> 1 `i `d / -> -> 41666667 `ul `d .4000.0 `ul ]
+"15
+}
+[e :U 390 ]
+"13
+[e $ != -- _ms -> 1 `i -> 0 `i 391  ]
+[e :U 392 ]
+"16
+[e :UE 389 ]
+}
+"18
+[v _hexToByte `(uc 1 ef1`uc ]
+{
+[e :U _hexToByte ]
+[v _hex `uc 1 r1 ]
+[f ]
+"19
+[e $U 395  ]
+{
+"20
+[e :U 396 ]
+"21
+[e ) -> -> 0 `i `uc ]
+[e $UE 393  ]
+"22
+[e :U 397 ]
+"23
+[e ) -> -> 1 `i `uc ]
+[e $UE 393  ]
+"24
+[e :U 398 ]
+"25
+[e ) -> -> 2 `i `uc ]
+[e $UE 393  ]
+"26
+[e :U 399 ]
+"27
+[e ) -> -> 3 `i `uc ]
+[e $UE 393  ]
+"28
+[e :U 400 ]
+"29
+[e ) -> -> 4 `i `uc ]
+[e $UE 393  ]
+"30
+[e :U 401 ]
+"31
+[e ) -> -> 5 `i `uc ]
+[e $UE 393  ]
+"32
+[e :U 402 ]
+"33
+[e ) -> -> 6 `i `uc ]
+[e $UE 393  ]
+"34
+[e :U 403 ]
+"35
+[e ) -> -> 7 `i `uc ]
+[e $UE 393  ]
+"36
+[e :U 404 ]
+"37
+[e ) -> -> 8 `i `uc ]
+[e $UE 393  ]
+"38
+[e :U 405 ]
+"39
+[e ) -> -> 9 `i `uc ]
+[e $UE 393  ]
+"40
+[e :U 406 ]
+"41
+[e :U 407 ]
+"42
+[e ) -> -> 10 `i `uc ]
+[e $UE 393  ]
+"43
+[e :U 408 ]
+"44
+[e :U 409 ]
+"45
+[e ) -> -> 11 `i `uc ]
+[e $UE 393  ]
+"46
+[e :U 410 ]
+"47
+[e :U 411 ]
+"48
+[e ) -> -> 12 `i `uc ]
+[e $UE 393  ]
+"49
+[e :U 412 ]
+"50
+[e :U 413 ]
+"51
+[e ) -> -> 13 `i `uc ]
+[e $UE 393  ]
+"52
+[e :U 414 ]
+"53
+[e :U 415 ]
+"54
+[e ) -> -> 14 `i `uc ]
+[e $UE 393  ]
+"55
+[e :U 416 ]
+"56
+[e :U 417 ]
+"57
+[e ) -> -> 15 `i `uc ]
+[e $UE 393  ]
+"58
+}
+[e $U 394  ]
+"19
+[e :U 395 ]
+[e [\ _hex , $ -> -> 48 `ui `uc 396
+ , $ -> -> 49 `ui `uc 397
+ , $ -> -> 50 `ui `uc 398
+ , $ -> -> 51 `ui `uc 399
+ , $ -> -> 52 `ui `uc 400
+ , $ -> -> 53 `ui `uc 401
+ , $ -> -> 54 `ui `uc 402
+ , $ -> -> 55 `ui `uc 403
+ , $ -> -> 56 `ui `uc 404
+ , $ -> -> 57 `ui `uc 405
+ , $ -> -> 97 `ui `uc 406
+ , $ -> -> 65 `ui `uc 407
+ , $ -> -> 98 `ui `uc 408
+ , $ -> -> 66 `ui `uc 409
+ , $ -> -> 99 `ui `uc 410
+ , $ -> -> 67 `ui `uc 411
+ , $ -> -> 100 `ui `uc 412
+ , $ -> -> 68 `ui `uc 413
+ , $ -> -> 101 `ui `uc 414
+ , $ -> -> 69 `ui `uc 415
+ , $ -> -> 102 `ui `uc 416
+ , $ -> -> 70 `ui `uc 417
+ 394 ]
+"58
+[e :U 394 ]
+"59
+[e ) -> -> 0 `i `uc ]
+[e $UE 393  ]
+"60
+[e :UE 393 ]
+}
+"62
+[v _networkIsBound `(E3956 1 ef ]
+{
+[e :U _networkIsBound ]
+[f ]
+"63
+[e $ ! != -> ( _DHCPIsBound (1 -> -> 0 `i `uc `i -> -> -> 0 `i `E3956 `i 419  ]
+{
+"64
+[e ) . `E3956 1 ]
+[e $UE 418  ]
+"65
+}
+[e :U 419 ]
+"66
+[e $ ! != -> . . _AppConfig 8 1 `i -> -> -> 0 `i `uc `i 420  ]
+{
+"67
+[e ) . `E3956 0 ]
+[e $UE 418  ]
+"68
+}
+[e :U 420 ]
+"69
+[e ) ( _MACIsLinked ..  ]
+[e $UE 418  ]
+"70
+[e :UE 418 ]
+}

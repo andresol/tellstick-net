@@ -1,0 +1,1015 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+[s S25 `us 1 `us 1 ]
+[n S25 . LW HW ]
+[s S26 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S26 . LB HB UB MB ]
+[s S22 `uc 1 `uc 1 ]
+[n S22 . LB HB ]
+[s S23 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S23 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S21 `us 1 `uc -> 2 `i `S22 1 `S23 1 ]
+[n S21 . Val v byte bits ]
+[s S27 `S21 1 `S21 1 ]
+[n S27 . low high ]
+[s S28 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S28 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S24 `ul 1 `us -> 2 `i `uc -> 4 `i `S25 1 `S26 1 `S27 1 `S28 1 ]
+[n S24 . Val w v word byte wordUnion bits ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S356 `S24 1 `S355 1 ]
+[n S356 . IPAddr MACAddr ]
+[u S378 `S356 1 `ul 1 ]
+[n S378 . remoteNode remoteHost ]
+[c E4932 0 1 2 3 4 5 .. ]
+[n E4932 . UDP_DNS_IS_RESOLVED UDP_DNS_RESOLVE UDP_GATEWAY_SEND_ARP UDP_GATEWAY_GET_ARP UDP_CLOSED UDP_OPENED  ]
+[s S379 :1 `uc 1 ]
+[n S379 . bRemoteHostIsROM ]
+[s S377 `S378 1 `us 1 `us 1 `E4932 1 `ul 1 `uc 1 `S379 1 `us 1 ]
+[n S377 . remote remotePort localPort smState retryInterval retryCount flags eventTime ]
+"110 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPSocketInfo `S377 -> 5 `i e ]
+"113 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _activeUDPSocket `uc 1 e ]
+"115 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPTxCount `us 1 e ]
+"116 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _UDPRxCount `us 1 e ]
+"117 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _LastPutSocket `uc 1 s ]
+"118 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _wPutOffset `us 1 s ]
+"119 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _wGetOffset `us 1 s ]
+[s S389 :1 `uc 1 :1 `uc 1 ]
+[n S389 . bFirstRead bWasDiscarded ]
+"126 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _Flags `S389 1 s ]
+"129 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _SocketWithRxData `uc 1 s ]
+"150 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPClose `(v 0 ef1`uc ]
+"30 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _memset `(*v 0 ef3`*v`i`ui ]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _memcpy `(*v 0 ef3`*v`*Cv`ui ]
+[c E208 0 1 .. ]
+[n E208 _BOOL FALSE TRUE  ]
+"60 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DNS.h
+[v _DNSBeginUsage `(E208 0 ef ]
+"66 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DNS.h
+[v _DNSResolveROM `(v 0 ef2`*Cuc`uc ]
+"61 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DNS.h
+[v _DNSResolve `(v 0 ef2`*uc`uc ]
+"62 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DNS.h
+[v _DNSIsResolved `(E208 0 ef1`*S24 ]
+"63 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DNS.h
+[v _DNSEndUsage `(E208 0 ef ]
+"82 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Tick.h
+[v _TickGetDiv256 `(ul 0 ef ]
+"86 /home/andresol/tellstick-net/tcpip/TCPIP Stack/ARP.h
+[v _ARPResolve `(v 0 ef1`*S24 ]
+"87 /home/andresol/tellstick-net/tcpip/TCPIP Stack/ARP.h
+[v _ARPIsResolved `(E208 0 ef2`*S24`*S355 ]
+"292 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACSetWritePtr `(us 0 ef1`us ]
+[s S380 `us 1 `us 1 `us 1 `us 1 ]
+[n S380 . SourcePort DestinationPort Length Checksum ]
+[s S372 `S355 1 `S355 1 `S21 1 ]
+[n S372 . DestMACAddr SourceMACAddr Type ]
+[s S373 `uc 1 `uc 1 `us 1 `us 1 `us 1 `uc 1 `uc 1 `us 1 `S24 1 `S24 1 ]
+[n S373 _IP_HEADER VersionIHL TypeOfService TotalLength Identification FragmentInfo TimeToLive Protocol HeaderChecksum SourceAddress DestAddress ]
+"246 /home/andresol/tellstick-net/tcpip/TCPIP Stack/IP.h
+[v _IPSetRxBuffer `(v 0 ef1`us ]
+"302 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACIsTxReady `(E208 0 ef ]
+"303 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACPut `(v 0 ef1`uc ]
+"304 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACPutArray `(v 0 ef2`*uc`us ]
+"310 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACPutROMArray `(v 0 ef2`*Cuc`us ]
+"61 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _strlen `(ui 0 ef1`*Cuc ]
+"104 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _swaps `(us 0 ef1`us ]
+"156 /home/andresol/tellstick-net/tcpip/TCPIP Stack/IP.h
+[v _IPPutHeader `(us 0 ef3`*S356`uc`us ]
+"305 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACFlush `(v 0 ef ]
+"294 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACGet `(uc 0 ef ]
+"295 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACGetArray `(us 0 ef2`*uc`us ]
+"296 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACDiscardRx `(v 0 ef ]
+[s S374 `S24 1 `S24 1 `uc 1 `uc 1 `us 1 ]
+[n S374 _PSEUDO_HEADER SourceAddress DestAddress Zero Protocol Length ]
+"107 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _CalcIPChecksum `(us 0 ef2`*uc`us ]
+"108 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _CalcIPBufferChecksum `(us 0 ef1`us ]
+"137 /home/andresol/tellstick-net/tcpip/UDP.c
+[v _FindMatchingSocket `(uc 0 sf3`*S380`*S356`*S24 ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S357 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S357 0 e ]
+[i _LastPutSocket
+"117 /home/andresol/tellstick-net/tcpip/UDP.c
+-> -> 255 `ui `uc
+]
+[i _SocketWithRxData
+"129
+-> -> 255 `ui `uc
+]
+"168
+[v _UDPInit `(v 1 ef ]
+{
+[e :U _UDPInit ]
+[f ]
+"169
+[v _s `uc 1 a ]
+"171
+{
+[e = _s -> -> 0 `i `uc ]
+[e $ < -> _s `i -> 5 `i 391  ]
+[e $U 392  ]
+"172
+[e :U 391 ]
+{
+"173
+[e ( _UDPClose (1 _s ]
+"174
+}
+"171
+[e ++ _s -> -> 1 `i `uc ]
+[e $ < -> _s `i -> 5 `i 391  ]
+[e :U 392 ]
+"174
+}
+"175
+[e = . _Flags 1 -> -> 1 `i `uc ]
+"176
+[e :UE 390 ]
+}
+"242
+[v _UDPOpenEx `(uc 1 ef4`ul`uc`us`us ]
+{
+[e :U _UDPOpenEx ]
+[v _remoteHost `ul 1 r1 ]
+[v _remoteHostType `uc 1 r2 ]
+[v _localPort `us 1 r3 ]
+[v _remotePort `us 1 r4 ]
+[f ]
+"243
+[v _s `uc 1 a ]
+"244
+[v _p `*S377 1 a ]
+"247
+[v F5295 `us 1 s NextPort ]
+"250
+[e = _p &U _UDPSocketInfo ]
+"251
+{
+[e = _s -> -> 0 `i `uc ]
+[e $ < -> _s `i -> 5 `i 395  ]
+[e $U 396  ]
+"252
+[e :U 395 ]
+{
+"253
+[e $ ! == -> . *U _p 2 `ul -> 0 `ul 398  ]
+"254
+{
+"255
+[e = . *U _p 2 _localPort ]
+"256
+[e $ ! == -> _localPort `ui -> 0 `ui 399  ]
+"257
+{
+"258
+[e $ ! || > -> F5295 `ui -> 8192 `ui < -> F5295 `ui -> 4096 `ui 400  ]
+"259
+[e = F5295 -> -> 4096 `ui `us ]
+[e :U 400 ]
+"261
+[e = . *U _p 2 ++ F5295 -> -> 1 `i `us ]
+"262
+}
+[e :U 399 ]
+"263
+[e $ ! || == -> _remoteHostType `ui -> 0 `ui == _remoteHost -> -> -> 0 `i `l `ul 401  ]
+"264
+{
+"267
+[e ( _memset (3 , , -> &U . . *U _p 0 0 `*v -> 255 `i -> # . *U _p 0 `ui ]
+"268
+[e = . *U _p 3 . `E4932 5 ]
+"269
+}
+[e $U 402  ]
+"270
+[e :U 401 ]
+"271
+{
+"272
+[e $U 404  ]
+"273
+{
+"276
+[e :U 405 ]
+"277
+[e :U 406 ]
+"279
+[e = . . *U _p 0 1 _remoteHost ]
+"280
+[e = . . *U _p 6 0 -> -> == -> _remoteHostType `ui -> 2 `ui `i `uc ]
+"281
+[e = . *U _p 3 . `E4932 1 ]
+"282
+[e $U 403  ]
+"284
+[e :U 407 ]
+"287
+[e = . . . . *U _p 0 0 0 0 _remoteHost ]
+"288
+[e = . *U _p 5 -> -> 0 `i `uc ]
+"289
+[e = . *U _p 4 / / / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul -> -> -> 4 `i `l `ul -> -> -> 256 `i `l `ul ]
+"290
+[e = . *U _p 3 . `E4932 2 ]
+"291
+[e $U 403  ]
+"293
+[e :U 408 ]
+"295
+[e ( _memcpy (3 , , -> -> &U . *U _p 0 `*uc `*v -> -> -> -> _remoteHost `us `*uc `*v `*Cv -> # . *U _p 0 `ui ]
+"296
+[e = . *U _p 3 . `E4932 5 ]
+"298
+[e $U 403  ]
+"299
+[e :U 409 ]
+"300
+[e $U 403  ]
+"301
+}
+[e $U 403  ]
+"272
+[e :U 404 ]
+[e [\ _remoteHostType , $ -> -> 1 `ui `uc 405
+ , $ -> -> 2 `ui `uc 406
+ , $ -> -> 3 `ui `uc 407
+ , $ -> -> 4 `ui `uc 408
+ 409 ]
+"301
+[e :U 403 ]
+"302
+}
+[e :U 402 ]
+"303
+[e = . *U _p 1 _remotePort ]
+"308
+[e = _activeUDPSocket _s ]
+"309
+[e ) _s ]
+[e $UE 394  ]
+"310
+}
+[e :U 398 ]
+"311
+[e ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x ]
+"312
+}
+"251
+[e ++ _s -> -> 1 `i `uc ]
+[e $ < -> _s `i -> 5 `i 395  ]
+[e :U 396 ]
+"312
+}
+"314
+[e ) -> -> 255 `ui `uc ]
+[e $UE 394  ]
+"316
+[e :UE 394 ]
+}
+"341
+[v _UDPTask `(v 1 ef ]
+{
+[e :U _UDPTask ]
+[f ]
+"342
+[v _ss `uc 1 a ]
+"344
+{
+[e = _ss -> -> 0 `i `uc ]
+[e $ < -> _ss `i -> 5 `i 411  ]
+[e $U 412  ]
+"345
+[e :U 411 ]
+{
+"350
+[e $ ! || == -> . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 3 `i -> . `E4932 5 `i == -> . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 3 `i -> . `E4932 4 `i 414  ]
+"351
+[e $U 413  ]
+[e :U 414 ]
+"354
+[e $U 416  ]
+"355
+{
+"358
+[e :U 417 ]
+"359
+[e $ ! != -> ( _DNSBeginUsage ..  `i -> -> -> 0 `i `E208 `i 418  ]
+"360
+{
+"362
+[e = . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 3 . `E4932 0 ]
+"363
+[e $ ! != -> . . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 6 0 `i -> -> -> 0 `i `uc `i 419  ]
+"364
+[e ( _DNSResolveROM (2 , -> . . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 1 `*Cuc -> -> 1 `ui `uc ]
+[e $U 420  ]
+"365
+[e :U 419 ]
+"366
+[e ( _DNSResolve (2 , -> -> . . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 1 `us `*uc -> -> 1 `ui `uc ]
+[e :U 420 ]
+"367
+}
+[e :U 418 ]
+"368
+[e $U 415  ]
+"369
+[e :U 421 ]
+"370
+{
+"371
+[v _ipResolvedDNSIP `S24 1 a ]
+"380
+[e $ ! != -> ( _DNSIsResolved (1 &U _ipResolvedDNSIP `i -> -> -> 0 `i `E208 `i 422  ]
+"381
+{
+"382
+[e $ ! != -> ( _DNSEndUsage ..  `i -> -> -> 0 `i `E208 `i 423  ]
+"383
+{
+"384
+[e = . . . . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 0 0 0 . _ipResolvedDNSIP 0 ]
+"385
+[e = . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 3 . `E4932 2 ]
+"386
+[e = . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 5 -> -> 0 `i `uc ]
+"387
+[e = . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 4 / / / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul -> -> -> 4 `i `l `ul -> -> -> 256 `i `l `ul ]
+"388
+}
+[e $U 424  ]
+"389
+[e :U 423 ]
+"390
+{
+"391
+[e = . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 3 . `E4932 1 ]
+"392
+}
+[e :U 424 ]
+"393
+}
+[e :U 422 ]
+"394
+}
+"395
+[e $U 415  ]
+"398
+[e :U 425 ]
+"401
+[e = . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 7 -> ( _TickGetDiv256 ..  `us ]
+"402
+[e ( _ARPResolve (1 &U . . . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 0 0 ]
+"403
+[e = . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 3 . `E4932 3 ]
+"404
+[e $U 415  ]
+"406
+[e :U 426 ]
+"408
+[e $ ! ! != -> ( _ARPIsResolved (2 , &U . . . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 0 0 &U . . . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 0 1 `i -> -> -> 0 `i `E208 `i 427  ]
+"409
+{
+"414
+[e $ ! > - -> -> ( _TickGetDiv256 ..  `us `ui -> . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 7 `ui -> -> . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 4 `us `ui 428  ]
+"415
+{
+"417
+[e $ ! < -> . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 5 `ui -> 6 `ui 429  ]
+"418
+{
+"419
+[e ++ . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 5 -> -> 1 `i `uc ]
+"420
+[e =<< . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 4 -> 1 `i ]
+"421
+}
+[e :U 429 ]
+"423
+[e = . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 3 . `E4932 2 ]
+"424
+}
+[e :U 428 ]
+"425
+}
+[e $U 430  ]
+"426
+[e :U 427 ]
+"427
+{
+"428
+[e = . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 3 . `E4932 5 ]
+"429
+}
+[e :U 430 ]
+"430
+[e $U 415  ]
+"431
+[e :U 431 ]
+"432
+[e :U 432 ]
+"433
+[e :U 433 ]
+"435
+[e $U 415  ]
+"437
+}
+[e $U 415  ]
+"354
+[e :U 416 ]
+[e [\ . *U + &U _UDPSocketInfo * -> _ss `ux -> -> # *U &U _UDPSocketInfo `ui `ux 3 , $ . `E4932 1 417
+ , $ . `E4932 0 421
+ , $ . `E4932 2 425
+ , $ . `E4932 3 426
+ , $ . `E4932 5 432
+ , $ . `E4932 4 433
+ 431 ]
+"437
+[e :U 415 ]
+"438
+}
+"344
+[e :U 413 ]
+[e ++ _ss -> -> 1 `i `uc ]
+[e $ < -> _ss `i -> 5 `i 411  ]
+[e :U 412 ]
+"438
+}
+"439
+[e :UE 410 ]
+}
+"469
+[v _UDPIsOpened `(E208 1 ef1`uc ]
+{
+[e :U _UDPIsOpened ]
+[v _socket `uc 1 r1 ]
+[f ]
+"470
+[e ) -> -> == -> . *U + &U _UDPSocketInfo * -> _socket `ux -> -> # *U &U _UDPSocketInfo `ui `ux 3 `i -> . `E4932 5 `i `i `E208 ]
+[e $UE 434  ]
+"471
+[e :UE 434 ]
+}
+"623
+[v _UDPClose `(v 1 ef1`uc ]
+{
+[e :U _UDPClose ]
+[v _s `uc 1 r1 ]
+[f ]
+"624
+[e $ ! >= -> _s `i -> 5 `i 436  ]
+"625
+[e $UE 435  ]
+[e :U 436 ]
+"627
+[e = . *U + &U _UDPSocketInfo * -> _s `ux -> -> # *U &U _UDPSocketInfo `ui `ux 2 -> -> 0 `ul `us ]
+"628
+[e = . . . . *U + &U _UDPSocketInfo * -> _s `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 0 0 0 -> -> -> 0 `i `l `ul ]
+"629
+[e = . *U + &U _UDPSocketInfo * -> _s `ux -> -> # *U &U _UDPSocketInfo `ui `ux 3 . `E4932 4 ]
+"630
+[e :UE 435 ]
+}
+"657
+[v _UDPSetTxBuffer `(v 1 ef1`us ]
+{
+[e :U _UDPSetTxBuffer ]
+[v _wOffset `us 1 r1 ]
+[f ]
+"658
+[e ( _MACSetWritePtr (1 -> + + + -> + -> _wOffset `ui -> # `S380 `ui `ul + - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 1 `ul -> -> # `S372 `ui `ul -> -> # `S373 `ui `ul `us ]
+"659
+[e = _wPutOffset _wOffset ]
+"660
+[e :UE 437 ]
+}
+"687
+[v _UDPSetRxBuffer `(v 1 ef1`us ]
+{
+[e :U _UDPSetRxBuffer ]
+[v _wOffset `us 1 r1 ]
+[f ]
+"688
+[e ( _IPSetRxBuffer (1 -> + -> _wOffset `ui -> # `S380 `ui `us ]
+"689
+[e = _wGetOffset _wOffset ]
+"690
+[e :UE 438 ]
+}
+"721
+[v _UDPIsPutReady `(us 1 ef1`uc ]
+{
+[e :U _UDPIsPutReady ]
+[v _s `uc 1 r1 ]
+[f ]
+"722
+[e $ ! ! != -> ( _MACIsTxReady ..  `i -> -> -> 0 `i `E208 `i 440  ]
+"723
+[e ) -> -> 0 `i `us ]
+[e $UE 439  ]
+[e :U 440 ]
+"725
+[e $ ! != -> _LastPutSocket `i -> _s `i 441  ]
+"726
+{
+"727
+[e = _LastPutSocket _s ]
+"728
+[e = _UDPTxCount -> -> 0 `i `us ]
+"729
+[e ( _UDPSetTxBuffer (1 -> -> 0 `i `us ]
+"730
+}
+[e :U 441 ]
+"732
+[e = _activeUDPSocket _s ]
+"734
+[e ) -> - - - -> 1500 `ul -> -> # `S373 `ui `ul -> -> # `S380 `ui `ul -> _UDPTxCount `ul `us ]
+[e $UE 439  ]
+"735
+[e :UE 439 ]
+}
+"760
+[v _UDPPut `(E208 1 ef1`uc ]
+{
+[e :U _UDPPut ]
+[v _v `uc 1 r1 ]
+[f ]
+"762
+[e $ ! >= -> _wPutOffset `ul - - -> 1500 `ul -> -> # `S373 `ui `ul -> -> # `S380 `ui `ul 443  ]
+"763
+{
+"764
+[e ) . `E208 0 ]
+[e $UE 442  ]
+"765
+}
+[e :U 443 ]
+"768
+[e ( _MACPut (1 _v ]
+"769
+[e ++ _wPutOffset -> -> 1 `i `us ]
+"770
+[e $ ! > -> _wPutOffset `ui -> _UDPTxCount `ui 444  ]
+"771
+[e = _UDPTxCount _wPutOffset ]
+[e :U 444 ]
+"773
+[e ) . `E208 1 ]
+[e $UE 442  ]
+"774
+[e :UE 442 ]
+}
+"801
+[v _UDPPutArray `(us 1 ef2`*uc`us ]
+{
+[e :U _UDPPutArray ]
+[v _cData `*uc 1 r1 ]
+[v _wDataLen `us 1 r2 ]
+[f ]
+"802
+[v _wTemp `us 1 a ]
+"804
+[e = _wTemp -> - - - -> 1500 `ul -> -> # `S373 `ui `ul -> -> # `S380 `ui `ul -> _wPutOffset `ul `us ]
+"805
+[e $ ! < -> _wTemp `ui -> _wDataLen `ui 446  ]
+"806
+[e = _wDataLen _wTemp ]
+[e :U 446 ]
+"808
+[e =+ _wPutOffset _wDataLen ]
+"809
+[e $ ! > -> _wPutOffset `ui -> _UDPTxCount `ui 447  ]
+"810
+[e = _UDPTxCount _wPutOffset ]
+[e :U 447 ]
+"813
+[e ( _MACPutArray (2 , _cData _wDataLen ]
+"815
+[e ) _wDataLen ]
+[e $UE 445  ]
+"816
+[e :UE 445 ]
+}
+"848
+[v _UDPPutROMArray `(us 1 ef2`*Cuc`us ]
+{
+[e :U _UDPPutROMArray ]
+[v _cData `*Cuc 1 r1 ]
+[v _wDataLen `us 1 r2 ]
+[f ]
+"849
+[v _wTemp `us 1 a ]
+"851
+[e = _wTemp -> - - - -> 1500 `ul -> -> # `S373 `ui `ul -> -> # `S380 `ui `ul -> _wPutOffset `ul `us ]
+"852
+[e $ ! < -> _wTemp `ui -> _wDataLen `ui 449  ]
+"853
+[e = _wDataLen _wTemp ]
+[e :U 449 ]
+"855
+[e =+ _wPutOffset _wDataLen ]
+"856
+[e $ ! > -> _wPutOffset `ui -> _UDPTxCount `ui 450  ]
+"857
+[e = _UDPTxCount _wPutOffset ]
+[e :U 450 ]
+"860
+[e ( _MACPutROMArray (2 , _cData _wDataLen ]
+"862
+[e ) _wDataLen ]
+[e $UE 448  ]
+"863
+[e :UE 448 ]
+}
+"892
+[v _UDPPutString `(*uc 1 ef1`*uc ]
+{
+[e :U _UDPPutString ]
+[v _strData `*uc 1 r1 ]
+[f ]
+"893
+[e ) + _strData * -> ( _UDPPutArray (2 , _strData -> ( _strlen (1 -> _strData `*Cuc `us `ux -> -> # *U _strData `ui `ux ]
+[e $UE 451  ]
+"894
+[e :UE 451 ]
+}
+"926
+[v _UDPPutROMString `(*Cuc 1 ef1`*Cuc ]
+{
+[e :U _UDPPutROMString ]
+[v _strData `*Cuc 1 r1 ]
+[f ]
+"927
+[e ) + _strData * -> ( _UDPPutROMArray (2 , _strData -> ( _strlen (1 _strData `us `ux -> -> # *U _strData `ui `ux ]
+[e $UE 452  ]
+"928
+[e :UE 452 ]
+}
+"959
+[v _UDPFlush `(v 1 ef ]
+{
+[e :U _UDPFlush ]
+[f ]
+"960
+[v _h `S380 1 a ]
+"961
+[v _p `*S377 1 a ]
+"962
+[v _wUDPLength `us 1 a ]
+"964
+[e = _p &U *U + &U _UDPSocketInfo * -> _activeUDPSocket `ux -> -> # *U &U _UDPSocketInfo `ui `ux ]
+"966
+[e = _wUDPLength -> + -> _UDPTxCount `ui -> # `S380 `ui `us ]
+"969
+[e = . _h 0 ( _swaps (1 . *U _p 2 ]
+"970
+[e = . _h 1 ( _swaps (1 . *U _p 1 ]
+"971
+[e = . _h 2 ( _swaps (1 _wUDPLength ]
+"972
+[e = . _h 3 -> -> 0 `i `us ]
+"992
+[e ( _MACSetWritePtr (1 -> + + - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 1 `ul -> -> # `S372 `ui `ul `us ]
+"995
+[e ( _IPPutHeader (3 , , &U . . *U _p 0 0 -> -> 17 `ui `uc _wUDPLength ]
+"998
+[e ( _MACPutArray (2 , -> &U _h `*uc -> -> # _h `ui `us ]
+"1017
+[e ( _MACFlush ..  ]
+"1020
+[e = _UDPTxCount -> -> 0 `i `us ]
+"1021
+[e = _LastPutSocket -> -> 255 `ui `uc ]
+"1022
+[e :UE 453 ]
+}
+"1054
+[v _UDPIsGetReady `(us 1 ef1`uc ]
+{
+[e :U _UDPIsGetReady ]
+[v _s `uc 1 r1 ]
+[f ]
+"1055
+[e = _activeUDPSocket _s ]
+"1056
+[e $ ! != -> _SocketWithRxData `i -> _s `i 455  ]
+"1057
+[e ) -> -> 0 `i `us ]
+[e $UE 454  ]
+[e :U 455 ]
+"1061
+[e $ ! != -> . _Flags 0 `i -> -> -> 0 `i `uc `i 456  ]
+"1062
+{
+"1063
+[e = . _Flags 0 -> -> 0 `i `uc ]
+"1064
+[e ( _UDPSetRxBuffer (1 -> -> 0 `i `us ]
+"1065
+}
+[e :U 456 ]
+"1067
+[e ) -> - -> _UDPRxCount `ui -> _wGetOffset `ui `us ]
+[e $UE 454  ]
+"1068
+[e :UE 454 ]
+}
+"1093
+[v _UDPGet `(E208 1 ef1`*uc ]
+{
+[e :U _UDPGet ]
+[v _v `*uc 1 r1 ]
+[f ]
+"1095
+[e $ ! || >= -> _wGetOffset `ui -> _UDPRxCount `ui != -> _SocketWithRxData `i -> _activeUDPSocket `i 458  ]
+"1096
+[e ) . `E208 0 ]
+[e $UE 457  ]
+[e :U 458 ]
+"1098
+[e = *U _v ( _MACGet ..  ]
+"1099
+[e ++ _wGetOffset -> -> 1 `i `us ]
+"1101
+[e ) . `E208 1 ]
+[e $UE 457  ]
+"1102
+[e :UE 457 ]
+}
+"1133
+[v _UDPGetArray `(us 1 ef2`*uc`us ]
+{
+[e :U _UDPGetArray ]
+[v _cData `*uc 1 r1 ]
+[v _wDataLen `us 1 r2 ]
+[f ]
+"1134
+[v _wBytesAvailable `us 1 a ]
+"1137
+[e $ ! || >= -> _wGetOffset `ui -> _UDPRxCount `ui != -> _SocketWithRxData `i -> _activeUDPSocket `i 460  ]
+"1138
+[e ) -> -> 0 `i `us ]
+[e $UE 459  ]
+[e :U 460 ]
+"1141
+[e = _wBytesAvailable -> - -> _UDPRxCount `ui -> _wGetOffset `ui `us ]
+"1142
+[e $ ! < -> _wBytesAvailable `ui -> _wDataLen `ui 461  ]
+"1143
+[e = _wDataLen _wBytesAvailable ]
+[e :U 461 ]
+"1145
+[e = _wDataLen ( _MACGetArray (2 , _cData _wDataLen ]
+"1146
+[e =+ _wGetOffset _wDataLen ]
+"1148
+[e ) _wDataLen ]
+[e $UE 459  ]
+"1149
+[e :UE 459 ]
+}
+"1177
+[v _UDPDiscard `(v 1 ef ]
+{
+[e :U _UDPDiscard ]
+[f ]
+"1178
+[e $ ! ! != -> . _Flags 1 `i -> -> -> 0 `i `uc `i 463  ]
+"1179
+{
+"1180
+[e ( _MACDiscardRx ..  ]
+"1181
+[e = _UDPRxCount -> -> 0 `i `us ]
+"1182
+[e = _SocketWithRxData -> -> 255 `ui `uc ]
+"1183
+[e = . _Flags 1 -> -> 1 `i `uc ]
+"1184
+}
+[e :U 463 ]
+"1185
+[e :UE 462 ]
+}
+"1220
+[v _UDPProcess `(E208 1 ef3`*S356`*S24`us ]
+{
+[e :U _UDPProcess ]
+[v _remoteNode `*S356 1 r1 ]
+[v _localIP `*S24 1 r2 ]
+[v _len `us 1 r3 ]
+[f ]
+"1221
+[v _h `S380 1 a ]
+"1222
+[v _s `uc 1 a ]
+"1223
+[v _pseudoHeader `S374 1 a ]
+"1224
+[v _checksums `S24 1 a ]
+"1226
+[e = _UDPRxCount -> -> 0 `i `us ]
+"1229
+[e ( _MACGetArray (2 , -> &U _h `*uc -> -> # _h `ui `us ]
+"1231
+[e = . _h 0 ( _swaps (1 . _h 0 ]
+"1232
+[e = . _h 1 ( _swaps (1 . _h 1 ]
+"1233
+[e = . _h 2 -> - -> ( _swaps (1 . _h 2 `ui -> # `S380 `ui `us ]
+"1236
+[e $ ! != -> . _h 3 `ui -> -> -> 0 `i `us `ui 465  ]
+"1237
+{
+"1239
+[e = . _pseudoHeader 0 . *U _remoteNode 0 ]
+"1240
+[e = . . _pseudoHeader 1 0 . *U _localIP 0 ]
+"1241
+[e = . _pseudoHeader 2 -> -> 0 `i `uc ]
+"1242
+[e = . _pseudoHeader 3 -> -> 17 `ui `uc ]
+"1243
+[e = . _pseudoHeader 4 _len ]
+"1245
+[e = . _pseudoHeader 4 ( _swaps (1 . _pseudoHeader 4 ]
+"1248
+[e = *U + &U . _checksums 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _checksums 1 `ui `ux -> ~ -> ( _CalcIPChecksum (2 , -> &U _pseudoHeader `*uc -> -> # _pseudoHeader `ui `us `ui `us ]
+"1252
+[e ( _IPSetRxBuffer (1 -> -> 0 `i `us ]
+"1253
+[e = *U + &U . _checksums 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . _checksums 1 `ui `ux ( _CalcIPBufferChecksum (1 _len ]
+"1255
+[e $ ! != -> *U + &U . _checksums 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _checksums 1 `ui `ux `ui -> *U + &U . _checksums 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . _checksums 1 `ui `ux `ui 466  ]
+"1256
+{
+"1257
+[e ( _MACDiscardRx ..  ]
+"1258
+[e ) . `E208 0 ]
+[e $UE 464  ]
+"1259
+}
+[e :U 466 ]
+"1260
+}
+[e :U 465 ]
+"1262
+[e = _s ( _FindMatchingSocket (3 , , &U _h _remoteNode _localIP ]
+"1263
+[e $ ! == -> _s `ui -> 255 `ui 467  ]
+"1264
+{
+"1267
+[e ( _MACDiscardRx ..  ]
+"1268
+[e ) . `E208 0 ]
+[e $UE 464  ]
+"1269
+}
+[e $U 468  ]
+"1270
+[e :U 467 ]
+"1271
+{
+"1272
+[e = _SocketWithRxData _s ]
+"1273
+[e = _UDPRxCount . _h 2 ]
+"1274
+[e = . _Flags 0 -> -> 1 `i `uc ]
+"1275
+[e = . _Flags 1 -> -> 0 `i `uc ]
+"1276
+}
+[e :U 468 ]
+"1279
+[e ) . `E208 1 ]
+[e $UE 464  ]
+"1280
+[e :UE 464 ]
+}
+"1309
+[v _FindMatchingSocket `(uc 1 sf3`*S380`*S356`*S24 ]
+{
+[e :U _FindMatchingSocket ]
+[v _h `*S380 1 r1 ]
+[v _remoteNode `*S356 1 r2 ]
+[v _localIP `*S24 1 r3 ]
+[f ]
+"1310
+[v _s `uc 1 a ]
+"1311
+[v _partialMatch `uc 1 a ]
+"1312
+[v _p `*S377 1 a ]
+"1324
+[e $ ! == . . *U _remoteNode 0 0 . . _AppConfig 0 0 470  ]
+"1325
+[e ) -> -> 255 `ui `uc ]
+[e $UE 469  ]
+[e :U 470 ]
+"1327
+[e = _partialMatch -> -> 255 `ui `uc ]
+"1329
+[e = _p &U _UDPSocketInfo ]
+"1330
+{
+[e = _s -> -> 0 `i `uc ]
+[e $ < -> _s `i -> 5 `i 471  ]
+[e $U 472  ]
+"1331
+[e :U 471 ]
+{
+"1336
+[e $ ! == -> . *U _p 2 `ui -> . *U _h 1 `ui 474  ]
+"1337
+{
+"1338
+[e $ ! == -> . *U _p 1 `ui -> . *U _h 0 `ui 475  ]
+"1339
+{
+"1340
+[e $ ! == . . . . *U _p 0 0 0 0 . . *U _remoteNode 0 0 476  ]
+"1341
+{
+"1342
+[e ) _s ]
+[e $UE 469  ]
+"1343
+}
+[e :U 476 ]
+"1344
+}
+[e :U 475 ]
+"1346
+[e = _partialMatch _s ]
+"1347
+}
+[e :U 474 ]
+"1348
+[e ++ _p * -> -> 1 `i `x -> -> # *U _p `i `x ]
+"1349
+}
+"1330
+[e ++ _s -> -> 1 `i `uc ]
+[e $ < -> _s `i -> 5 `i 471  ]
+[e :U 472 ]
+"1349
+}
+"1351
+[e $ ! != -> _partialMatch `ui -> 255 `ui 477  ]
+"1352
+{
+"1353
+[e = _p &U *U + &U _UDPSocketInfo * -> _partialMatch `ux -> -> # *U &U _UDPSocketInfo `ui `ux ]
+"1356
+[e ( _memcpy (3 , , -> &U . . *U _p 0 0 `*v -> _remoteNode `*Cv -> # . . *U _p 0 0 `ui ]
+"1358
+[e = . *U _p 1 . *U _h 0 ]
+"1359
+}
+[e :U 477 ]
+"1361
+[e ) _partialMatch ]
+[e $UE 469  ]
+"1362
+[e :UE 469 ]
+}

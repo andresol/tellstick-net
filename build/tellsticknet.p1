@@ -1,0 +1,565 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+"21 /home/andresol/tellstick-net/firmware/tellsticknet.c
+[v _localPort `us 1 s ]
+"22 /home/andresol/tellstick-net/firmware/tellsticknet.c
+[v _s `uc 1 s ]
+[s S346 `us 1 `us 1 ]
+[n S346 . LW HW ]
+[s S347 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S347 . LB HB UB MB ]
+[s S343 `uc 1 `uc 1 ]
+[n S343 . LB HB ]
+[s S344 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S344 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S342 `us 1 `uc -> 2 `i `S343 1 `S344 1 ]
+[n S342 . Val v byte bits ]
+[s S348 `S342 1 `S342 1 ]
+[n S348 . low high ]
+[s S349 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S349 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S345 `ul 1 `us -> 2 `i `uc -> 4 `i `S346 1 `S347 1 `S348 1 `S349 1 ]
+[n S345 . Val w v word byte wordUnion bits ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S356 `S345 1 `S355 1 ]
+[n S356 . IPAddr MACAddr ]
+"23 /home/andresol/tellstick-net/firmware/tellsticknet.c
+[v _remote `S356 1 s ]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _memcpy `(*v 0 ef3`*v`*Cv`ui ]
+[u S378 `S356 1 `ul 1 ]
+[n S378 . remoteNode remoteHost ]
+[c E4932 0 1 2 3 4 5 .. ]
+[n E4932 . UDP_DNS_IS_RESOLVED UDP_DNS_RESOLVE UDP_GATEWAY_SEND_ARP UDP_GATEWAY_GET_ARP UDP_CLOSED UDP_OPENED  ]
+[s S379 :1 `uc 1 ]
+[n S379 . bRemoteHostIsROM ]
+[s S377 `S378 1 `us 1 `us 1 `E4932 1 `ul 1 `uc 1 `S379 1 `us 1 ]
+[n S377 . remote remotePort localPort smState retryInterval retryCount flags eventTime ]
+"104 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPSocketInfo `S377 -> 0 `x e ]
+"1 /home/andresol/tellstick-net/firmware/localaccess.h
+[v _localSocket `uc 0 e ]
+"150 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPClose `(v 0 ef1`uc ]
+"147 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPOpenEx `(uc 0 ef4`ul`uc`us`us ]
+"155 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPIsPutReady `(us 0 ef1`uc ]
+"33 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMContent `(*uc 0 ef ]
+"61 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _strlen `(ui 0 ef1`*Cuc ]
+[c E3956 0 1 .. ]
+[n E3956 _BOOL FALSE TRUE  ]
+"156 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPPut `(E3956 0 ef1`uc ]
+"159 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPFlush `(v 0 ef ]
+"24 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMEnterHash `(E3956 0 ef ]
+"25 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMFindHashString `(E3956 0 ef1`*Cuc ]
+"22 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMTakeInt `(ul 0 ef ]
+"23 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMTakeString `(E3956 0 ef2`*uc`uc ]
+"50 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _strcmp `(i 0 ef2`*Cuc`*Cuc ]
+"8 /home/andresol/tellstick-net/firmware/transmit_arctech.h
+[v _sendArctechSelflearning `(v 0 ef ]
+"8 /home/andresol/tellstick-net/firmware/send.h
+[v _sendPacket `uc -> 0 `x e ]
+"1 /home/andresol/tellstick-net/rf/transmit.h
+[v _rfStartTransmit `(v 0 ef ]
+"12 /home/andresol/tellstick-net/firmware/pwm.h
+[v _setTXPulses `(v 0 ef1`uc ]
+"5 /home/andresol/tellstick-net/rf/transmit.h
+[v _rfSend `(v 0 ef1`*Cuc ]
+"1569 /usr/hitech/picc-18/pro/9.66/include/pic18.h
+[v __delay `(v 0 ef1`ul ]
+[p i __delay ]
+"2 /home/andresol/tellstick-net/rf/transmit.h
+[v _rfStopTransmit `(v 0 ef ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S357 `S345 1 `S345 1 `S345 1 `S345 1 `S345 1 `S345 1 `S345 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S357 0 e ]
+[s S389 `uc -> 6 `i `uc -> 11 `i `S345 1 `S345 1 `S345 1 `S345 1 `S345 1 ]
+[n S389 . MACAddr secret ipAddr netmask gateway dns1 dns2 ]
+"24 /home/andresol/tellstick-net/firmware/common.h
+[v _config `S389 0 e ]
+"10 /home/andresol/tellstick-net/firmware/eeprom.h
+[v _saveEEPROM `(v 0 ef2`*uc`ui ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DHCP.h
+[v _DHCPEnable `(v 0 ef1`uc ]
+[i _s
+"22 /home/andresol/tellstick-net/firmware/tellsticknet.c
+-> -> 255 `ui `uc
+]
+"25
+[v _registerListener `(v 1 ef ]
+{
+[e :U _registerListener ]
+[f ]
+"26
+[e ( _memcpy (3 , , -> &U _remote `*v -> &U . *U + &U _UDPSocketInfo * -> _localSocket `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 `*Cv -> # _remote `ui ]
+"27
+[e = _localPort . *U + &U _UDPSocketInfo * -> _localSocket `ux -> -> # *U &U _UDPSocketInfo `ui `ux 1 ]
+"29
+[e $ ! != -> _s `ui -> 255 `ui 391  ]
+{
+"30
+[e ( _UDPClose (1 _s ]
+"31
+[e = _s -> -> 255 `ui `uc ]
+"32
+[e $UE 390  ]
+"33
+}
+[e :U 391 ]
+"34
+[e :UE 390 ]
+}
+"36
+[v _sendToLocalListeners `(v 1 ef ]
+{
+[e :U _sendToLocalListeners ]
+[f ]
+"37
+[v _i `i 1 a ]
+[v _len `i 1 a ]
+"38
+[v _b `*uc 1 a ]
+"40
+[e $ ! == -> _s `ui -> 255 `ui 393  ]
+{
+"41
+[e = _s ( _UDPOpenEx (4 , , , -> &U _remote `ul -> -> 4 `ui `uc _localPort _localPort ]
+"42
+}
+[e :U 393 ]
+"43
+[e $ ! == -> _s `ui -> 255 `ui 394  ]
+{
+"44
+[e $UE 392  ]
+"45
+}
+[e :U 394 ]
+"47
+[e $ ! ! != -> ( _UDPIsPutReady (1 _s `ui -> -> -> 0 `i `us `ui 395  ]
+{
+"48
+[e $UE 392  ]
+"49
+}
+[e :U 395 ]
+"50
+[e = _b ( _LMContent ..  ]
+"51
+[e = _len -> ( _strlen (1 -> _b `*Cuc `i ]
+"52
+{
+[e = _i -> 0 `i ]
+[e $U 399  ]
+[e :U 396 ]
+{
+"53
+[e ( _UDPPut (1 *U + _b * -> _i `x -> -> # *U _b `i `x ]
+"54
+}
+"52
+[e =+ _i -> 1 `i ]
+[e :U 399 ]
+[e $ < _i _len 396  ]
+[e :U 397 ]
+"54
+}
+"55
+[e ( _UDPFlush ..  ]
+"56
+[e :UE 392 ]
+}
+"58
+[v _send `(v 1 ef ]
+{
+[e :U _send ]
+[f ]
+"59
+[v _pause `uc 1 a ]
+[e = _pause -> -> 11 `i `uc ]
+"60
+[v _repeats `uc 1 a ]
+[e = _repeats -> -> 10 `i `uc ]
+"61
+[v _i `uc 1 a ]
+[v _j `uc 1 a ]
+"62
+[v _ack `ul 1 a ]
+"63
+[v F5375 `uc -> 20 `i s ]
+[i F5375
+:U ..
+-> 0 `c
+..
+]
+[v _protocol `uc -> 20 `i a ]
+[e = _protocol F5375 ]
+[v F5377 `uc -> 20 `i s ]
+[i F5377
+:U ..
+-> 0 `c
+..
+]
+[v _model `uc -> 20 `i a ]
+[e = _model F5377 ]
+"65
+[e $ ! ! != -> ( _LMEnterHash ..  `i -> -> -> 0 `i `E3956 `i 401  ]
+{
+"66
+[e $UE 400  ]
+"67
+}
+[e :U 401 ]
+"69
+[e $ ! != -> ( _LMFindHashString (1 :s 1C `i -> -> -> 0 `i `E3956 `i 402  ]
+{
+"70
+[e = _pause -> ( _LMTakeInt ..  `uc ]
+"71
+}
+[e :U 402 ]
+"72
+[e $ ! != -> ( _LMFindHashString (1 :s 2C `i -> -> -> 0 `i `E3956 `i 403  ]
+{
+"73
+[e = _repeats -> ( _LMTakeInt ..  `uc ]
+"74
+}
+[e :U 403 ]
+"76
+[e $ ! != -> ( _LMFindHashString (1 :s 3C `i -> -> -> 0 `i `E3956 `i 404  ]
+{
+"77
+[e ( _LMTakeString (2 , &U _protocol -> -> # _protocol `ui `uc ]
+"79
+[e $ ! != -> ( _LMFindHashString (1 :s 4C `i -> -> -> 0 `i `E3956 `i 405  ]
+{
+"80
+[e ( _LMTakeString (2 , &U _model -> -> # _model `ui `uc ]
+"81
+}
+[e :U 405 ]
+"82
+[e $ ! || != ( _strcmp (2 , -> &U _protocol `*Cuc :s 5C -> 0 `i != ( _strcmp (2 , -> &U _model `*Cuc :s 6C -> 0 `i 406  ]
+{
+"83
+[e $UE 400  ]
+"84
+}
+[e :U 406 ]
+"85
+[e ( _sendArctechSelflearning ..  ]
+"86
+[e $UE 400  ]
+"87
+}
+[e :U 404 ]
+"89
+[e $ ! ! != -> ( _LMFindHashString (1 :s 7C `i -> -> -> 0 `i `E3956 `i 407  ]
+{
+"90
+[e $UE 400  ]
+"91
+}
+[e :U 407 ]
+"92
+[e $ ! ! != -> ( _LMTakeString (2 , &U _sendPacket -> -> * -> 200 `i # `uc `ui `uc `i -> -> -> 0 `i `E3956 `i 408  ]
+{
+"93
+[e $UE 400  ]
+"94
+}
+[e :U 408 ]
+"96
+[e ( _rfStartTransmit ..  ]
+"97
+{
+[v _i `uc 1 a ]
+[e = _i -> -> 0 `i `uc ]
+[e $U 412  ]
+[e :U 409 ]
+{
+"98
+[e ( _setTXPulses (1 -> -> 2 `i `uc ]
+"99
+[e ( _rfSend (1 -> &U _sendPacket `*Cuc ]
+"100
+{
+[v _j `uc 1 a ]
+[e = _j -> -> 0 `i `uc ]
+[e $U 416  ]
+[e :U 413 ]
+{
+"101
+[e ( __delay (1 -> * -> -> 1 `i `d / -> -> 41666667 `ul `d .4000.0 `ul ]
+"102
+}
+"100
+[e =+ _j -> -> 1 `i `uc ]
+[e :U 416 ]
+[e $ < -> _j `i -> _pause `i 413  ]
+[e :U 414 ]
+"102
+}
+"103
+}
+"97
+[e =+ _i -> -> 1 `i `uc ]
+[e :U 412 ]
+[e $ < -> _i `i -> _repeats `i 409  ]
+[e :U 410 ]
+"103
+}
+"104
+[e ( _rfStopTransmit ..  ]
+"105
+[e :UE 400 ]
+}
+"107
+[v _saveIp `(v 1 ef ]
+{
+[e :U _saveIp ]
+[f ]
+"108
+[e $ ! != -> . . _AppConfig 8 1 `i -> -> -> 0 `i `uc `i 418  ]
+{
+"109
+[e = . . _config 2 0 -> -1 `ul ]
+"110
+[e = . . _config 3 0 -> -1 `ul ]
+"111
+[e = . . _config 4 0 -> -1 `ul ]
+"112
+[e = . . _config 5 0 -> -1 `ul ]
+"113
+[e = . . _config 6 0 -> -1 `ul ]
+"114
+}
+[e $U 419  ]
+[e :U 418 ]
+{
+"115
+[e = . . _config 2 0 . . _AppConfig 0 0 ]
+"116
+[e = . . _config 3 0 . . _AppConfig 1 0 ]
+"117
+[e = . . _config 4 0 . . _AppConfig 2 0 ]
+"118
+[e = . . _config 5 0 . . _AppConfig 3 0 ]
+"119
+[e = . . _config 6 0 . . _AppConfig 4 0 ]
+"120
+}
+[e :U 419 ]
+"121
+[e ( _saveEEPROM (2 , -> &U _config `*uc -> # `S389 `ui ]
+"122
+[; RESET ;#
+"123
+[e :UE 417 ]
+}
+"125
+[v _setIp `(v 1 ef ]
+{
+[e :U _setIp ]
+[f ]
+"126
+[v _ip `S345 1 a ]
+[v _netmask `S345 1 a ]
+[v _gateway `S345 1 a ]
+[v _dns1 `S345 1 a ]
+[v _dns2 `S345 1 a ]
+"128
+[e $ ! ! != -> ( _LMEnterHash ..  `i -> -> -> 0 `i `E3956 `i 421  ]
+{
+"129
+[e $UE 420  ]
+"130
+}
+[e :U 421 ]
+"131
+[e $ ! ! != -> ( _LMFindHashString (1 :s 8C `i -> -> -> 0 `i `E3956 `i 422  ]
+{
+"132
+[e $UE 420  ]
+"133
+}
+[e :U 422 ]
+"134
+[e = . _ip 0 ( _LMTakeInt ..  ]
+"135
+[e $ ! == . _ip 0 -> -1 `ul 423  ]
+{
+"136
+[e = . . _AppConfig 8 1 -> . `E3956 1 `uc ]
+"137
+[e = . . _AppConfig 8 2 -> . `E3956 1 `uc ]
+"138
+[e ( _DHCPEnable (1 -> -> 0 `i `uc ]
+"139
+[e $UE 420  ]
+"140
+}
+[e :U 423 ]
+"142
+[e $ ! ! != -> ( _LMFindHashString (1 :s 9C `i -> -> -> 0 `i `E3956 `i 424  ]
+{
+"143
+[e $UE 420  ]
+"144
+}
+[e :U 424 ]
+"145
+[e = . _netmask 0 ( _LMTakeInt ..  ]
+"147
+[e $ ! ! != -> ( _LMFindHashString (1 :s 10C `i -> -> -> 0 `i `E3956 `i 425  ]
+{
+"148
+[e $UE 420  ]
+"149
+}
+[e :U 425 ]
+"150
+[e = . _gateway 0 ( _LMTakeInt ..  ]
+"152
+[e $ ! ! != -> ( _LMFindHashString (1 :s 11C `i -> -> -> 0 `i `E3956 `i 426  ]
+{
+"153
+[e $UE 420  ]
+"154
+}
+[e :U 426 ]
+"155
+[e = . _dns1 0 ( _LMTakeInt ..  ]
+"157
+[e $ ! ! != -> ( _LMFindHashString (1 :s 12C `i -> -> -> 0 `i `E3956 `i 427  ]
+{
+"158
+[e $UE 420  ]
+"159
+}
+[e :U 427 ]
+"160
+[e = . _dns2 0 ( _LMTakeInt ..  ]
+"162
+[e = . . _AppConfig 8 1 -> . `E3956 0 `uc ]
+"163
+[e = . . _AppConfig 0 0 . _ip 0 ]
+"164
+[e = . . _AppConfig 1 0 . _netmask 0 ]
+"165
+[e = . . _AppConfig 2 0 . _gateway 0 ]
+"166
+[e = . . _AppConfig 3 0 . _dns1 0 ]
+"167
+[e = . . _AppConfig 4 0 . _dns2 0 ]
+"168
+[e :UE 420 ]
+}
+"170
+[v _handleMessage `(v 1 ef ]
+{
+[e :U _handleMessage ]
+[f ]
+"171
+[v F5391 `uc -> 20 `i s ]
+[i F5391
+:U ..
+-> 0 `c
+..
+]
+[v _name `uc -> 20 `i a ]
+[e = _name F5391 ]
+"173
+[e $ ! ! != -> ( _LMTakeString (2 , &U _name -> -> # _name `ui `uc `i -> -> -> 0 `i `E3956 `i 429  ]
+{
+"174
+[e -> 1 `i ]
+"175
+[e $UE 428  ]
+"176
+}
+[e :U 429 ]
+"177
+[e $ ! == ( _strcmp (2 , -> &U _name `*Cuc :s 13C -> 0 `i 430  ]
+{
+"178
+[e ( _registerListener ..  ]
+"179
+}
+[e $U 431  ]
+[e :U 430 ]
+[e $ ! == ( _strcmp (2 , -> &U _name `*Cuc :s 14C -> 0 `i 432  ]
+{
+"180
+[e ( _send ..  ]
+"181
+}
+[e $U 433  ]
+[e :U 432 ]
+[e $ ! == ( _strcmp (2 , -> &U _name `*Cuc :s 15C -> 0 `i 434  ]
+{
+"182
+[e ( _setIp ..  ]
+"183
+}
+[e $U 435  ]
+[e :U 434 ]
+[e $ ! == ( _strcmp (2 , -> &U _name `*Cuc :s 16C -> 0 `i 436  ]
+{
+"184
+[e ( _saveIp ..  ]
+"185
+}
+[e $U 437  ]
+[e :U 436 ]
+[e $ ! == ( _strcmp (2 , -> &U _name `*Cuc :s 17C -> 0 `i 438  ]
+{
+"186
+[; RESET ;#
+"187
+}
+[e :U 438 ]
+"188
+[e :U 437 ]
+[e :U 435 ]
+[e :U 433 ]
+[e :U 431 ]
+[e :UE 428 ]
+}
+[a 10C 103 97 116 101 119 97 121 0 ]
+[a 17C 100 105 115 99 111 110 110 101 99 116 0 ]
+[a 13C 114 101 103 108 105 115 116 101 110 101 114 0 ]
+[a 15C 115 101 116 105 112 0 ]
+[a 16C 115 97 118 101 105 112 0 ]
+[a 8C 105 112 0 ]
+[a 3C 112 114 111 116 111 99 111 108 0 ]
+[a 4C 109 111 100 101 108 0 ]
+[a 9C 110 101 116 109 97 115 107 0 ]
+[a 5C 97 114 99 116 101 99 104 0 ]
+[a 6C 115 101 108 102 108 101 97 114 110 105 110 103 0 ]
+[a 14C 115 101 110 100 0 ]
+[a 7C 83 0 ]
+[a 2C 82 0 ]
+[a 1C 80 0 ]
+[a 12C 100 110 115 50 0 ]
+[a 11C 100 110 115 49 0 ]

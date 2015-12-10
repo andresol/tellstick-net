@@ -1,0 +1,348 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+[c E5286 0 1 2 .. ]
+[n E5286 . PWM BLINK FIXED  ]
+[s S389 `uc 1 `uc 1 `c 1 `uc 1 `E5286 1 `ul 1 ]
+[n S389 pwms duty fixedDuty dir pulses type blinkTimer ]
+"28 /home/andresol/tellstick-net/firmware/pwm.c
+[v _txd `S389 1 e ]
+"29 /home/andresol/tellstick-net/firmware/pwm.c
+[v _rxd `S389 1 e ]
+"1896 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR2IF `Vb 0 e@31985 ]
+"2839 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _PR2 `Vuc 0 e@4043 ]
+"2816 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T2CKPS1 `Vb 0 e@32337 ]
+"2820 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T2OUTPS3 `Vb 0 e@32342 ]
+"2819 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T2OUTPS2 `Vb 0 e@32341 ]
+"2818 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T2OUTPS1 `Vb 0 e@32340 ]
+"2817 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T2OUTPS0 `Vb 0 e@32339 ]
+"1930 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR2IP `Vb 0 e@31993 ]
+"1865 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR2IE `Vb 0 e@31977 ]
+"2814 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR2ON `Vb 0 e@32338 ]
+"2485 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _CCP1CON `Vuc 0 e@4029 ]
+"2436 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _CCP2CON `Vuc 0 e@4026 ]
+"2442 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _CCP2M3 `Vb 0 e@32211 ]
+"2441 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _CCP2M2 `Vb 0 e@32210 ]
+"2446 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _P2M1 `Vb 0 e@32215 ]
+"2445 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _P2M0 `Vb 0 e@32214 ]
+"2491 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _CCP1M3 `Vb 0 e@32235 ]
+"2490 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _CCP1M2 `Vb 0 e@32234 ]
+"2495 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _P1M1 `Vb 0 e@32239 ]
+"2494 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _P1M0 `Vb 0 e@32238 ]
+"2493 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _DC1B1 `Vb 0 e@32237 ]
+"2492 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _DC1B0 `Vb 0 e@32236 ]
+"2444 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _DC2B1 `Vb 0 e@32213 ]
+"2443 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _DC2B0 `Vb 0 e@32212 ]
+"2523 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _CCPR1L `Vuc 0 e@4030 ]
+"2474 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _CCPR2L `Vuc 0 e@4027 ]
+"81 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Tick.h
+[v _TickGet `(ul 0 ef ]
+[i _txd
+:U ..
+:U ..
+"28 /home/andresol/tellstick-net/firmware/pwm.c
+-> -> 0 `i `uc
+-> -> 0 `i `uc
+-> -> 1 `i `c
+-> -> 0 `i `uc
+. `E5286 0
+-> -> -> 0 `i `l `ul
+..
+..
+]
+[i _rxd
+:U ..
+:U ..
+"29
+-> -> 0 `i `uc
+-> -> 0 `i `uc
+-> -> 1 `i `c
+-> -> 0 `i `uc
+. `E5286 0
+-> -> -> 0 `i `l `ul
+..
+..
+]
+"31
+[v _initPwm `(v 1 ef ]
+{
+[e :U _initPwm ]
+[f ]
+"32
+[e = _TMR2IF -> -> 0 `i `b ]
+"33
+[e = _PR2 -> -> 255 `i `uc ]
+"35
+[e = _T2CKPS1 -> -> 1 `i `b ]
+"38
+[e = _T2OUTPS3 -> -> 0 `i `b ]
+"39
+[e = _T2OUTPS2 -> -> 1 `i `b ]
+"40
+[e = _T2OUTPS1 -> -> 1 `i `b ]
+"41
+[e = _T2OUTPS0 -> -> 1 `i `b ]
+"44
+[e = _TMR2IP -> -> 0 `i `b ]
+"45
+[e = _TMR2IE -> -> 1 `i `b ]
+"46
+[e = _TMR2ON -> -> 1 `i `b ]
+"48
+[e = _CCP1CON -> -> 0 `i `uc ]
+"49
+[e = _CCP2CON -> -> 0 `i `uc ]
+"53
+[e = _CCP2M3 -> -> 1 `i `b ]
+"54
+[e = _CCP2M2 -> -> 1 `i `b ]
+"55
+[e = _P2M1 -> -> 0 `i `b ]
+"56
+[e = _P2M0 -> -> 0 `i `b ]
+"59
+[e = _CCP1M3 -> -> 1 `i `b ]
+"60
+[e = _CCP1M2 -> -> 1 `i `b ]
+"61
+[e = _P1M1 -> -> 0 `i `b ]
+"62
+[e = _P1M0 -> -> 0 `i `b ]
+"64
+[e = _CCP1M3 -> -> 1 `i `b ]
+"65
+[e = _CCP1M2 -> -> 1 `i `b ]
+"66
+[e = _CCP2M3 -> -> 1 `i `b ]
+"67
+[e = _CCP2M2 -> -> 1 `i `b ]
+"70
+[e = _DC1B1 -> -> 0 `i `b ]
+"71
+[e = _DC1B0 -> -> 0 `i `b ]
+"72
+[e = _DC2B1 -> -> 0 `i `b ]
+"73
+[e = _DC2B0 -> -> 0 `i `b ]
+"76
+[e = _CCPR1L -> -> 0 `i `uc ]
+"77
+[e = _CCPR2L -> -> 0 `i `uc ]
+"80
+[e = . _txd 3 -> -> 0 `i `uc ]
+"81
+[e = . _rxd 3 -> -> 0 `i `uc ]
+"82
+[e :UE 390 ]
+}
+"84
+[v _pwmUpdate `(v 1 ef ]
+{
+[e :U _pwmUpdate ]
+[f ]
+"85
+[e $ ! != -> . _rxd 3 `i -> -> -> 0 `i `uc `i 392  ]
+{
+"86
+[e =+ . _rxd 0 -> . _rxd 2 `uc ]
+"87
+[e $ ! >= -> . _rxd 0 `i -> 127 `i 393  ]
+{
+"88
+[e = . _rxd 2 -> -U -> 1 `i `c ]
+"89
+}
+[e $U 394  ]
+[e :U 393 ]
+[e $ ! == -> . _rxd 0 `i -> 0 `i 395  ]
+{
+"90
+[e = . _rxd 2 -> -> 1 `i `c ]
+"91
+[e =- . _rxd 3 -> -> 1 `i `uc ]
+"92
+}
+[e :U 395 ]
+"93
+[e :U 394 ]
+[e = _CCPR2L . _rxd 0 ]
+"94
+}
+[e $U 396  ]
+[e :U 392 ]
+[e $ ! == -> . _rxd 4 `i -> . `E5286 2 `i 397  ]
+{
+"95
+[e = _CCPR2L . _rxd 1 ]
+"96
+}
+[e $U 398  ]
+[e :U 397 ]
+[e $ ! == -> . _rxd 4 `i -> . `E5286 1 `i 399  ]
+{
+"97
+[e $ ! > - ( _TickGet ..  . _rxd 5 / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul 400  ]
+{
+"98
+[e = . _rxd 1 -> - -> 255 `i -> . _rxd 1 `i `uc ]
+"99
+[e = _CCPR2L . _rxd 1 ]
+"100
+[e = . _rxd 5 ( _TickGet ..  ]
+"101
+}
+[e :U 400 ]
+"102
+}
+[e $U 401  ]
+[e :U 399 ]
+{
+"103
+[e = _CCPR2L -> -> 0 `i `uc ]
+"104
+}
+[e :U 401 ]
+[e :U 398 ]
+[e :U 396 ]
+"107
+[e $ ! != -> . _txd 3 `i -> -> -> 0 `i `uc `i 402  ]
+{
+"108
+[e =+ . _txd 0 -> . _txd 2 `uc ]
+"109
+[e $ ! >= -> . _txd 0 `i -> 127 `i 403  ]
+{
+"110
+[e = . _txd 2 -> -U -> 1 `i `c ]
+"111
+}
+[e $U 404  ]
+[e :U 403 ]
+[e $ ! == -> . _txd 0 `i -> 0 `i 405  ]
+{
+"112
+[e = . _txd 2 -> -> 1 `i `c ]
+"113
+[e =- . _txd 3 -> -> 1 `i `uc ]
+"114
+}
+[e :U 405 ]
+"115
+[e :U 404 ]
+[e = _CCPR1L . _txd 0 ]
+"116
+}
+[e $U 406  ]
+[e :U 402 ]
+[e $ ! == -> . _txd 4 `i -> . `E5286 2 `i 407  ]
+{
+"117
+[e = _CCPR1L . _txd 1 ]
+"118
+}
+[e $U 408  ]
+[e :U 407 ]
+{
+"119
+[e = _CCPR1L -> -> 0 `i `uc ]
+"120
+}
+[e :U 408 ]
+[e :U 406 ]
+"121
+[e :UE 391 ]
+}
+"123
+[v _setRXBlink `(v 1 ef ]
+{
+[e :U _setRXBlink ]
+[f ]
+"124
+[e = . _rxd 4 . `E5286 1 ]
+"125
+[e = . _rxd 1 -> -> 255 `i `uc ]
+"126
+[e = _CCPR2L -> -> 255 `i `uc ]
+"127
+[e = . _rxd 5 ( _TickGet ..  ]
+"128
+[e :UE 409 ]
+}
+"130
+[v _setRXPulses `(v 1 ef1`uc ]
+{
+[e :U _setRXPulses ]
+[v _count `uc 1 r1 ]
+[f ]
+"131
+[e = . _rxd 3 _count ]
+"132
+[e :UE 410 ]
+}
+"134
+[v _setTXPulses `(v 1 ef1`uc ]
+{
+[e :U _setTXPulses ]
+[v _count `uc 1 r1 ]
+[f ]
+"135
+[e = . _txd 3 _count ]
+"136
+[e :UE 411 ]
+}
+"138
+[v _setRXFixed `(v 1 ef1`uc ]
+{
+[e :U _setRXFixed ]
+[v _level `uc 1 r1 ]
+[f ]
+"139
+[e = . _rxd 4 . `E5286 2 ]
+"140
+[e = . _rxd 1 _level ]
+"141
+[e :UE 412 ]
+}
+"143
+[v _setTXFixed `(v 1 ef1`uc ]
+{
+[e :U _setTXFixed ]
+[v _level `uc 1 r1 ]
+[f ]
+"144
+[e = . _txd 4 . `E5286 2 ]
+"145
+[e = . _txd 1 _level ]
+"146
+[e :UE 413 ]
+}

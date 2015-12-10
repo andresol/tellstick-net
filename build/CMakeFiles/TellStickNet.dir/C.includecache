@@ -1,0 +1,218 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/andresol/tellstick-net/tcpip/Helpers.c
+TCPIP Stack/TCPIP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/ARP.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/Compiler.h
+p18cxxx.h
+-
+htc.h
+-
+htc.h
+-
+p24Fxxxx.h
+-
+p24Hxxxx.h
+-
+p24Exxxx.h
+-
+p33Fxxxx.h
+-
+p33Exxxx.h
+-
+p30fxxxx.h
+-
+p30sim.h
+-
+p32xxxx.h
+-
+plib.h
+-
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/DHCP.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/DNS.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/Delay.h
+Compiler.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/Compiler.h
+HardwareProfile.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/HardwareProfile.h
+delays.h
+-
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/ETH97J60.h
+GenericTypeDefs.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/GenericTypeDefs.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/GenericTypeDefs.h
+stddef.h
+-
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/Hashes.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+stdlib.h
+-
+stdlib.h
+-
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/ICMP.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/IP.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+HardwareProfile.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/HardwareProfile.h
+TCPIP Stack/ETH97J60.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/ETH97J60.h
+TCPIP Stack/ENC28J60.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/ENC28J60.h
+TCPIP Stack/ENCX24J600.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/ENCX24J600.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/Reboot.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/SPIFlash.h
+HardwareProfile.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/HardwareProfile.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/SPIRAM.h
+HardwareProfile.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/HardwareProfile.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+WF_Config.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/WF_Config.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCP.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP.h
+string.h
+-
+stdlib.h
+-
+GenericTypeDefs.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/GenericTypeDefs.h
+Compiler.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/Compiler.h
+HardwareProfile.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/HardwareProfile.h
+TCPIPConfig.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIPConfig.h
+TCPIP Stack/StackTsk.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/StackTsk.h
+TCPIP Stack/Helpers.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/Helpers.h
+TCPIP Stack/Delay.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/Delay.h
+TCPIP Stack/Tick.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/Tick.h
+TCPIP Stack/MAC.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/MAC.h
+TCPIP Stack/IP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/IP.h
+TCPIP Stack/ARP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/ARP.h
+TCPIP Stack/BigInt.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/BigInt.h
+TCPIP Stack/RSA.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/RSA.h
+TCPIP Stack/ARCFOUR.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/ARCFOUR.h
+TCPIP Stack/AutoIP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/AutoIP.h
+TCPIP Stack/Random.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/Random.h
+TCPIP Stack/Hashes.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/Hashes.h
+TCPIP Stack/XEEPROM.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/XEEPROM.h
+TCPIP Stack/SPIFlash.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/SPIFlash.h
+TCPIP Stack/SPIRAM.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/SPIRAM.h
+TCPIP Stack/UDP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/UDP.h
+TCPIP Stack/TCP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/TCP.h
+TCPIP Stack/BerkeleyAPI.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/BerkeleyAPI.h
+TCPIP Stack/LCDBlocking.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/LCDBlocking.h
+TCPIP Stack/UART2TCPBridge.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/UART2TCPBridge.h
+TCPIP Stack/UART.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/UART.h
+TCPIP Stack/DHCP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/DHCP.h
+TCPIP Stack/DNS.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/DNS.h
+TCPIP Stack/MPFS2.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/MPFS2.h
+TCPIP Stack/FTP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/FTP.h
+TCPIP Stack/FileSystem.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/FileSystem.h
+TCPIP Stack/_HTTP2.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/_HTTP2.h
+TCPIP Stack/HTTP2.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/HTTP2.h
+TCPIP Stack/ICMP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/ICMP.h
+TCPIP Stack/Announce.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/Announce.h
+TCPIP Stack/SNMP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/SNMP.h
+mib.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/mib.h
+TCPIP Stack/NBNS.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/NBNS.h
+TCPIP Stack/DNS.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/DNS.h
+TCPIP Stack/DynDNS.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/DynDNS.h
+TCPIP Stack/Telnet.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/Telnet.h
+TCPIP Stack/SMTP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/SMTP.h
+TCPIP Stack/TFTPc.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/TFTPc.h
+TCPIP Stack/Reboot.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/Reboot.h
+TCPIP Stack/SNTP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/SNTP.h
+TCPIP Stack/UDPPerformanceTest.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/UDPPerformanceTest.h
+TCPIP Stack/TCPPerformanceTest.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/TCPPerformanceTest.h
+TCPIP Stack/SSL.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/SSL.h
+TCPIP Stack/WFMac.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/WFMac.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/Tick.h
+TCPIP Stack/TCPIP.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/TCPIP Stack/TCPIP.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/XEEPROM.h
+HardwareProfile.h
+/home/andresol/tellstick-net/tcpip/TCPIP Stack/HardwareProfile.h
+

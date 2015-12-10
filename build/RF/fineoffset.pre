@@ -1,0 +1,244 @@
+
+# 1 "/home/andresol/tellstick-net/rf/fineoffset.c"
+
+# 1 "/home/andresol/tellstick-net/rf/fineoffset.h"
+char parseFineOffset(unsigned short scanP, unsigned char scanBit);
+
+# 1 "/home/andresol/tellstick-net/rf/crc.h"
+unsigned char calculateCrc8(unsigned char crc, const unsigned char c, unsigned char polynom);
+
+# 1 "/home/andresol/tellstick-net/rf/receive.h"
+typedef unsigned char UCHAR8;
+
+unsigned char rfCountSimilar(unsigned short *scanP, unsigned char *scanBit);
+
+void rfReceiveUpdate(unsigned char antenna);
+void rfReceiveTask();
+
+void rfRetreatBit(unsigned short *scanP, unsigned char *scanBit);
+
+void rfDebugPrintPulse(unsigned short scanP, unsigned char scanBit);
+void rfDebugPrintLen(unsigned short scanP, unsigned char scanBit, unsigned char len);
+
+# 2 "/home/andresol/tellstick-net/rf/message.h"
+void rfMessageBegin();
+void rfMessageBeginRaw();
+void rfMessageEnd(unsigned char type);
+
+void rfMessageAddByte(const char *key, unsigned char value);
+void rfMessageAddLong(const char *key, unsigned long value);
+void rfMessageAddString(const char *key, const char *value);
+void rfMessageAddHexString(const char *key, const char *value, const unsigned char length);
+
+# 4 "/usr/hitech/picc-18/pro/9.66/include/string.h"
+typedef int ptrdiff_t;
+typedef unsigned size_t;
+typedef unsigned short wchar_t;
+
+
+extern int errno;
+
+# 28
+extern void * memcpy(void *, const void *, size_t);
+extern void * memmove(void *, const void *, size_t);
+extern void * memset(void *, int, size_t);
+
+# 41
+extern char * strcat(char *, const char *);
+extern char * strcpy(char *, const char *);
+extern char * strncat(char *, const char *, size_t);
+extern char * strncpy(char *, const char *, size_t);
+extern char * strdup(const char *);
+extern char * strtok(char *, const char *);
+
+
+extern int memcmp(const void *, const void *, size_t);
+extern int strcmp(const char *, const char *);
+extern int stricmp(const char *, const char *);
+extern int strncmp(const char *, const char *, size_t);
+extern int strnicmp(const char *, const char *, size_t);
+extern  void * memchr(const void *, int, size_t);
+extern size_t strcspn(const char *, const char *);
+extern  char * strpbrk(const char *, const char *);
+extern size_t strspn(const char *, const char *);
+extern  char * strstr(const char *, const char *);
+extern  char * stristr(const char *, const char *);
+extern char * strerror(int);
+extern size_t strlen(const char *);
+extern  char * strchr(const char *, int);
+extern  char * strichr(const char *, int);
+extern  char * strrchr(const char *, int);
+extern  char * strrichr(const char *, int);
+
+# 36 "/usr/hitech/picc-18/pro/9.66/include/stdarg.h"
+typedef void * va_list[1];
+
+#pragma inline(__va_start)
+extern void * __va_start(void);
+
+#pragma inline(__va_arg)
+extern void * __va_arg(void *);
+
+# 27 "/usr/hitech/picc-18/pro/9.66/include/stdio.h"
+extern int errno;
+
+# 58
+struct __prbuf
+{
+char * ptr;
+void (* func)(char);
+};
+
+# 17 "/usr/hitech/picc-18/pro/9.66/include/conio.h"
+extern int errno;
+
+
+extern void init_uart(void);
+
+extern char getch(void);
+extern char getche(void);
+extern void putch(char);
+extern void ungetch(char);
+
+extern bit kbhit(void);
+
+# 31
+extern char * cgets(char *);
+extern void cputs(const char *);
+
+# 103 "/usr/hitech/picc-18/pro/9.66/include/stdio.h"
+extern int cprintf(char *, ...);
+#pragma printf_check(cprintf)
+
+
+
+extern int _doprnt(struct __prbuf *, const register char *, register va_list);
+
+# 195
+extern char * gets(char *);
+extern int puts(const char *);
+extern int scanf(const char *, ...);
+extern int sscanf(const char *, const char *, ...);
+extern int vprintf(const char *, va_list);
+extern int vsprintf(char *, const char *, va_list);
+extern int vscanf(const char *, va_list ap);
+extern int vsscanf(const char *, const char *, va_list);
+
+#pragma printf_check(printf) const
+#pragma printf_check(sprintf) const
+extern int sprintf(char *, const char *, ...);
+extern int printf(const char *, ...);
+
+# 27 "/usr/hitech/picc-18/pro/9.66/include/stdlib.h"
+typedef struct {
+int rem;
+int quot;
+} div_t;
+typedef struct {
+unsigned rem;
+unsigned quot;
+} udiv_t;
+typedef struct {
+long quot;
+long rem;
+} ldiv_t;
+typedef struct {
+unsigned long quot;
+unsigned long rem;
+} uldiv_t;
+
+# 65
+extern double atof(const char *);
+extern double strtod(const char *, const char **);
+extern int atoi(const char *);
+extern unsigned xtoi(const char *);
+extern long atol(const char *);
+extern long strtol(const char *, char **, int);
+
+extern int rand(void);
+extern void srand(unsigned int);
+extern void * calloc(size_t, size_t);
+extern div_t div(int numer, int denom);
+extern udiv_t udiv(unsigned numer, unsigned denom);
+extern ldiv_t ldiv(long numer, long denom);
+extern uldiv_t uldiv(unsigned long numer,unsigned long denom);
+extern unsigned long _lrotl(unsigned long value, unsigned int shift);
+extern unsigned long _lrotr(unsigned long value, unsigned int shift);
+extern unsigned int _rotl(unsigned int value, unsigned int shift);
+extern unsigned int _rotr(unsigned int value, unsigned int shift);
+
+# 106
+extern void * malloc(size_t);
+extern void free(void *);
+extern void * realloc(void *, size_t);
+
+# 122
+extern void abort(void);
+extern void exit(int);
+extern int atexit(void (*)(void));
+extern char * getenv(const char *);
+extern char ** environ;
+extern int system(char *);
+extern void qsort(void *, size_t, size_t, int (*)(const void *, const void *));
+extern void * bsearch(const void *, void *, size_t, size_t, int(*)(const void *, const void *));
+extern int abs(int);
+extern long labs(long);
+
+# 145
+extern char * itoa(char * buf, int val, int base);
+extern char * utoa(char * buf, unsigned val, int base);
+extern char * ltoa(char * buf, long val, int base);
+extern char * ultoa(char * buf, unsigned long val, int base);
+
+# 18 "/home/andresol/tellstick-net/rf/fineoffset.c"
+unsigned char fineOffsetBit(unsigned short *scanP, unsigned char *scanBit) {
+UCHAR8 b1 = rfCountSimilar(scanP, scanBit);
+UCHAR8 b2 = rfCountSimilar(scanP, scanBit);
+
+if ((b1>13) && (b2>13)) {
+return 0;
+}
+if ((b1<11) && (b2>13)) {
+return 1;
+}
+
+return 2;
+}
+
+char parseFineOffset(unsigned short scanP, unsigned char scanBit) {
+unsigned char buffer[5];
+rfRetreatBit(&scanP, &scanBit);
+UCHAR8 lastbyte = 0;
+for(int i=5-1; i>=0; --i) {
+UCHAR8 byte = 0;
+for(int j=0; j<8; ++j){
+UCHAR8 b = fineOffsetBit(&scanP, &scanBit);
+if (b == 2) {
+return 0;
+}
+if (b) {
+byte |= (1<<j);
+}
+}
+if( i == (5-1)) {
+lastbyte = byte;
+}
+
+buffer[i] = byte;
+}
+
+unsigned short int crc = 0x00;
+for(int j=0; j<5-1; j++){
+crc = calculateCrc8(crc, buffer[j], 0x131);
+}
+
+if(crc != lastbyte){
+return 0;
+}
+rfMessageBeginRaw();
+rfMessageAddString("class", "sensor");
+rfMessageAddString("protocol", "fineoffset");
+rfMessageAddHexString("data", buffer, 5);
+rfMessageEnd(1);
+return 1;
+}

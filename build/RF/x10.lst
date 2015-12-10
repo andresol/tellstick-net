@@ -1,0 +1,58 @@
+     1: #include "x10.h"
+     2: #include "receive.h"
+     3: #include "message.h"
+     4: #include <htc.h>
+     5: #include <stdio.h>
+     6: 
+     7: #define LOWERX10 12
+     8: #define HIGHERX10 25
+     9: 
+    10: unsigned char x10Bit(UCHAR8 b1, UCHAR8 b2) {
+    11:         if (b1 <= LOWERX10 &&
+    12:             b2 <= LOWERX10) {
+    13:                 return 0;
+    14:         }
+    15:         if (b1 >= HIGHERX10 &&
+    16:             b2 <= LOWERX10) {
+    17:                 return 1;
+    18:         }
+    19:         return 2;
+    20: }
+    21: 
+    22: char parseX10(unsigned short scanP, unsigned char scanBit) {
+    23:         unsigned long code = 0;
+    24:         
+    25:         rfRetreatBit(&scanP, &scanBit);  //retreat one bit
+    26:         rfCountSimilar(&scanP, &scanBit); //skip last
+    27: 
+    28:         unsigned long mask = 1;
+    29:         for(int i = 0; i<32; ++i) {
+    30:                 UCHAR8 b1 = rfCountSimilar(&scanP, &scanBit);
+    31:                 UCHAR8 b2 = rfCountSimilar(&scanP, &scanBit);
+    32:                 switch (x10Bit(b1, b2)) {
+    33:                         case 0:
+    34:                                 break;
+    35:                         case 1:
+    36:                                 code |= mask;
+    37:                                 break;
+    38:                         default:
+    39:                                 return 0; // Not X10
+    40:                 }
+    41:                 mask <<= 1;
+    42:         }
+    43:         
+    44:         //We check the compliment-bytes
+    45:         if ( ((code>>24) & 0xFF) != (((~code)>>16) & 0xFF) ) {
+    46:                 return 0;
+    47:         }
+    48:         if (((code>>8) & 0xFF) != ((~code) & 0xFF)) {
+    49:                 return 0;
+    50:         }
+    51: 
+    52:         rfMessageBeginRaw();
+    53:         rfMessageAddString("protocol", "x10");
+    54:         rfMessageAddLong("data", code);
+    55:         rfMessageEnd(2);
+    56:         
+    57:         return 1;
+    58: }

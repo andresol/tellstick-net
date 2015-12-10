@@ -1,0 +1,889 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+"71 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _MySocket `uc 1 s ]
+"72 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _DNSHostName `*uc 1 s ]
+"73 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _DNSHostNameROM `*Cuc 1 s ]
+"74 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _RecordType `uc 1 s ]
+[s S25 `us 1 `us 1 ]
+[n S25 . LW HW ]
+[s S26 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S26 . LB HB UB MB ]
+[s S22 `uc 1 `uc 1 ]
+[n S22 . LB HB ]
+[s S23 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S23 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S21 `us 1 `uc -> 2 `i `S22 1 `S23 1 ]
+[n S21 . Val v byte bits ]
+[s S27 `S21 1 `S21 1 ]
+[n S27 . low high ]
+[s S28 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S28 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S24 `ul 1 `us -> 2 `i `uc -> 4 `i `S25 1 `S26 1 `S27 1 `S28 1 ]
+[n S24 . Val w v word byte wordUnion bits ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S356 `S24 1 `S355 1 ]
+[n S356 . IPAddr MACAddr ]
+"75 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _ResolvedInfo `S356 1 s ]
+[s S390 :1 `uc 1 :1 `uc 1 :6 `uc 1 ]
+[n S390 . DNSInUse AddressValid filler ]
+[u S389 `uc 1 `S390 1 ]
+[n S389 . Val bits ]
+"87 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _Flags `S389 1 s ]
+[c E5288 0 1 2 3 4 5 6 7 .. ]
+[n E5288 . DNS_START DNS_ARP_START_RESOLVE DNS_ARP_RESOLVE DNS_OPEN_SOCKET DNS_QUERY DNS_GET_RESULT DNS_FAIL DNS_DONE  ]
+"100 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _smDNS `E5288 1 s ]
+[c E208 0 1 .. ]
+[n E208 _BOOL FALSE TRUE  ]
+"150 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPClose `(v 0 ef1`uc ]
+"88 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _StringToIPAddress `(E208 0 ef2`*uc`*S24 ]
+"97 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _ROMStringToIPAddress `(E208 0 ef2`*Cuc`*S24 ]
+[s S391 `S21 1 `S21 1 `S21 1 `S21 1 `S21 1 `S21 1 ]
+[n S391 . TransactionID Flags Questions Answers AuthoritativeRecords AdditionalRecords ]
+[s S392 `S21 1 `S21 1 `S24 1 `S21 1 ]
+[n S392 . ResponseType ResponseClass ResponseTTL ResponseLen ]
+"86 /home/andresol/tellstick-net/tcpip/TCPIP Stack/ARP.h
+[v _ARPResolve `(v 0 ef1`*S24 ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S357 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S357 0 e ]
+"81 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Tick.h
+[v _TickGet `(ul 0 ef ]
+"87 /home/andresol/tellstick-net/tcpip/TCPIP Stack/ARP.h
+[v _ARPIsResolved `(E208 0 ef2`*S24`*S355 ]
+"147 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPOpenEx `(uc 0 ef4`ul`uc`us`us ]
+"155 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPIsPutReady `(us 0 ef1`uc ]
+"156 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPPut `(E208 0 ef1`uc ]
+"128 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _DNSPutString `(v 0 sf1`*uc ]
+"132 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _DNSPutROMString `(v 0 sf1`*Cuc ]
+"159 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPFlush `(v 0 ef ]
+"170 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPIsGetReady `(us 0 ef1`uc ]
+"171 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPGet `(E208 0 ef1`*uc ]
+"173 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPDiscard `(v 0 ef ]
+"129 /home/andresol/tellstick-net/tcpip/DNS.c
+[v _DNSDiscardName `(v 0 sf ]
+"157 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPPutArray `(us 0 ef2`*uc`us ]
+"163 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPPutROMArray `(us 0 ef2`*Cuc`us ]
+"172 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPGetArray `(us 0 ef2`*uc`us ]
+[i _MySocket
+"71 /home/andresol/tellstick-net/tcpip/DNS.c
+-> -> 255 `ui `uc
+]
+[i _Flags
+:U ..
+:U ..
+"87
+-> -> 0 `i `uc
+..
+..
+]
+[i _smDNS
+"100
+. `E5288 7
+]
+"170
+[v _DNSBeginUsage `(E208 1 ef ]
+{
+[e :U _DNSBeginUsage ]
+[f ]
+"171
+[e $ ! != -> . . _Flags 1 0 `i -> -> -> 0 `i `uc `i 394  ]
+"172
+[e ) . `E208 0 ]
+[e $UE 393  ]
+[e :U 394 ]
+"174
+[e = . . _Flags 1 0 -> . `E208 1 `uc ]
+"175
+[e ) . `E208 1 ]
+[e $UE 393  ]
+"176
+[e :UE 393 ]
+}
+"207
+[v _DNSEndUsage `(E208 1 ef ]
+{
+[e :U _DNSEndUsage ]
+[f ]
+"208
+[e $ ! != -> _MySocket `ui -> 255 `ui 396  ]
+"209
+{
+"210
+[e ( _UDPClose (1 _MySocket ]
+"211
+[e = _MySocket -> -> 255 `ui `uc ]
+"212
+}
+[e :U 396 ]
+"213
+[e = _smDNS . `E5288 7 ]
+"214
+[e = . . _Flags 1 0 -> . `E208 0 `uc ]
+"216
+[e ) -> . . _Flags 1 1 `E208 ]
+[e $UE 395  ]
+"217
+[e :UE 395 ]
+}
+"252
+[v _DNSResolve `(v 1 ef2`*uc`uc ]
+{
+[e :U _DNSResolve ]
+[v _Hostname `*uc 1 r1 ]
+[v _Type `uc 1 r2 ]
+[f ]
+"253
+[e $ ! != -> ( _StringToIPAddress (2 , _Hostname &U . _ResolvedInfo 0 `i -> -> -> 0 `i `E208 `i 398  ]
+"254
+{
+"255
+[e = . . _Flags 1 1 -> . `E208 1 `uc ]
+"256
+[e = _smDNS . `E5288 7 ]
+"257
+}
+[e $U 399  ]
+"258
+[e :U 398 ]
+"259
+{
+"260
+[e = _DNSHostName _Hostname ]
+"261
+[e = _DNSHostNameROM -> -> 0 `i `*Cuc ]
+"262
+[e = _smDNS . `E5288 0 ]
+"263
+[e = _RecordType _Type ]
+"264
+[e = . . _Flags 1 1 -> . `E208 0 `uc ]
+"265
+}
+[e :U 399 ]
+"266
+[e :UE 397 ]
+}
+"304
+[v _DNSResolveROM `(v 1 ef2`*Cuc`uc ]
+{
+[e :U _DNSResolveROM ]
+[v _Hostname `*Cuc 1 r1 ]
+[v _Type `uc 1 r2 ]
+[f ]
+"305
+[e $ ! != -> ( _ROMStringToIPAddress (2 , _Hostname &U . _ResolvedInfo 0 `i -> -> -> 0 `i `E208 `i 401  ]
+"306
+{
+"307
+[e = . . _Flags 1 1 -> . `E208 1 `uc ]
+"308
+[e = _smDNS . `E5288 7 ]
+"309
+}
+[e $U 402  ]
+"310
+[e :U 401 ]
+"311
+{
+"312
+[e = _DNSHostName -> -> 0 `i `*uc ]
+"313
+[e = _DNSHostNameROM _Hostname ]
+"314
+[e = _smDNS . `E5288 0 ]
+"315
+[e = _RecordType _Type ]
+"316
+[e = . . _Flags 1 1 -> . `E208 0 `uc ]
+"317
+}
+[e :U 402 ]
+"318
+[e :UE 400 ]
+}
+"348
+[v _DNSIsResolved `(E208 1 ef1`*S24 ]
+{
+[e :U _DNSIsResolved ]
+[v _HostIP `*S24 1 r1 ]
+[f ]
+"349
+[v F5325 `ul 1 s StartTime ]
+"350
+[v F5326 `S21 1 s SentTransactionID ]
+"351
+[v F5327 `uc 1 s vARPAttemptCount ]
+"352
+[v F5328 `uc 1 s vDNSAttemptCount ]
+"353
+[v _i `uc 1 a ]
+"354
+[v _w `S21 1 a ]
+"355
+[v _DNSHeader `S391 1 a ]
+"356
+[v _DNSAnswerHeader `S392 1 a ]
+"358
+[e $U 405  ]
+"359
+{
+"360
+[e :U 406 ]
+"361
+[e = F5327 -> -> 0 `i `uc ]
+"362
+[e = F5328 -> -> 0 `i `uc ]
+"365
+[e :U 407 ]
+"366
+[e ( _ARPResolve (1 &U . _AppConfig 3 ]
+"367
+[e ++ F5327 -> -> 1 `i `uc ]
+"368
+[e = F5325 ( _TickGet ..  ]
+"369
+[e = _smDNS . `E5288 2 ]
+"370
+[e $U 404  ]
+"372
+[e :U 408 ]
+"373
+[e $ ! ! != -> ( _ARPIsResolved (2 , &U . _AppConfig 3 &U . _ResolvedInfo 1 `i -> -> -> 0 `i `E208 `i 409  ]
+"374
+{
+"375
+[e $ ! > - ( _TickGet ..  F5325 * / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul -> -> -> 1 `i `l `ul 410  ]
+"376
+[e = _smDNS -> ? >= -> F5327 `ui -> 3 `ui : -> . `E5288 6 `i -> . `E5288 1 `i `E5288 ]
+[e :U 410 ]
+"377
+[e $U 404  ]
+"378
+}
+[e :U 409 ]
+"379
+[e = . . _ResolvedInfo 0 0 . . _AppConfig 3 0 ]
+"380
+[e = _smDNS . `E5288 3 ]
+"383
+[e :U 411 ]
+"386
+[e = _MySocket ( _UDPOpenEx (4 , , , -> &U _ResolvedInfo `ul -> -> 4 `ui `uc -> -> 0 `i `us -> -> 53 `ui `us ]
+"387
+[e $ ! == -> _MySocket `ui -> 255 `ui 412  ]
+"388
+[e $U 404  ]
+[e :U 412 ]
+"390
+[e = _smDNS . `E5288 4 ]
+"393
+[e :U 413 ]
+"394
+[e $ ! ! != -> ( _UDPIsPutReady (1 _MySocket `ui -> -> -> 0 `i `us `ui 414  ]
+"395
+[e $U 404  ]
+[e :U 414 ]
+"398
+[e ++ . F5326 0 -> -> 1 `i `us ]
+"399
+[e ( _UDPPut (1 *U + &U . F5326 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . F5326 1 `ui `ux ]
+"400
+[e ( _UDPPut (1 *U + &U . F5326 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . F5326 1 `ui `ux ]
+"401
+[e ( _UDPPut (1 -> -> 1 `i `uc ]
+"402
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"403
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"404
+[e ( _UDPPut (1 -> -> 1 `i `uc ]
+"405
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"406
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"407
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"408
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"409
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"410
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"413
+[e $ ! != _DNSHostName -> -> 0 `i `*uc 415  ]
+"414
+[e ( _DNSPutString (1 _DNSHostName ]
+[e $U 416  ]
+"415
+[e :U 415 ]
+"416
+[e ( _DNSPutROMString (1 _DNSHostNameROM ]
+[e :U 416 ]
+"418
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"419
+[e ( _UDPPut (1 _RecordType ]
+"420
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"421
+[e ( _UDPPut (1 -> -> 1 `i `uc ]
+"423
+[e ( _UDPFlush ..  ]
+"424
+[e = F5325 ( _TickGet ..  ]
+"425
+[e = _smDNS . `E5288 5 ]
+"426
+[e $U 404  ]
+"428
+[e :U 417 ]
+"429
+[e $ ! ! != -> ( _UDPIsGetReady (1 _MySocket `ui -> -> -> 0 `i `us `ui 418  ]
+"430
+{
+"431
+[e $ ! > - ( _TickGet ..  F5325 * / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul -> -> -> 1 `i `l `ul 419  ]
+"432
+[e = _smDNS . `E5288 6 ]
+[e :U 419 ]
+"433
+[e $U 404  ]
+"434
+}
+[e :U 418 ]
+"437
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 0 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSHeader 0 1 `ui `ux ]
+"438
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 0 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSHeader 0 1 `ui `ux ]
+"441
+[e $ ! != -> . . _DNSHeader 0 0 `ui -> . F5326 0 `ui 420  ]
+"442
+{
+"443
+[e ( _UDPDiscard ..  ]
+"444
+[e $U 404  ]
+"445
+}
+[e :U 420 ]
+"447
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 1 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSHeader 1 1 `ui `ux ]
+"448
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 1 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSHeader 1 1 `ui `ux ]
+"449
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 2 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSHeader 2 1 `ui `ux ]
+"450
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 2 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSHeader 2 1 `ui `ux ]
+"451
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 3 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSHeader 3 1 `ui `ux ]
+"452
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 3 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSHeader 3 1 `ui `ux ]
+"453
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 4 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSHeader 4 1 `ui `ux ]
+"454
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 4 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSHeader 4 1 `ui `ux ]
+"455
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 5 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSHeader 5 1 `ui `ux ]
+"456
+[e ( _UDPGet (1 &U *U + &U . . _DNSHeader 5 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSHeader 5 1 `ui `ux ]
+"459
+[e $U 421  ]
+[e :U 422 ]
+"460
+{
+"461
+[e ( _DNSDiscardName ..  ]
+"462
+[e ( _UDPGet (1 &U *U + &U . _w 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . _w 1 `ui `ux ]
+"463
+[e ( _UDPGet (1 &U *U + &U . _w 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _w 1 `ui `ux ]
+"464
+[e ( _UDPGet (1 &U *U + &U . _w 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . _w 1 `ui `ux ]
+"465
+[e ( _UDPGet (1 &U *U + &U . _w 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _w 1 `ui `ux ]
+"466
+}
+[e :U 421 ]
+"459
+[e $ != -> -- . . _DNSHeader 2 0 -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 422  ]
+[e :U 423 ]
+"469
+[e $U 424  ]
+[e :U 425 ]
+"470
+{
+"471
+[e ( _DNSDiscardName ..  ]
+"472
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 0 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 0 1 `ui `ux ]
+"473
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 0 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 0 1 `ui `ux ]
+"474
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 1 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 1 1 `ui `ux ]
+"475
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 1 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 1 1 `ui `ux ]
+"476
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 3 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"477
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 2 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"478
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"479
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"480
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 3 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 3 1 `ui `ux ]
+"481
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 3 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 3 1 `ui `ux ]
+"487
+[e $ ! && && == -> . . _DNSAnswerHeader 0 0 `ui -> 1 `ui == -> . . _DNSAnswerHeader 1 0 `ui -> 1 `ui == -> . . _DNSAnswerHeader 3 0 `ui -> 4 `ui 427  ]
+"488
+{
+"489
+[e = . . _Flags 1 1 -> . `E208 1 `uc ]
+"490
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"491
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"492
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 2 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"493
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 3 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"494
+[e $U 428  ]
+"495
+}
+[e $U 429  ]
+"496
+[e :U 427 ]
+"497
+{
+"498
+[e $U 430  ]
+[e :U 431 ]
+"499
+{
+"500
+[e ( _UDPGet (1 &U _i ]
+"501
+}
+[e :U 430 ]
+"498
+[e $ != -> -- . . _DNSAnswerHeader 3 0 -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 431  ]
+[e :U 432 ]
+"502
+}
+[e :U 429 ]
+"503
+}
+[e :U 424 ]
+"469
+[e $ != -> -- . . _DNSHeader 3 0 -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 425  ]
+[e :U 426 ]
+"506
+[e $U 433  ]
+[e :U 434 ]
+"507
+{
+"508
+[e ( _DNSDiscardName ..  ]
+"509
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 0 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 0 1 `ui `ux ]
+"510
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 0 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 0 1 `ui `ux ]
+"511
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 1 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 1 1 `ui `ux ]
+"512
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 1 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 1 1 `ui `ux ]
+"513
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 3 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"514
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 2 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"515
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"516
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"517
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 3 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 3 1 `ui `ux ]
+"518
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 3 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 3 1 `ui `ux ]
+"524
+[e $ ! && && == -> . . _DNSAnswerHeader 0 0 `ui -> 1 `ui == -> . . _DNSAnswerHeader 1 0 `ui -> 1 `ui == -> . . _DNSAnswerHeader 3 0 `ui -> 4 `ui 436  ]
+"525
+{
+"526
+[e = . . _Flags 1 1 -> . `E208 1 `uc ]
+"527
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"528
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"529
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 2 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"530
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 3 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"531
+[e $U 428  ]
+"532
+}
+[e $U 437  ]
+"533
+[e :U 436 ]
+"534
+{
+"535
+[e $U 438  ]
+[e :U 439 ]
+"536
+{
+"537
+[e ( _UDPGet (1 &U _i ]
+"538
+}
+[e :U 438 ]
+"535
+[e $ != -> -- . . _DNSAnswerHeader 3 0 -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 439  ]
+[e :U 440 ]
+"539
+}
+[e :U 437 ]
+"540
+}
+[e :U 433 ]
+"506
+[e $ != -> -- . . _DNSHeader 4 0 -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 434  ]
+[e :U 435 ]
+"543
+[e $U 441  ]
+[e :U 442 ]
+"544
+{
+"545
+[e ( _DNSDiscardName ..  ]
+"546
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 0 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 0 1 `ui `ux ]
+"547
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 0 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 0 1 `ui `ux ]
+"548
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 1 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 1 1 `ui `ux ]
+"549
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 1 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 1 1 `ui `ux ]
+"550
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 3 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"551
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 2 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"552
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"553
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 2 2 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 2 2 `ui `ux ]
+"554
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 3 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 3 1 `ui `ux ]
+"555
+[e ( _UDPGet (1 &U *U + &U . . _DNSAnswerHeader 3 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _DNSAnswerHeader 3 1 `ui `ux ]
+"561
+[e $ ! && && == -> . . _DNSAnswerHeader 0 0 `ui -> 1 `ui == -> . . _DNSAnswerHeader 1 0 `ui -> 1 `ui == -> . . _DNSAnswerHeader 3 0 `ui -> 4 `ui 444  ]
+"562
+{
+"563
+[e = . . _Flags 1 1 -> . `E208 1 `uc ]
+"564
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"565
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"566
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 2 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"567
+[e ( _UDPGet (1 &U *U + &U . . _ResolvedInfo 0 2 * -> -> -> 3 `i `ui `ux -> -> # *U &U . . _ResolvedInfo 0 2 `ui `ux ]
+"568
+[e $U 428  ]
+"569
+}
+[e $U 445  ]
+"570
+[e :U 444 ]
+"571
+{
+"572
+[e $U 446  ]
+[e :U 447 ]
+"573
+{
+"574
+[e ( _UDPGet (1 &U _i ]
+"575
+}
+[e :U 446 ]
+"572
+[e $ != -> -- . . _DNSAnswerHeader 3 0 -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 447  ]
+[e :U 448 ]
+"576
+}
+[e :U 445 ]
+"577
+}
+[e :U 441 ]
+"543
+[e $ != -> -- . . _DNSHeader 5 0 -> -> 1 `i `us `ui -> -> -> 0 `i `us `ui 442  ]
+[e :U 443 ]
+"579
+[e :U 428 ]
+"581
+[e ( _UDPDiscard ..  ]
+"582
+[e ( _UDPClose (1 _MySocket ]
+"583
+[e = _MySocket -> -> 255 `ui `uc ]
+"584
+[e = _smDNS . `E5288 7 ]
+"587
+[e :U 449 ]
+"590
+[e $ ! ! != -> . . _Flags 1 1 `i -> -> -> 0 `i `uc `i 450  ]
+"591
+[e = . . _ResolvedInfo 0 0 -> -> -> 0 `i `l `ul ]
+[e :U 450 ]
+"592
+[e = . *U _HostIP 0 . . _ResolvedInfo 0 0 ]
+"593
+[e ) . `E208 1 ]
+[e $UE 403  ]
+"595
+[e :U 451 ]
+"597
+[e $ ! >= -> F5328 `ui -> 2 `ui 452  ]
+"598
+{
+"600
+[e = . *U _HostIP 0 -> -> -> 0 `i `l `ul ]
+"601
+[e ) . `E208 1 ]
+[e $UE 403  ]
+"602
+}
+[e :U 452 ]
+"603
+[e ++ F5328 -> -> 1 `i `uc ]
+"606
+[e $ ! != . . _AppConfig 4 0 -> -> 0 `i `ul 453  ]
+"607
+{
+"608
+[e =^ . . _AppConfig 3 0 . . _AppConfig 4 0 ]
+"609
+[e =^ . . _AppConfig 4 0 . . _AppConfig 3 0 ]
+"610
+[e =^ . . _AppConfig 3 0 . . _AppConfig 4 0 ]
+"613
+[e = F5327 -> -> 0 `i `uc ]
+"614
+[e $ ! != -> _MySocket `ui -> 255 `ui 454  ]
+"615
+{
+"616
+[e ( _UDPClose (1 _MySocket ]
+"617
+[e = _MySocket -> -> 255 `ui `uc ]
+"618
+}
+[e :U 454 ]
+"619
+[e = _smDNS . `E5288 1 ]
+"620
+}
+[e :U 453 ]
+"622
+[e $U 404  ]
+"624
+}
+[e $U 404  ]
+"358
+[e :U 405 ]
+[e [\ _smDNS , $ . `E5288 0 406
+ , $ . `E5288 1 407
+ , $ . `E5288 2 408
+ , $ . `E5288 3 411
+ , $ . `E5288 4 413
+ , $ . `E5288 5 417
+ , $ . `E5288 7 449
+ , $ . `E5288 6 451
+ 404 ]
+"624
+[e :U 404 ]
+"626
+[e ) . `E208 0 ]
+[e $UE 403  ]
+"627
+[e :UE 403 ]
+}
+"650
+[v _DNSPutString `(v 1 sf1`*uc ]
+{
+[e :U _DNSPutString ]
+[v _String `*uc 1 r1 ]
+[f ]
+"651
+[v _RightPtr `*uc 1 a ]
+"652
+[v _i `uc 1 a ]
+"653
+[v _Len `uc 1 a ]
+"655
+[e = _RightPtr _String ]
+"657
+[e :U 457 ]
+"658
+{
+"659
+[e :U 461 ]
+"660
+{
+"661
+[e = _i *U ++ _RightPtr * -> -> 1 `i `x -> -> # *U _RightPtr `i `x ]
+"662
+}
+[e $ && && && && != -> _i `ui -> 0 `ui != -> _i `ui -> 46 `ui != -> _i `ui -> 47 `ui != -> _i `ui -> 44 `ui != -> _i `ui -> 62 `ui 461  ]
+[e :U 460 ]
+"666
+[e = _Len -> - / - -> _RightPtr `x -> _String `x -> -> # *U _RightPtr `i `x -> -> 1 `i `x `uc ]
+"667
+[e ( _UDPPut (1 _Len ]
+"668
+[e =+ _String * -> + -> ( _UDPPutArray (2 , _String -> _Len `us `ui -> -> 1 `i `ui `ux -> -> # *U _String `ui `ux ]
+"670
+[e $ ! || || || == -> _i `ui -> 0 `ui == -> _i `ui -> 47 `ui == -> _i `ui -> 44 `ui == -> _i `ui -> 62 `ui 462  ]
+"671
+[e $U 458  ]
+[e :U 462 ]
+"672
+}
+[e :U 456 ]
+"657
+[e $U 457  ]
+[e :U 458 ]
+"675
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"676
+[e :UE 455 ]
+}
+"703
+[v _DNSPutROMString `(v 1 sf1`*Cuc ]
+{
+[e :U _DNSPutROMString ]
+[v _String `*Cuc 1 r1 ]
+[f ]
+"704
+[v _RightPtr `*Cuc 1 a ]
+"705
+[v _i `uc 1 a ]
+"706
+[v _Len `uc 1 a ]
+"708
+[e = _RightPtr _String ]
+"710
+[e :U 465 ]
+"711
+{
+"712
+[e :U 469 ]
+"713
+{
+"714
+[e = _i *U ++ _RightPtr * -> -> 1 `i `x -> -> # *U _RightPtr `i `x ]
+"715
+}
+[e $ && && && && != -> _i `ui -> 0 `ui != -> _i `ui -> 46 `ui != -> _i `ui -> 47 `ui != -> _i `ui -> 44 `ui != -> _i `ui -> 62 `ui 469  ]
+[e :U 468 ]
+"719
+[e = _Len -> - / - -> _RightPtr `x -> _String `x -> -> # *U _RightPtr `i `x -> -> 1 `i `x `uc ]
+"720
+[e ( _UDPPut (1 _Len ]
+"721
+[e =+ _String * -> + -> ( _UDPPutROMArray (2 , _String -> _Len `us `ui -> -> 1 `i `ui `ux -> -> # *U _String `ui `ux ]
+"723
+[e $ ! || || || == -> _i `ui -> 0 `ui == -> _i `ui -> 47 `ui == -> _i `ui -> 44 `ui == -> _i `ui -> 62 `ui 470  ]
+"724
+[e $U 466  ]
+[e :U 470 ]
+"725
+}
+[e :U 464 ]
+"710
+[e $U 465  ]
+[e :U 466 ]
+"728
+[e ( _UDPPut (1 -> -> 0 `i `uc ]
+"729
+[e :UE 463 ]
+}
+"757
+[v _DNSDiscardName `(v 1 sf ]
+{
+[e :U _DNSDiscardName ]
+[f ]
+"758
+[v _i `uc 1 a ]
+"760
+[e :U 473 ]
+"761
+{
+"764
+[e $ ! ! != -> ( _UDPGet (1 &U _i `i -> -> -> 0 `i `E208 `i 475  ]
+"765
+[e $UE 471  ]
+[e :U 475 ]
+"768
+[e $ ! == & -> _i `ui -> 192 `ui -> 192 `ui 476  ]
+"769
+{
+"770
+[e ( _UDPGet (1 &U _i ]
+"771
+[e $UE 471  ]
+"772
+}
+[e :U 476 ]
+"775
+[e $ ! == -> _i `ui -> 0 `ui 477  ]
+"776
+[e $UE 471  ]
+[e :U 477 ]
+"779
+[e ( _UDPGetArray (2 , -> -> 0 `i `*uc -> _i `us ]
+"780
+}
+[e :U 472 ]
+"760
+[e $U 473  ]
+[e :U 474 ]
+"781
+[e :UE 471 ]
+}

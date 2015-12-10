@@ -1,0 +1,86 @@
+     1: //
+     2: // Copyright (C) 2012 Telldus Technologies AB. All rights reserved.
+     3: //
+     4: // Copyright: See COPYING file that comes with this distribution
+     5: //
+     6: //
+     7: 
+     8: #include <htc.h>
+     9: #include "TCPIP Stack/TCPIP.h"
+    10: 
+    11: #include "discovery.h"
+    12: #include "common.h"
+    13: 
+    14: #define DISCOVERY_PORT  30303
+    15: extern NODE_INFO remoteNode;
+    16: 
+    17: void discoveryTask() {
+    18:         static enum {
+    19:                 DISCOVERY_HOME = 0,
+    20:                 DISCOVERY_LISTEN,
+    21:                 DISCOVERY_REQUEST_RECEIVED,
+    22:                 DISCOVERY_DISABLED
+    23:         } DiscoverySM = DISCOVERY_HOME;
+    24: 
+    25:         static UDP_SOCKET       MySocket;
+    26:         BYTE i;
+    27: 
+    28:         switch(DiscoverySM) {
+    29:                 case DISCOVERY_HOME:
+    30:                         MySocket = UDPOpen(DISCOVERY_PORT, NULL, DISCOVERY_PORT);
+    31: 
+    32:                         if(MySocket == INVALID_UDP_SOCKET) {
+    33:                                 return;
+    34:                         } else {
+    35:                                 DiscoverySM++;
+    36:                         }
+    37:                         break;
+    38: 
+    39:                 case DISCOVERY_LISTEN:
+    40:                         // Do nothing if no data is waiting
+    41:                         if(!UDPIsGetReady(MySocket)) {
+    42:                                 return;
+    43:                         }
+    44: 
+    45:                         // See if this is a discovery query or reply
+    46:                         UDPGet(&i);
+    47:                         UDPDiscard();
+    48:                         if(i != 'D') {
+    49:                                 return;
+    50:                         }
+    51: 
+    52:                         // We received a discovery request, reply when we can
+    53:                         DiscoverySM++;
+    54: 
+    55:                         // Change the destination to the unicast address of the last received packet
+    56:                         memcpy((void*)&UDPSocketInfo[MySocket].remote.remoteNode, (const void*)&remoteNode, sizeof(remoteNode));
+    57: 
+    58:                         // No break needed.  If we get down here, we are now ready for the DISCOVERY_REQUEST_RECEIVED state
+    59: 
+    60:                 case DISCOVERY_REQUEST_RECEIVED:
+    61:                         if(!UDPIsPutReady(MySocket)) {
+    62:                                 return;
+    63:                         }
+    64: 
+    65:                         UDPPutROMString("TellStickNet:");
+    66:                         // Convert the MAC address bytes to hex (text) and then send it
+    67:                         for(i=0;i<6;++i) {
+    68:                                 UDPPut(btohexa_high(AppConfig.MyMACAddr.v[i]));
+    69:                                 UDPPut(btohexa_low(AppConfig.MyMACAddr.v[i]));
+    70:                         }
+    71:                         UDPPut(':');
+    72:                         UDPPutString(config.secret);
+    73:                         UDPPut(':');
+    74:                         UDPPutROMString(FIRMWARE_VERSION);
+    75: 
+    76:                         // Send the packet
+    77:                         UDPFlush();
+    78: 
+    79:                         // Listen for other discovery requests
+    80:                         DiscoverySM = DISCOVERY_LISTEN;
+    81:                         break;
+    82: 
+    83:                 case DISCOVERY_DISABLED:
+    84:                         break;
+    85:         }
+    86: }

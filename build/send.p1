@@ -1,0 +1,297 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+"15 /home/andresol/tellstick-net/firmware/send.c
+[v _FACTOR `Ci 1 e ]
+"16 /home/andresol/tellstick-net/firmware/send.c
+[v _times `ui -> 4 `i e ]
+"18 /home/andresol/tellstick-net/firmware/send.c
+[v _sendPacket `uc -> 200 `i e ]
+"2857 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T1CKPS1 `Vb 0 e@32365 ]
+"2856 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T1CKPS0 `Vb 0 e@32364 ]
+"2850 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR1CS `Vb 0 e@32361 ]
+"2849 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR1ON `Vb 0 e@32360 ]
+"1864 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR1IE `Vb 0 e@31976 ]
+"1790 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISF1 `Vb 0 e@31929 ]
+"1576 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _LATF1 `Vb 0 e@31857 ]
+"1895 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR1IF `Vb 0 e@31984 ]
+"2888 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR1H `Vuc 0 e@4047 ]
+"2884 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR1L `Vuc 0 e@4046 ]
+"1474 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _LATA4 `Vb 0 e@31820 ]
+[i _FACTOR
+"15 /home/andresol/tellstick-net/firmware/send.c
+-> 103 `i
+]
+"20
+[v _initSender `(v 1 ef ]
+{
+[e :U _initSender ]
+[f ]
+"29
+[e = _T1CKPS1 -> -> 0 `i `b ]
+"30
+[e = _T1CKPS0 -> -> 0 `i `b ]
+"32
+[e = _TMR1CS -> -> 0 `i `b ]
+"34
+[e = _TMR1ON -> -> 0 `i `b ]
+"35
+[e = _TMR1IE -> -> 0 `i `b ]
+"38
+[e = _TRISF1 -> -> 0 `i `b ]
+"39
+[e = _LATF1 -> -> 0 `i `b ]
+"40
+[e :UE 322 ]
+}
+"42
+[v _sendCommand `(v 1 ef ]
+{
+[e :U _sendCommand ]
+[f ]
+"43
+[v _j `*uc 1 a ]
+"44
+[v _nextTimer `ui 1 a ]
+"45
+[v _status `uc 1 a ]
+[e = _status -> -> 0 `i `uc ]
+"47
+[e = _TMR1ON -> -> 0 `i `b ]
+"54
+[e = _TMR1IF -> -> 1 `i `b ]
+"56
+{
+[e = _j &U _sendPacket ]
+[e $U 327  ]
+[e :U 324 ]
+{
+"57
+[e $ ! == -> *U _j `i -> 1 `i 328  ]
+{
+"58
+[e = _status -> ~ -> _status `i `uc ]
+"59
+[e $U 326  ]
+"60
+}
+[e :U 328 ]
+"61
+[e = _nextTimer - -> 65535 `ui -> * -> *U _j `i _FACTOR `ui ]
+"63
+[e $U 329  ]
+[e :U 330 ]
+{
+}
+[e :U 329 ]
+[e $ ! _TMR1IF 330  ]
+[e :U 331 ]
+"65
+[e = _TMR1ON -> -> 0 `i `b ]
+"66
+[e = _TMR1H *U + -> &U _nextTimer `*uc * -> -> 1 `i `x -> -> # *U -> &U _nextTimer `*uc `i `x ]
+"67
+[e = _TMR1L *U + -> &U _nextTimer `*uc * -> -> 0 `i `x -> -> # *U -> &U _nextTimer `*uc `i `x ]
+"68
+[e = _TMR1IF -> -> 0 `i `b ]
+"69
+[e = _status -> ~ -> _status `i `uc ]
+"70
+[e = _LATA4 -> _status `b ]
+"71
+[e = _TMR1ON -> -> 1 `i `b ]
+"72
+}
+"56
+[e :U 326 ]
+[e =+ _j * -> -> 1 `i `x -> -> # *U _j `i `x ]
+[e :U 327 ]
+[e $ != -> *U _j `ui -> 0 `ui 324  ]
+[e :U 325 ]
+"72
+}
+"73
+[e $U 332  ]
+[e :U 333 ]
+{
+}
+[e :U 332 ]
+[e $ ! _TMR1IF 333  ]
+[e :U 334 ]
+"74
+[e = _LATA4 -> -> 0 `i `b ]
+"75
+[e :UE 323 ]
+}
+"77
+[v _sendExtendedCommand `(v 1 ef ]
+{
+[e :U _sendExtendedCommand ]
+[f ]
+"78
+[v _j `*uc 1 a ]
+"79
+[v _i `uc 1 a ]
+"80
+[v _pulses `uc 1 a ]
+"81
+[v _time `uc 1 a ]
+"82
+[v _timePointer `uc 1 a ]
+"83
+[v _status `uc 1 a ]
+[e = _status -> -> 0 `i `uc ]
+"84
+[v _nextTimer `ui 1 a ]
+"86
+[v _txt `uc -> 4 `i a ]
+"89
+[e = _j &U _sendPacket ]
+"90
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `i -> 4 `i 336  ]
+[e $U 337  ]
+[e :U 336 ]
+{
+"91
+[e $ ! == -> *U _j `i -> 1 `i 339  ]
+{
+"92
+[e = *U + &U _times * -> _i `ux -> -> # *U &U _times `ui `ux -> 65535 `ui ]
+"93
+}
+[e $U 340  ]
+[e :U 339 ]
+{
+"94
+[e = *U + &U _times * -> _i `ux -> -> # *U &U _times `ui `ux - -> 65535 `ui -> * -> *U _j `i _FACTOR `ui ]
+"95
+}
+[e :U 340 ]
+"96
+[e ++ _j * -> -> 1 `i `x -> -> # *U _j `i `x ]
+"97
+}
+"90
+[e =+ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> 4 `i 336  ]
+[e :U 337 ]
+"97
+}
+"99
+[e = _pulses *U _j ]
+"100
+[e ++ _j * -> -> 1 `i `x -> -> # *U _j `i `x ]
+"102
+[e = _TMR1ON -> -> 0 `i `b ]
+"103
+[e = _TMR1IF -> -> 1 `i `b ]
+"105
+{
+[e $ > -> _pulses `i -> 0 `i 341  ]
+[e $U 342  ]
+[e :U 341 ]
+{
+"106
+[e = _time *U _j ]
+"108
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `i -> 4 `i 344  ]
+[e $U 345  ]
+[e :U 344 ]
+{
+"109
+[e = _timePointer -> >> & -> _time `i -> 192 `i -> 6 `i `uc ]
+"110
+[e = _nextTimer *U + &U _times * -> _timePointer `ux -> -> # *U &U _times `ui `ux ]
+"111
+[e =<< _time -> 2 `i ]
+"112
+[e $ ! == _nextTimer -> 65535 `ui 347  ]
+{
+"113
+[e = _status -> ~ -> _status `i `uc ]
+"114
+[e $U 346  ]
+"115
+}
+[e :U 347 ]
+"116
+[e $U 348  ]
+[e :U 349 ]
+{
+}
+[e :U 348 ]
+[e $ ! _TMR1IF 349  ]
+[e :U 350 ]
+"118
+[e = _TMR1ON -> -> 0 `i `b ]
+"119
+[e = _TMR1IF -> -> 0 `i `b ]
+"120
+[e = _TMR1H *U + -> &U _nextTimer `*uc * -> -> 1 `i `x -> -> # *U -> &U _nextTimer `*uc `i `x ]
+"121
+[e = _TMR1L *U + -> &U _nextTimer `*uc * -> -> 0 `i `x -> -> # *U -> &U _nextTimer `*uc `i `x ]
+"122
+[e = _status -> ~ -> _status `i `uc ]
+"123
+[e = _LATA4 -> _status `b ]
+"124
+[e = _TMR1ON -> -> 1 `i `b ]
+"126
+[e -- _pulses -> -> 1 `i `uc ]
+"127
+[e $ ! < -> _pulses `i -> 1 `i 351  ]
+{
+"128
+[e $U 345  ]
+"129
+}
+[e :U 351 ]
+"130
+}
+"108
+[e :U 346 ]
+[e =+ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> 4 `i 344  ]
+[e :U 345 ]
+"130
+}
+"131
+}
+"105
+[e ++ _j * -> -> 1 `i `x -> -> # *U _j `i `x ]
+[e $ > -> _pulses `i -> 0 `i 341  ]
+[e :U 342 ]
+"131
+}
+"132
+[e $U 352  ]
+[e :U 353 ]
+{
+}
+[e :U 352 ]
+[e $ ! _TMR1IF 353  ]
+[e :U 354 ]
+"133
+[e = _LATA4 -> -> 0 `i `b ]
+"134
+[e :UE 335 ]
+}

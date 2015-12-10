@@ -1,0 +1,148 @@
+     1: /*********************************************************************
+     2:  *
+     3:  *      Reboot Module
+     4:  *  Module for Microchip TCP/IP Stack
+     5:  *       -Remotely resets the PIC
+     6:  *       -Reference: Internet Bootloader documentation
+     7:  *
+     8:  *********************************************************************
+     9:  * FileName:        Reboot.c
+    10:  * Dependencies:    UDP
+    11:  * Processor:       PIC18, PIC24F, PIC24H, dsPIC30F, dsPIC33F, PIC32
+    12:  * Compiler:        Microchip C32 v1.05 or higher
+    13:  *                                      Microchip C30 v3.12 or higher
+    14:  *                                      Microchip C18 v3.30 or higher
+    15:  *                                      HI-TECH PICC-18 PRO 9.63PL2 or higher
+    16:  * Company:         Microchip Technology, Inc.
+    17:  *
+    18:  * Software License Agreement
+    19:  *
+    20:  * Copyright (C) 2002-2009 Microchip Technology Inc.  All rights
+    21:  * reserved.
+    22:  *
+    23:  * Microchip licenses to you the right to use, modify, copy, and
+    24:  * distribute:
+    25:  * (i)  the Software when embedded on a Microchip microcontroller or
+    26:  *      digital signal controller product ("Device") which is
+    27:  *      integrated into Licensee's product; or
+    28:  * (ii) ONLY the Software driver source files ENC28J60.c, ENC28J60.h,
+    29:  *              ENCX24J600.c and ENCX24J600.h ported to a non-Microchip device
+    30:  *              used in conjunction with a Microchip ethernet controller for
+    31:  *              the sole purpose of interfacing with the ethernet controller.
+    32:  *
+    33:  * You should refer to the license agreement accompanying this
+    34:  * Software for additional information regarding your rights and
+    35:  * obligations.
+    36:  *
+    37:  * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT
+    38:  * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+    39:  * LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+    40:  * PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL
+    41:  * MICROCHIP BE LIABLE FOR ANY INCIDENTAL, SPECIAL, INDIRECT OR
+    42:  * CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF
+    43:  * PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES, ANY CLAIMS
+    44:  * BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE
+    45:  * THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION, OR OTHER
+    46:  * SIMILAR COSTS, WHETHER ASSERTED ON THE BASIS OF CONTRACT, TORT
+    47:  * (INCLUDING NEGLIGENCE), BREACH OF WARRANTY, OR OTHERWISE.
+    48:  *
+    49:  *
+    50:  * Author               Date            Comment
+    51:  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    52:  * Howard Schlunder     02/22/07        Original
+    53:  ********************************************************************/
+    54: #define __REBOOT_C
+    55: 
+    56: #include "TCPIPConfig.h"
+    57: 
+    58: #if defined(STACK_USE_REBOOT_SERVER)
+    59: 
+    60: #include "TCPIP Stack/TCPIP.h"
+    61: 
+    62: 
+    63: #define REBOOT_PORT             69      // UDP TFTP port
+    64: 
+    65: 
+    66: // For improved security, you might want to limit reboot capabilities 
+    67: // to only users on the same IP subnet.  Define REBOOT_SAME_SUBNET_ONLY 
+    68: // to enable this access restriction.
+    69: #define REBOOT_SAME_SUBNET_ONLY
+    70: 
+    71: 
+    72: extern NODE_INFO remoteNode;
+    73: 
+    74: /*********************************************************************
+    75:  * Function:        void RebootTask(void)
+    76:  *
+    77:  * PreCondition:    Stack is initialized()
+    78:  *
+    79:  * Input:           None
+    80:  *
+    81:  * Output:          None
+    82:  *
+    83:  * Side Effects:    None
+    84:  *
+    85:  * Overview:        Checks for incomming traffic on port 69.  
+    86:  *                                      Resets the PIC if a 'R' is received.
+    87:  *
+    88:  * Note:            This module is primarily for use with the 
+    89:  *                                      Ethernet bootloader.  By resetting, the Ethernet 
+    90:  *                                      bootloader can take control for a second and let
+    91:  *                                      a firmware upgrade take place.
+    92:  ********************************************************************/
+    93: void RebootTask(void)
+    94: {
+    95:         static UDP_SOCKET       MySocket = INVALID_UDP_SOCKET;
+    96:         struct
+    97:         {
+    98:                 BYTE vMACAddress[6];
+    99:                 DWORD dwIPAddress;
+   100:                 WORD wChecksum;
+   101:         } BootloaderAddress;
+   102:         
+   103:         if(MySocket == INVALID_UDP_SOCKET)
+   104:                 MySocket = UDPOpenEx(0,UDP_OPEN_SERVER,REBOOT_PORT,INVALID_UDP_PORT);
+   105: //              MySocket = UDPOpen(REBOOT_PORT, NULL, INVALID_UDP_PORT);
+   106: 
+   107:         if(MySocket == INVALID_UDP_SOCKET)
+   108:                 return;
+   109: 
+   110:         // Do nothing if no data is waiting
+   111:         if(!UDPIsGetReady(MySocket))
+   112:                 return;
+   113: 
+   114:         #if defined(REBOOT_SAME_SUBNET_ONLY)
+   115:                 // Respond only to name requests sent to us from nodes on the same subnet
+   116:         if((remoteNode.IPAddr.Val & AppConfig.MyMask.Val) != (AppConfig.MyIPAddr.Val & AppConfig.MyMask.Val))
+   117:                 {
+   118:                         UDPDiscard();
+   119:                         return;
+   120:                 }
+   121:         #endif
+   122: 
+   123:         // Get our MAC address, IP address, and compute a checksum of them 
+   124:         memcpy((void*)&BootloaderAddress.vMACAddress[0], (void*)&AppConfig.MyMACAddr.v[0], sizeof(AppConfig.MyMACAddr));
+   125:         BootloaderAddress.dwIPAddress = AppConfig.MyIPAddr.Val;
+   126:         BootloaderAddress.wChecksum = CalcIPChecksum((BYTE*)&BootloaderAddress, sizeof(BootloaderAddress) - sizeof(BootloaderAddress.wChecksum));
+   127:         
+   128:         // To enter the bootloader, we need to clear the /POR bit in RCON.
+   129:         // Otherwise, the bootloader will immediately hand off execution 
+   130:         // to us.
+   131:         #if defined(USE_LCD)
+   132:                 strcpypgm2ram((char*)LCDText, "Bootloader Reset");
+   133:                 LCDUpdate();
+   134:         #endif
+   135:         RCONbits.POR = 0;
+   136:         #if defined(__18CXX)
+   137:         {
+   138:                 WORD_VAL wvPROD;
+   139: 
+   140:                 wvPROD.Val = ((WORD)&BootloaderAddress);
+   141:                 PRODH = wvPROD.v[1];
+   142:                 PRODL = wvPROD.v[0];
+   143:         }
+   144:         #endif
+   145:         Reset();
+   146: }
+   147: 
+   148: #endif //#if defined(STACK_USE_REBOOT_SERVER)

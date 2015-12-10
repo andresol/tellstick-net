@@ -1,0 +1,178 @@
+     1: #include "oregon.h"
+     2: #include "receive.h"
+     3: #include "message.h"
+     4: #include <htc.h>
+     5: #include <stdio.h>
+     6: #include <string.h>
+     7: 
+     8: enum {
+     9:         SM_WAIT = 0,
+    10:         SM_PARSE_ID,
+    11:         SM_PARSE_DATA
+    12: } static state = SM_WAIT;
+    13: 
+    14: #define BIG_PULSE(x) (x>=12 && x<=22)
+    15: #define SMALL_PULSE(x) (x>=4 && x<=13)
+    16: 
+    17: #define MORE_DATA_NEEDED -1
+    18: #define INVALID_DATA -2
+    19: 
+    20: static unsigned char byteCnt = 0;
+    21: static unsigned char bitCnt = 0;
+    22: static unsigned char totByteCnt = 0;
+    23: signed int byteLength = -1;
+    24: 
+    25: void clearOregon() {
+    26:         byteCnt = 0;
+    27:         bitCnt = 0;
+    28:         totByteCnt = 0;
+    29:         state = SM_WAIT;
+    30:         byteLength = -1;
+    31: }
+    32: 
+    33: signed char oregonBit(unsigned char level, unsigned char count) {
+    34:         static bit b1 = 0;
+    35: 
+    36:         if (bitCnt == 0) {
+    37:                 //First pulse must be small
+    38:                 if (!SMALL_PULSE(count)) {
+    39:                         return INVALID_DATA;
+    40:                 }
+    41:                 bitCnt = 1;
+    42: 
+    43:         } else if (bitCnt == 1) {
+    44:                 //Second pulse must be long
+    45:                 if (!BIG_PULSE(count) && totByteCnt!=byteLength){ //special check - last byte might have strange values
+    46:                         bitCnt = 0;
+    47:                         return INVALID_DATA;
+    48:                 }
+    49: 
+    50:                 b1 = level;
+    51:                 bitCnt = 2;
+    52:                 return b1;
+    53: 
+    54:         } else if (bitCnt == 2) {
+    55:                 //Prepare for next bit
+    56:                 if (level && SMALL_PULSE(count)) {
+    57:                         //Clean start
+    58:                         bitCnt = 0;
+    59:                 } else if (BIG_PULSE(count)) {
+    60:                         //Combined bit
+    61:                         bitCnt = 1;
+    62:                 } else if (SMALL_PULSE(count)) {
+    63:                         //Clean start
+    64:                         bitCnt = 0;
+    65:                 }
+    66:                 return MORE_DATA_NEEDED;
+    67:         }
+    68: 
+    69:         return MORE_DATA_NEEDED;
+    70: }
+    71: 
+    72: signed int oregonByte(unsigned char level, unsigned char count) {
+    73:         signed char b1 = oregonBit(level, count);
+    74:         static unsigned char byte = 0;
+    75:         
+    76:         if (b1 == INVALID_DATA) {
+    77:                 return INVALID_DATA;
+    78:         } else if (b1 == MORE_DATA_NEEDED) {
+    79:                 return MORE_DATA_NEEDED;
+    80:         }
+    81:         byte >>= 1;
+    82:         if (b1) {
+    83:                 byte |= (1<<7);
+    84:         }
+    85:         ++totByteCnt;
+    86:         ++byteCnt;
+    87:         if (byteCnt < 8) {
+    88:                 return MORE_DATA_NEEDED;
+    89:         }
+    90:         byteCnt=0;
+    91:         return byte;
+    92: }
+    93: 
+    94: void streamOregon(unsigned char level, unsigned char count) {
+    95:         static unsigned char cnt = 0;
+    96:         static unsigned int id = 0;
+    97:         static signed int b1;
+    98:         static unsigned char length = 0;
+    99:         static unsigned char buffer[8];
+   100: 
+   101:         if (level) {
+   102:                 count+=3;
+   103:         } else {
+   104:                 count-=3;
+   105:         }
+   106: 
+   107:         switch(state) {
+   108:                 case SM_WAIT:
+   109:                         if (BIG_PULSE(count)) {
+   110:                                 ++cnt;
+   111:                                 break;
+   112:                         } else {
+   113:                         }
+   114:                         if (SMALL_PULSE(count)) {
+   115:                                 if (cnt > 25) {
+   116:                                         state=SM_PARSE_ID;
+   117:                                         id = 0;
+   118:                                 }
+   119:                                 cnt = 0;
+   120:                         }
+   121:                         break;
+   122: 
+   123:                 case SM_PARSE_ID:
+   124:                         b1 = oregonByte(level, count);
+   125:                         if (b1 == INVALID_DATA) {
+   126:                                 clearOregon();
+   127:                                 break;
+   128:                         } else if (b1 == MORE_DATA_NEEDED) {
+   129:                                 break;
+   130:                         } else {
+   131:                                 if (id == 0) {
+   132:                                         id = b1 << 8;
+   133:                                 } else {
+   134:                                         id |= b1;
+   135:                                         switch (id) {
+   136:                                                 case 0xEA4C:
+   137:                                                         length = 6;
+   138:                                                         byteLength = 63;
+   139:                                                         break;
+   140:                                                 case 0x0A4D:
+   141:                                                 case 0x1A2D:
+   142:                                                         length = 8;
+   143:                                                         byteLength = 79;
+   144:                                                         break;
+   145:                                                 default:
+   146:                                                         clearOregon();
+   147:                                                         return;
+   148:                                         }
+   149:                                         state = SM_PARSE_DATA;
+   150:                                         cnt = 0;
+   151:                                 }
+   152:                         }
+   153:                         break;
+   154: 
+   155:                 case SM_PARSE_DATA:
+   156:                         b1 = oregonByte(level, count);
+   157:                         if (b1 == INVALID_DATA) {
+   158:                                 clearOregon();
+   159:                                 break;
+   160:                         } else if (b1 == MORE_DATA_NEEDED) {
+   161:                                 break;
+   162:                         }
+   163:                         buffer[cnt] = b1;
+   164:                         ++cnt;
+   165:                         --length;
+   166:                         if (length == 0) {
+   167:                                 clearOregon();
+   168:                                 rfMessageBeginRaw();
+   169:                                         rfMessageAddString("class", "sensor");
+   170:                                         rfMessageAddString("protocol", "oregon");
+   171:                                         rfMessageAddLong("model", id);
+   172:                                         rfMessageAddHexString("data", buffer, cnt);
+   173:                                 rfMessageEnd(1);
+   174:                         }
+   175: 
+   176:                         break;
+   177:         }
+   178: }

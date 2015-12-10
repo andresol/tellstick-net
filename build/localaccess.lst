@@ -1,0 +1,50 @@
+     1: 
+     2: #include <htc.h>
+     3: #include "TCPIP Stack/TCPIP.h"
+     4: 
+     5: #include "discovery.h"
+     6: #include "common.h"
+     7: #include "livemessage.h"
+     8: #include "tellsticknet.h"
+     9: 
+    10: #define LOCAL_ACCESS_PORT       42314
+    11: 
+    12: UDP_SOCKET localSocket;
+    13: 
+    14: void localAccessTask() {
+    15:         static enum {
+    16:                 LA_RESET = 0,
+    17:                 LA_LISTEN
+    18:         } state = LA_RESET;
+    19: 
+    20:         BYTE ch;
+    21: 
+    22:         switch(state) {
+    23:                 case LA_RESET:
+    24:                         localSocket = UDPOpen(LOCAL_ACCESS_PORT, NULL, LOCAL_ACCESS_PORT);
+    25: 
+    26:                         if(localSocket == INVALID_UDP_SOCKET) {
+    27:                                 return;
+    28:                         } else {
+    29:                                 state=LA_LISTEN;
+    30:                         }
+    31:                         break;
+    32: 
+    33:                 case LA_LISTEN:
+    34:                         // Do nothing if no data is waiting
+    35:                         if(!UDPIsGetReady(localSocket)) {
+    36:                                 return;
+    37:                         }
+    38: 
+    39:                         // Read all data
+    40:                         LMClear();
+    41:                         while(UDPIsGetReady(localSocket)) {
+    42:                                 UDPGet(&ch);
+    43:                                 LMAppendChar(ch);
+    44:                         }
+    45:                         //Discard rest just to be sure
+    46:                         UDPDiscard();
+    47:                         handleMessage();
+    48:                         LMClear();
+    49:         }
+    50: }

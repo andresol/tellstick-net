@@ -1,0 +1,683 @@
+     1: /*********************************************************************
+     2:  *
+     3:  *      Address Resolution Protocol (ARP) Client and Server
+     4:  *  Module for Microchip TCP/IP Stack
+     5:  *       -Provides IP address to Ethernet MAC address translation
+     6:  *       -Reference: RFC 826
+     7:  *
+     8:  *********************************************************************
+     9:  * FileName:        ARP.c
+    10:  * Dependencies:    string.h
+    11:  *                  StackTsk.h
+    12:  *                  Helpers.h
+    13:  *                  ARP.h
+    14:  *                  MAC.h
+    15:  * Processor:       PIC18, PIC24F, PIC24H, dsPIC30F, dsPIC33F, PIC32
+    16:  * Compiler:        Microchip C32 v1.05 or higher
+    17:  *                                      Microchip C30 v3.12 or higher
+    18:  *                                      Microchip C18 v3.30 or higher
+    19:  *                                      HI-TECH PICC-18 PRO 9.63PL2 or higher
+    20:  * Company:         Microchip Technology, Inc.
+    21:  *
+    22:  * Software License Agreement
+    23:  *
+    24:  * Copyright (C) 2002-2009 Microchip Technology Inc.  All rights
+    25:  * reserved.
+    26:  *
+    27:  * Microchip licenses to you the right to use, modify, copy, and
+    28:  * distribute:
+    29:  * (i)  the Software when embedded on a Microchip microcontroller or
+    30:  *      digital signal controller product ("Device") which is
+    31:  *      integrated into Licensee's product; or
+    32:  * (ii) ONLY the Software driver source files ENC28J60.c, ENC28J60.h,
+    33:  *              ENCX24J600.c and ENCX24J600.h ported to a non-Microchip device
+    34:  *              used in conjunction with a Microchip ethernet controller for
+    35:  *              the sole purpose of interfacing with the ethernet controller.
+    36:  *
+    37:  * You should refer to the license agreement accompanying this
+    38:  * Software for additional information regarding your rights and
+    39:  * obligations.
+    40:  *
+    41:  * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT
+    42:  * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+    43:  * LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+    44:  * PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL
+    45:  * MICROCHIP BE LIABLE FOR ANY INCIDENTAL, SPECIAL, INDIRECT OR
+    46:  * CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF
+    47:  * PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES, ANY CLAIMS
+    48:  * BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE
+    49:  * THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION, OR OTHER
+    50:  * SIMILAR COSTS, WHETHER ASSERTED ON THE BASIS OF CONTRACT, TORT
+    51:  * (INCLUDING NEGLIGENCE), BREACH OF WARRANTY, OR OTHERWISE.
+    52:  *
+    53:  *
+    54:  * Author               Date    Comment
+    55:  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    56:  * Nilesh Rajbharti     5/1/01  Original        (Rev 1.0)
+    57:  * Nilesh Rajbharti     2/9/02  Cleanup
+    58:  * Nilesh Rajbharti     5/22/02 Rev 2.0 (See version.log for detail)
+    59:  * Howard Schlunder             8/17/06 Combined ARP.c and ARPTsk.c into ARP.c; 
+    60:  *                                                              rewrote some of it to look more linear
+    61:  ********************************************************************/
+    62: #define __ARP_C
+    63: 
+    64: #include "TCPIP Stack/TCPIP.h"
+    65: 
+    66: /****************************************************************************
+    67:   Section:
+    68:         Constants and Variables
+    69:   ***************************************************************************/
+    70: #ifdef STACK_USE_ZEROCONF_LINK_LOCAL
+    71: //#define ARP_OPERATION_REQ       0x01u         // Operation code indicating an ARP Request
+    72: //#define ARP_OPERATION_RESP      0x02u         // Operation code indicating an ARP Response
+    73: 
+    74: #define HW_ETHERNET             (0x0001u)       // ARP Hardware type as defined by IEEE 802.3
+    75: #define ARP_IP                  (0x0800u)       // ARP IP packet type as defined by IEEE 802.3
+    76: #endif
+    77: 
+    78: #ifdef STACK_CLIENT_MODE
+    79: static NODE_INFO Cache;                                         // Cache for one ARP response
+    80: #endif
+    81: 
+    82: #ifdef STACK_USE_ZEROCONF_LINK_LOCAL
+    83: #define MAX_REG_APPS            2           // MAX num allowed registrations of Modules/Apps
+    84: static struct arp_app_callbacks reg_apps[MAX_REG_APPS]; // Call-Backs storage for MAX of two Modules/Apps
+    85: /*
+    86: // ARP packet structure
+    87: typedef struct __attribute__((aligned(2), packed))
+    88: {
+    89:     WORD        HardwareType;
+    90:     WORD        Protocol;
+    91:     BYTE        MACAddrLen;
+    92:     BYTE        ProtocolLen;
+    93:     WORD        Operation;
+    94:     MAC_ADDR    SenderMACAddr;
+    95:     IP_ADDR     SenderIPAddr;
+    96:     MAC_ADDR    TargetMACAddr;
+    97:     IP_ADDR     TargetIPAddr;
+    98: } ARP_PACKET;
+    99: */
+   100: #endif
+   101: 
+   102: 
+   103: /****************************************************************************
+   104:   Section:
+   105:         Helper Function Prototypes
+   106:   ***************************************************************************/
+   107: 
+   108: static BOOL ARPPut(ARP_PACKET* packet);
+   109: 
+   110: 
+   111: /****************************************************************************
+   112:   Section:
+   113:         Function Implementations
+   114:   ***************************************************************************/
+   115: #ifdef STACK_USE_ZEROCONF_LINK_LOCAL
+   116: /************ User Application APIs ****************************************/
+   117: 
+   118: /*****************************************************************************
+   119:   Function:
+   120:         CHAR ARPRegisterCallbacks(struct arp_app_callbacks *app)
+   121: 
+   122:   Summary:
+   123:         Registering callback with ARP module to get notified about certian events.
+   124:         
+   125:   Description:
+   126:         This function allows end user application to register with callbacks, which
+   127:     will be called by ARP module to give notification to user-application about 
+   128:     events occurred at ARP layer. For ex: when a ARP-packet is received, which is
+   129:     conflicting with our own pair of addresses (MAC-Address and IP-address).
+   130:     This is an extension for zeroconf protocol implementation (ZeroconfLL.c)
+   131: 
+   132:   Precondition:
+   133:         None
+   134: 
+   135:   Parameters:
+   136:         app - ARP-Application callbacks structure supplied by user-application 
+   137:     
+   138:   Returns:
+   139:     id > 0 - Returns non-negative value that represents the id of registration
+   140:              The same id needs to be used in de-registration
+   141:     -1     - When registered applications exceed MAX_REG_APPS and there is no
+   142:              free slot for registration
+   143:  
+   144:   ***************************************************************************/
+   145: CHAR ARPRegisterCallbacks(struct arp_app_callbacks *app)
+   146: {
+   147:     BYTE i;
+   148:     for(i=0; i<MAX_REG_APPS; i++)
+   149:     {
+   150:         if(!reg_apps[i].used)
+   151:         {
+   152:             reg_apps[i].ARPPkt_notify = app->ARPPkt_notify;
+   153:             reg_apps[i].used = 1;
+   154:             return (i+1); // Return Code. Should be used in deregister.
+   155:         }
+   156:     }
+   157:     return -1; // No space for registration
+   158: }
+   159: 
+   160: /*****************************************************************************
+   161:   Function:
+   162:         BOOL ARPDeRegisterCallbacks(CHAR reg_id)
+   163: 
+   164:   Summary:
+   165:         De-Registering callbacks with ARP module that are registered previously.
+   166:         
+   167:   Description:
+   168:         This function allows end user-application to de-register with callbacks, 
+   169:     which were registered previously.
+   170:     This is called by user-application, when its no longer interested in 
+   171:     notifications from ARP-Module. This allows the other application to get 
+   172:     registered with ARP-module.   
+   173: 
+   174:   Precondition:
+   175:         None
+   176: 
+   177:   Parameters:
+   178:         reg_id - Registration-id returned in ARPRegisterCallbacks call
+   179:     
+   180:   Returns:
+   181:     TRUE  - On success
+   182:     FALSE - Failure to indicate invalid reg_id  
+   183:   ***************************************************************************/ 
+   184: BOOL ARPDeRegisterCallbacks(CHAR reg_id)
+   185: {
+   186:     if(reg_id <= 0 || reg_id > MAX_REG_APPS)
+   187:         return FALSE;
+   188: 
+   189:     reg_apps[reg_id-1].used = 0; // To indicate free slot for registration
+   190:         return TRUE;
+   191: }
+   192: 
+   193: /*****************************************************************************
+   194:   Function:
+   195:         void ARPSendPkt(IP_ADDR* SrcIPAddr, IP_ADDR* DestIPAddr, int op_req )
+   196: 
+   197:   Summary:
+   198:         Transmits an ARP request/Reply initated by Application or external module.
+   199:         
+   200:   Description:
+   201:         This function transmits and ARP request/reply to determine the hardware
+   202:         address of a given IP address (or) Announce self-address to all nodes in
+   203:     network. Extended for zeroconf protocol. 
+   204: 
+   205:   Precondition:
+   206:         ARP packet is ready in the MAC buffer.
+   207: 
+   208:   Parameters:
+   209:         SrcIPAddr - The Source IP-address 
+   210:     DestIPAddr - The Destination IP-Address
+   211:     op_req     - Operation Request (ARP_REQ/ARP_RESP)
+   212: 
+   213:   Returns:
+   214:     TRUE - The ARP packet was generated properly
+   215:         FALSE - Not possible return value
+   216: 
+   217:   Remarks:
+   218:         This API is to give control over AR-packet to external modules. 
+   219:   ***************************************************************************/
+   220: BOOL ARPSendPkt(DWORD SrcIPAddr, DWORD DestIPAddr, BYTE op_req )
+   221: {
+   222:     ARP_PACKET packet;
+   223: 
+   224:     if(op_req == ARP_REQ)
+   225:         packet.Operation = ARP_OPERATION_REQ;
+   226:     else if (op_req == ARP_RESP) 
+   227:         packet.Operation = ARP_OPERATION_RESP;
+   228:     else
+   229:         return FALSE; // Invalid op-code
+   230: 
+   231:         packet.TargetMACAddr.v[0]   = 0xff;
+   232:         packet.TargetMACAddr.v[1]   = 0xff;
+   233:         packet.TargetMACAddr.v[2]   = 0xff;
+   234:         packet.TargetMACAddr.v[3]   = 0xff;
+   235:         packet.TargetMACAddr.v[4]   = 0xff;
+   236:         packet.TargetMACAddr.v[5]   = 0xff;
+   237: 
+   238:     packet.TargetIPAddr.Val     = DestIPAddr;
+   239:     packet.SenderIPAddr.Val = SrcIPAddr;
+   240: 
+   241:     return ( ARPPut(&packet) );
+   242: }
+   243: 
+   244: /*****************************************************************************
+   245:   Function:
+   246:         void ARPProcessRxPkt(ARP_PACKET* packet)
+   247: 
+   248:   Summary:
+   249:         Processes Received-ARP packet (ARP request/Reply).
+   250:         
+   251:   Description:
+   252:         This function is to pass-on the ARP-packet to registered application,
+   253:     with the notification of Rx-ARP packet. 
+   254: 
+   255:   Precondition:
+   256:         ARP packet is received completely from MAC
+   257: 
+   258:   Parameters:
+   259:         packet - Rx packet to be processed     
+   260: 
+   261:   Returns:
+   262:     None   
+   263:   ***************************************************************************/
+   264: void ARPProcessRxPkt(ARP_PACKET* packet)
+   265: {
+   266:     BYTE pass_on = 0; // Flag to indicate whether need to be forwarded
+   267:     BYTE i;
+   268: 
+   269:     // Probing Stage
+   270:     if(AppConfig.MyIPAddr.Val == 0x00)
+   271:     {
+   272:         pass_on = 1; // Pass to Registered-Application for further processing        
+   273:     }
+   274:     else if(AppConfig.MyIPAddr.Val)
+   275:     {
+   276:         /* Late-conflict */
+   277:         if(packet->SenderIPAddr.Val == AppConfig.MyIPAddr.Val)
+   278:         {
+   279:             pass_on = 1;
+   280:         }
+   281:     }
+   282:     if(pass_on)
+   283:     {
+   284:     
+   285:         for(i =0; i< MAX_REG_APPS; i++)
+   286:         {
+   287:             if(reg_apps[i].used)
+   288:             {
+   289:                 reg_apps[i].ARPPkt_notify(packet->SenderIPAddr.Val,
+   290:                                       packet->TargetIPAddr.Val,
+   291:                                       &packet->SenderMACAddr,
+   292:                                       &packet->TargetMACAddr,
+   293:                                       packet->Operation);                
+   294:             }
+   295:         }
+   296:     }
+   297: }
+   298: #endif
+   299: 
+   300: 
+   301: /*****************************************************************************
+   302:   Function:
+   303:         static BOOL ARPPut(ARP_PACKET* packet)
+   304: 
+   305:   Description:
+   306:         Writes an ARP packet to the MAC.
+   307: 
+   308:   Precondition:
+   309:         None
+   310: 
+   311:   Parameters:
+   312:         packet - A pointer to an ARP_PACKET structure with correct operation
+   313:                                 and target preconfigured.
+   314: 
+   315:   Return Values:
+   316:         TRUE - The ARP packet was generated properly
+   317:         FALSE - Not a possible return value
+   318:   ***************************************************************************/
+   319: static BOOL ARPPut(ARP_PACKET* packet)
+   320: {
+   321:         while(!MACIsTxReady());
+   322:         MACSetWritePtr(BASE_TX_ADDR);
+   323:         
+   324: 
+   325:     packet->HardwareType  = HW_ETHERNET;
+   326:     packet->Protocol      = ARP_IP;
+   327:     packet->MACAddrLen    = sizeof(MAC_ADDR);
+   328:     packet->ProtocolLen   = sizeof(IP_ADDR);
+   329: //    packet->SenderMACAddr = AppConfig.MyMACAddr;      // HI-TECH PICC-18 compiler can't handle this statement, use memcpy() as a workaround
+   330:         memcpy(&packet->SenderMACAddr, (void*)&AppConfig.MyMACAddr, sizeof(packet->SenderMACAddr));
+   331: #ifdef STACK_USE_ZEROCONF_LINK_LOCAL
+   332:     //packet->SenderIPAddr  = AppConfig.MyIPAddr; /* Removed for ZCLL, SenderIPAddr should be filled in */
+   333: #else
+   334:     packet->SenderIPAddr  = AppConfig.MyIPAddr;
+   335: #endif
+   336: 
+   337:     SwapARPPacket(packet);
+   338: 
+   339:     MACPutHeader(&packet->TargetMACAddr, MAC_ARP, sizeof(*packet));
+   340:     MACPutArray((BYTE*)packet, sizeof(*packet));
+   341:     MACFlush();
+   342:         
+   343:         return TRUE;
+   344: }
+   345: 
+   346: 
+   347: 
+   348: /*****************************************************************************
+   349:   Function:
+   350:         void ARPInit(void)
+   351: 
+   352:   Summary:
+   353:         Initializes the ARP module.
+   354:         
+   355:   Description:
+   356:         Initializes the ARP module.  Call this function once at boot to 
+   357:         invalidate the cached lookup.
+   358: 
+   359:   Precondition:
+   360:         None
+   361: 
+   362:   Parameters:
+   363:         None
+   364: 
+   365:   Returns:
+   366:         None
+   367:   
+   368:   Remarks:
+   369:         This function is only required when the stack is a client, and therefore
+   370:         is only enabled when STACK_CLIENT_MODE is enabled.
+   371:   ***************************************************************************/
+   372: #ifdef STACK_CLIENT_MODE
+   373: void ARPInit(void)
+   374: {
+   375:     Cache.MACAddr.v[0] = 0xff;
+   376:     Cache.MACAddr.v[1] = 0xff;
+   377:     Cache.MACAddr.v[2] = 0xff;
+   378:     Cache.MACAddr.v[3] = 0xff;
+   379:     Cache.MACAddr.v[4] = 0xff;
+   380:     Cache.MACAddr.v[5] = 0xff;
+   381: 
+   382:         Cache.IPAddr.Val = 0x0;
+   383: }
+   384: #endif
+   385: 
+   386: 
+   387: 
+   388: /*****************************************************************************
+   389:   Function:
+   390:         BOOL ARPProcess(void)
+   391: 
+   392:   Summary:
+   393:         Processes an incoming ARP packet.
+   394:         
+   395:   Description:
+   396:         Retrieves an ARP packet from the MAC buffer and determines if it is a
+   397:         response to our request (in which case the ARP is resolved) or if it
+   398:         is a request requiring our response (in which case we transmit one.)
+   399: 
+   400:   Precondition:
+   401:         ARP packet is ready in the MAC buffer.
+   402: 
+   403:   Parameters:
+   404:         None
+   405: 
+   406:   Return Values:
+   407:         TRUE - All processing of this ARP packet is complete.  Do not call 
+   408:                         again until a new ARP packet is waiting in the RX buffer.
+   409:         FALSE - This function must be called again.  More time is needed to 
+   410:                         send an ARP response.
+   411:   ***************************************************************************/
+   412: BOOL ARPProcess(void)
+   413: {
+   414:         ARP_PACKET packet;
+   415:         static NODE_INFO Target;
+   416:     #if defined(STACK_USE_AUTO_IP)
+   417:         BYTE i;
+   418:     #endif
+   419:         static enum
+   420:         {
+   421:             SM_ARP_IDLE = 0,
+   422:             SM_ARP_REPLY
+   423:         } smARP = SM_ARP_IDLE;
+   424: 
+   425:     switch(smARP)
+   426:     {
+   427:             case SM_ARP_IDLE:
+   428:                         // Obtain the incoming ARP packet
+   429:                     MACGetArray((BYTE*)&packet, sizeof(packet));                
+   430:                     MACDiscardRx();
+   431:                     SwapARPPacket(&packet);
+   432:                 
+   433:                         // Validate the ARP packet
+   434:                     if ( packet.HardwareType != HW_ETHERNET     ||
+   435:                          packet.MACAddrLen != sizeof(MAC_ADDR)  ||
+   436:                          packet.ProtocolLen != sizeof(IP_ADDR) )
+   437:                     {
+   438:                          return TRUE;
+   439:                     }
+   440: #ifdef STACK_USE_ZEROCONF_LINK_LOCAL
+   441:                         ARPProcessRxPkt(&packet);
+   442: #endif
+   443: 
+   444: #ifdef STACK_USE_AUTO_IP
+   445:             if (packet.SenderIPAddr.Val == AppConfig.MyIPAddr.Val)
+   446:             {
+   447:                 AutoIPConflict(0);
+   448:                 return TRUE;                
+   449:             }
+   450: #endif
+   451: 
+   452:                         // Handle incoming ARP responses
+   453: #ifdef STACK_CLIENT_MODE
+   454:                         if(packet.Operation == ARP_OPERATION_RESP)
+   455:                         {
+   456: /*                #if defined(STACK_USE_AUTO_IP)
+   457:                 for (i = 0; i < NETWORK_INTERFACES; i++)
+   458:                     if (AutoIPConfigIsInProgress(i))
+   459:                         AutoIPConflict(i);
+   460:                 #endif*/
+   461:                                 Cache.MACAddr = packet.SenderMACAddr;
+   462:                                 Cache.IPAddr = packet.SenderIPAddr;
+   463:                                 return TRUE;
+   464:                         }
+   465: #endif
+   466: 
+   467:                         // Handle incoming ARP requests for our MAC address
+   468:                         if(packet.Operation == ARP_OPERATION_REQ)
+   469:                         {
+   470:                                 if(packet.TargetIPAddr.Val != AppConfig.MyIPAddr.Val)
+   471:                                 {
+   472:                                         return TRUE;
+   473:                                 }
+   474: #ifdef STACK_USE_ZEROCONF_LINK_LOCAL
+   475:                                /* Fix for Loop-Back suppression:
+   476:                                 * For ZCLL-Claim packets, host should not respond.
+   477:                                 * Check Sender's MAC-address with own MAC-address and 
+   478:                                 * if it is matched, response will not be sent back. This
+   479:                                 * was leading to flooding of ARP-answeres */
+   480:                                 if(!memcmp (&packet.SenderMACAddr, &AppConfig.MyMACAddr, 6))
+   481:                                 {
+   482:                                      putsUART("Loopback answer suppressed \r\n");
+   483:                                      return TRUE;
+   484:                                 }
+   485: #endif
+   486:                 #if defined(STACK_USE_AUTO_IP)
+   487:                 for (i = 0; i < NETWORK_INTERFACES; i++)
+   488:                     if (AutoIPConfigIsInProgress(i))
+   489:                     {
+   490:                         AutoIPConflict(i);
+   491:                         return TRUE;
+   492:                     }             
+   493:                 #endif
+   494:                                 Target.IPAddr = packet.SenderIPAddr;
+   495:                                 Target.MACAddr = packet.SenderMACAddr;
+   496: 
+   497:                                 smARP = SM_ARP_REPLY;
+   498:                         }
+   499:                         // Do not break.  If we get down here, we need to send a reply. 
+   500: 
+   501:             case SM_ARP_REPLY:
+   502:                 packet.Operation                = ARP_OPERATION_RESP;
+   503:             #if defined(STACK_USE_AUTO_IP)
+   504:             if (AutoIPIsConfigured(0))
+   505:             {
+   506:                 packet.TargetMACAddr.v[0] = 0xFF;
+   507:                 packet.TargetMACAddr.v[1] = 0xFF;
+   508:                 packet.TargetMACAddr.v[2] = 0xFF;
+   509:                 packet.TargetMACAddr.v[3] = 0xFF;
+   510:                 packet.TargetMACAddr.v[4] = 0xFF;
+   511:                 packet.TargetMACAddr.v[5] = 0xFF;
+   512:             }
+   513:             else
+   514:             #endif
+   515:                     packet.TargetMACAddr        = Target.MACAddr;
+   516:             packet.TargetIPAddr         = Target.IPAddr;
+   517: #ifdef STACK_USE_ZEROCONF_LINK_LOCAL
+   518:             packet.SenderIPAddr         = AppConfig.MyIPAddr;
+   519: #endif
+   520: 
+   521:                         // Send an ARP response to a previously received request
+   522:                         if(!ARPPut(&packet))
+   523:                         {
+   524:                    return FALSE;
+   525:                         }
+   526: 
+   527:                         // Begin listening for ARP requests again
+   528:                         smARP = SM_ARP_IDLE;
+   529:                 break;
+   530:         }
+   531: 
+   532:     return TRUE;
+   533: }
+   534: 
+   535: 
+   536: 
+   537: /*****************************************************************************
+   538:   Function:
+   539:         void ARPResolve(IP_ADDR* IPAddr)
+   540: 
+   541:   Summary:
+   542:         Transmits an ARP request to resolve an IP address.
+   543:         
+   544:   Description:
+   545:         This function transmits and ARP request to determine the hardware
+   546:         address of a given IP address.
+   547: 
+   548:   Precondition:
+   549:         None
+   550: 
+   551:   Parameters:
+   552:         IPAddr - The IP address to be resolved.  The address must be specified 
+   553:                          in network byte order (big endian).
+   554: 
+   555:   Returns:
+   556:         None
+   557: 
+   558:   Remarks:
+   559:         This function is only required when the stack is a client, and therefore
+   560:         is only enabled when STACK_CLIENT_MODE is enabled.
+   561: 
+   562:         To retrieve the ARP query result, call the ARPIsResolved() function.
+   563:   ***************************************************************************/
+   564: #ifdef STACK_CLIENT_MODE
+   565: void ARPResolve(IP_ADDR* IPAddr)
+   566: {
+   567:     ARP_PACKET packet;
+   568: 
+   569: #ifdef STACK_USE_ZEROCONF_LINK_LOCAL
+   570: #define KS_ARP_IP_MULTICAST_HACK y
+   571: #ifdef KS_ARP_IP_MULTICAST_HACK
+   572:     if ((IPAddr->v[0] >= 224) &&(IPAddr->v[0] <= 239))
+   573:     {
+   574:                 // "Resolve" the IP to MAC address mapping for
+   575:                 // IP multicast address range from 224.0.0.0 to 239.255.255.255
+   576: 
+   577:                 Cache.MACAddr.v[0] = 0x01;
+   578:                 Cache.MACAddr.v[1] = 0x00;
+   579:                 Cache.MACAddr.v[2] = 0x5E;
+   580:                 Cache.MACAddr.v[3] = 0x7f & IPAddr->v[1];
+   581:                 Cache.MACAddr.v[4] = IPAddr->v[2];
+   582:                 Cache.MACAddr.v[5] = IPAddr->v[3];
+   583: 
+   584:                 Cache.IPAddr.Val = IPAddr->Val;
+   585: 
+   586:                 return;
+   587:         }
+   588: #endif
+   589: #endif
+   590: 
+   591:         packet.Operation            = ARP_OPERATION_REQ;
+   592:         packet.TargetMACAddr.v[0]   = 0xff;
+   593:         packet.TargetMACAddr.v[1]   = 0xff;
+   594:         packet.TargetMACAddr.v[2]   = 0xff;
+   595:         packet.TargetMACAddr.v[3]   = 0xff;
+   596:         packet.TargetMACAddr.v[4]   = 0xff;
+   597:         packet.TargetMACAddr.v[5]   = 0xff;
+   598: 
+   599: 
+   600:     // ARP query either the IP address directly (on our subnet), or do an ARP query for our Gateway if off of our subnet
+   601:         packet.TargetIPAddr                     = ((AppConfig.MyIPAddr.Val ^ IPAddr->Val) & AppConfig.MyMask.Val) ? AppConfig.MyGateway : *IPAddr;
+   602: #ifdef STACK_USE_ZEROCONF_LINK_LOCAL
+   603:         packet.SenderIPAddr                     = AppConfig.MyIPAddr;
+   604: #endif
+   605: 
+   606:     ARPPut(&packet);
+   607: }
+   608: #endif
+   609: 
+   610: 
+   611: 
+   612: /*****************************************************************************
+   613:   Function:
+   614:         BOOL ARPIsResolved(IP_ADDR* IPAddr, MAC_ADDR* MACAddr)
+   615: 
+   616:   Summary:
+   617:         Determines if an ARP request has been resolved yet.
+   618:         
+   619:   Description:
+   620:         This function checks if an ARP request has been resolved yet, and if
+   621:         so, stores the resolved MAC address in the pointer provided.
+   622: 
+   623:   Precondition:
+   624:         ARP packet is ready in the MAC buffer.
+   625: 
+   626:   Parameters:
+   627:         IPAddr - The IP address to be resolved.  This must match the IP address 
+   628:                          provided to the ARPResolve() function call.
+   629:         MACAddr - A buffer to store the corresponding MAC address retrieved from 
+   630:                          the ARP query.
+   631: 
+   632:   Return Values:
+   633:         TRUE - The IP address has been resolved and MACAddr MAC address field
+   634:                    indicates the response.
+   635:         FALSE - The IP address is not yet resolved.  Try calling ARPIsResolved() 
+   636:                    again at a later time.  If you don't get a response after a 
+   637:                    application specific timeout period, you may want to call 
+   638:                    ARPResolve() again to transmit another ARP query (in case if the 
+   639:                    original query or response was lost on the network).  If you never 
+   640:                    receive an ARP response, this may indicate that the IP address 
+   641:                    isn't in use.
+   642: 
+   643:   Remarks:
+   644:         This function is only required when the stack is a client, and therefore
+   645:         is only enabled when STACK_CLIENT_MODE is enabled.
+   646:   ***************************************************************************/
+   647: #ifdef STACK_CLIENT_MODE
+   648: BOOL ARPIsResolved(IP_ADDR* IPAddr, MAC_ADDR* MACAddr)
+   649: {
+   650:     if((Cache.IPAddr.Val == IPAddr->Val) || 
+   651:           ((Cache.IPAddr.Val == AppConfig.MyGateway.Val) && ((AppConfig.MyIPAddr.Val ^ IPAddr->Val) & AppConfig.MyMask.Val)))
+   652:     {
+   653:         *MACAddr = Cache.MACAddr;
+   654:         return TRUE;
+   655:     }
+   656:     return FALSE;
+   657: }
+   658: #endif
+   659: 
+   660: 
+   661: 
+   662: /*****************************************************************************
+   663:   Function:
+   664:         void SwapARPPacket(ARP_PACKET* p)
+   665: 
+   666:   Description:
+   667:         Swaps endian-ness of header information in an ARP packet.
+   668: 
+   669:   Precondition:
+   670:         None
+   671: 
+   672:   Parameters:
+   673:         p - The ARP packet to be swapped
+   674: 
+   675:   Returns:
+   676:         None
+   677:   ***************************************************************************/
+   678: void SwapARPPacket(ARP_PACKET* p)
+   679: {
+   680:     p->HardwareType     = swaps(p->HardwareType);
+   681:     p->Protocol         = swaps(p->Protocol);
+   682:     p->Operation        = swaps(p->Operation);
+   683: }

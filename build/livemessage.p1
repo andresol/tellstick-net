@@ -1,0 +1,837 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+[c E5348 0 1 2 3 4 .. ]
+[n E5348 . SM_CLEARED SM_PARSE_SIGNATURE SM_PARSE_LENGTH SM_PARSE_MESSAGE SM_MESSAGE_RECEIVED  ]
+"22 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _state `E5348 1 s ]
+"24 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _buffer `uc -> 200 `i s ]
+"25 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _bufferP `uc 1 s ]
+"26 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _hashStartP `uc 1 s ]
+"27 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _signature `uc -> 20 `i s ]
+"28 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _signature2 `uc -> 20 `i s ]
+"29 /home/andresol/tellstick-net/firmware/livemessage.c
+[v _PRIVATE_KEY `Cuc -> 0 `x s ]
+"62 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _strchr `(*uc 0 ef2`*Cuc`i ]
+"30 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _memset `(*v 0 ef3`*v`i`ui ]
+"91 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _btohexa_high `(uc 0 ef1`uc ]
+"61 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _strlen `(ui 0 ef1`*Cuc ]
+"92 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _btohexa_low `(uc 0 ef1`uc ]
+"41 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _strcat `(*uc 0 ef2`*uc`*Cuc ]
+[c E4014 0 1 .. ]
+[n E4014 _BOOL FALSE TRUE  ]
+"11 /home/andresol/tellstick-net/firmware/common.h
+[v _hexToByte `(uc 0 ef1`uc ]
+"50 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _strcmp `(i 0 ef2`*Cuc`*Cuc ]
+[c E4910 0 1 .. ]
+[n E4910 . HASH_MD5 HASH_SHA1  ]
+[s S376 `ul 1 `ul 1 `ul 1 `ul 1 `ul 1 `ul 1 `uc -> 64 `i `E4910 1 ]
+[n S376 . h0 h1 h2 h3 h4 bytesSoFar partialBlock hashType ]
+"92 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Hashes.h
+[v _SHA1Initialize `(v 0 ef1`*S376 ]
+"93 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Hashes.h
+[v _SHA1AddData `(v 0 ef3`*S376`*uc`us ]
+"96 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Hashes.h
+[v _SHA1AddROMData `(v 0 ef3`*S376`*Cuc`us ]
+"94 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Hashes.h
+[v _SHA1Calculate `(v 0 ef2`*S376`*uc ]
+"52 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _strncmp `(i 0 ef3`*Cuc`*Cuc`ui ]
+[i _state
+"22 /home/andresol/tellstick-net/firmware/livemessage.c
+. `E5348 0
+]
+[i _PRIVATE_KEY
+:U ..
+-> 0 `c
+..
+]
+"31
+[v _LMAppendChar `(v 1 ef1`Cuc ]
+{
+[e :U _LMAppendChar ]
+[v _ch `Cuc 1 r1 ]
+[f ]
+"32
+[v _pos `*uc 1 a ]
+[e = _pos ( _strchr (2 , -> &U _buffer `*Cuc -> -> 0 `ui `i ]
+"33
+[e $ ! != _pos -> -> 0 `i `*uc 391  ]
+{
+"34
+[e = *U _pos _ch ]
+"35
+}
+[e :U 391 ]
+"36
+[e :UE 390 ]
+}
+"38
+[v _LMClear `(v 1 ef ]
+{
+[e :U _LMClear ]
+[f ]
+"39
+[e ( _memset (3 , , -> &U _buffer `*v -> -> 0 `ui `i -> # _buffer `ui ]
+"40
+[e = _bufferP -> -> 0 `i `uc ]
+"41
+[e = _state . `E5348 0 ]
+"42
+[e :UE 392 ]
+}
+"44
+[v _LMAppendString `(v 1 ef1`*Cuc ]
+{
+[e :U _LMAppendString ]
+[v _string `*Cuc 1 r1 ]
+[f ]
+"45
+[v _hb `uc 1 a ]
+[e = _hb ( _btohexa_high (1 -> ( _strlen (1 _string `uc ]
+"46
+[v _lb `uc 1 a ]
+[e = _lb ( _btohexa_low (1 -> ( _strlen (1 _string `uc ]
+"47
+[e $ ! != -> _hb `ui -> 48 `ui 394  ]
+{
+"48
+[e ( _LMAppendChar (1 _hb ]
+"49
+}
+[e :U 394 ]
+"50
+[e ( _LMAppendChar (1 _lb ]
+"51
+[e ( _LMAppendChar (1 -> -> 58 `ui `uc ]
+"52
+[e ( _strcat (2 , &U _buffer _string ]
+"53
+[e :UE 393 ]
+}
+"55
+[v _LMAppendRomString `(v 1 ef1`*Cuc ]
+{
+[e :U _LMAppendRomString ]
+[v _string `*Cuc 1 r1 ]
+[f ]
+"56
+[v _hb `uc 1 a ]
+[e = _hb ( _btohexa_high (1 -> ( _strlen (1 _string `uc ]
+"57
+[v _lb `uc 1 a ]
+[e = _lb ( _btohexa_low (1 -> ( _strlen (1 _string `uc ]
+"58
+[e $ ! != -> _hb `ui -> 48 `ui 396  ]
+{
+"59
+[e ( _LMAppendChar (1 _hb ]
+"60
+}
+[e :U 396 ]
+"61
+[e ( _LMAppendChar (1 _lb ]
+"62
+[e ( _LMAppendChar (1 -> -> 58 `ui `uc ]
+"63
+[e ( _strcat (2 , &U _buffer _string ]
+"64
+[e :UE 395 ]
+}
+"66
+[v _LMAppendInt `(v 1 ef1`ul ]
+{
+[e :U _LMAppendInt ]
+[v _value `ul 1 r1 ]
+[f ]
+"67
+[v _hex `uc * -> # _value `ui -> -> 2 `i `ui a ]
+[v _i `uc 1 a ]
+"68
+[e ( _LMAppendChar (1 -> -> 105 `ui `uc ]
+"69
+[e $ ! == _value -> -> -> 0 `i `l `ul 398  ]
+{
+"70
+[e ( _LMAppendChar (1 -> -> 48 `ui `uc ]
+"71
+}
+[e $U 399  ]
+[e :U 398 ]
+{
+"72
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `ui -> # _hex `ui 400  ]
+[e $U 401  ]
+[e :U 400 ]
+{
+"73
+[e = *U + &U _hex * -> _i `ux -> -> # *U &U _hex `ui `ux ( _btohexa_low (1 -> _value `uc ]
+"74
+[e =>> _value -> 4 `i ]
+"75
+}
+"72
+[e =+ _i -> -> 1 `i `uc ]
+[e $ < -> _i `ui -> # _hex `ui 400  ]
+[e :U 401 ]
+"75
+}
+"78
+{
+[e = _i -> -> # _hex `ui `uc ]
+[e $ > -> _i `i -> 0 `i 403  ]
+[e $U 404  ]
+[e :U 403 ]
+{
+"79
+[e $ ! != -> *U + &U _hex * -> -> - -> _i `i -> 1 `i `ui `ux -> -> # *U &U _hex `ui `ux `ui -> 48 `ui 406  ]
+{
+"80
+[e $U 404  ]
+"81
+}
+[e :U 406 ]
+"82
+}
+"78
+[e =- _i -> -> 1 `i `uc ]
+[e $ > -> _i `i -> 0 `i 403  ]
+[e :U 404 ]
+"82
+}
+"83
+{
+[e $ > -> _i `i -> 0 `i 407  ]
+[e $U 408  ]
+[e :U 407 ]
+{
+"84
+[e ( _LMAppendChar (1 *U + &U _hex * -> -> - -> _i `i -> 1 `i `ui `ux -> -> # *U &U _hex `ui `ux ]
+"85
+}
+"83
+[e =- _i -> -> 1 `i `uc ]
+[e $ > -> _i `i -> 0 `i 407  ]
+[e :U 408 ]
+"85
+}
+"86
+}
+[e :U 399 ]
+"87
+[e ( _LMAppendChar (1 -> -> 115 `ui `uc ]
+"88
+[e :UE 397 ]
+}
+"90
+[v _LMStartHash `(v 1 ef ]
+{
+[e :U _LMStartHash ]
+[f ]
+"91
+[e ( _LMAppendChar (1 -> -> 104 `ui `uc ]
+"92
+[e :UE 410 ]
+}
+"94
+[v _LMAppendHashString `(v 1 ef2`*Cuc`*Cuc ]
+{
+[e :U _LMAppendHashString ]
+[v _key `*Cuc 1 r1 ]
+[v _value `*Cuc 1 r2 ]
+[f ]
+"95
+[e ( _LMAppendRomString (1 _key ]
+"96
+[e ( _LMAppendString (1 _value ]
+"97
+[e :UE 411 ]
+}
+"99
+[v _LMAppendHashHexString `(v 1 ef3`*Cuc`*Cuc`Cuc ]
+{
+[e :U _LMAppendHashHexString ]
+[v _key `*Cuc 1 r1 ]
+[v _value `*Cuc 1 r2 ]
+[v _length `Cuc 1 r3 ]
+[f ]
+"100
+[v _i `uc 1 a ]
+"101
+[e ( _LMAppendRomString (1 _key ]
+"102
+[e ( _LMAppendChar (1 -> -> 105 `ui `uc ]
+"103
+[e $ ! == _value -> -> 0 `i `*Cuc 413  ]
+{
+"104
+[e ( _LMAppendChar (1 -> -> 48 `ui `uc ]
+"105
+}
+[e $U 414  ]
+[e :U 413 ]
+{
+"107
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `i -> _length `i 415  ]
+[e $U 416  ]
+[e :U 415 ]
+{
+"108
+[e $ ! != -> *U + _value * -> _i `ux -> -> # *U _value `ui `ux `ui -> 48 `ui 418  ]
+{
+"109
+[e $U 416  ]
+"110
+}
+[e :U 418 ]
+"111
+}
+"107
+[e =+ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> _length `i 415  ]
+[e :U 416 ]
+"111
+}
+"112
+{
+[e $ < -> _i `i -> _length `i 419  ]
+[e $U 420  ]
+[e :U 419 ]
+{
+"113
+[e ( _LMAppendChar (1 ( _btohexa_high (1 *U + _value * -> _i `ux -> -> # *U _value `ui `ux ]
+"114
+[e ( _LMAppendChar (1 ( _btohexa_low (1 *U + _value * -> _i `ux -> -> # *U _value `ui `ux ]
+"115
+}
+"112
+[e =+ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> _length `i 419  ]
+[e :U 420 ]
+"115
+}
+"116
+}
+[e :U 414 ]
+"117
+[e ( _LMAppendChar (1 -> -> 115 `ui `uc ]
+"118
+[e :UE 412 ]
+}
+"120
+[v _LMAppendHashInt `(v 1 ef2`*Cuc`ul ]
+{
+[e :U _LMAppendHashInt ]
+[v _key `*Cuc 1 r1 ]
+[v _value `ul 1 r2 ]
+[f ]
+"121
+[e ( _LMAppendRomString (1 _key ]
+"122
+[e ( _LMAppendInt (1 _value ]
+"123
+[e :UE 422 ]
+}
+"125
+[v _LMEndHash `(v 1 ef ]
+{
+[e :U _LMEndHash ]
+[f ]
+"126
+[e ( _LMAppendChar (1 -> -> 115 `ui `uc ]
+"127
+[e :UE 423 ]
+}
+"129
+[v _LMNextIsInt `(E4014 1 ef ]
+{
+[e :U _LMNextIsInt ]
+[f ]
+"130
+[e ) -> -> == -> *U + &U _buffer * -> _bufferP `ux -> -> # *U &U _buffer `ui `ux `ui -> 105 `ui `i `E4014 ]
+[e $UE 424  ]
+"131
+[e :UE 424 ]
+}
+"133
+[v _LMTakeInt `(ul 1 ef ]
+{
+[e :U _LMTakeInt ]
+[f ]
+"134
+[v _retval `l 1 a ]
+[e = _retval -> -> 0 `i `l ]
+[v _ch `l 1 a ]
+"135
+[e $ ! ! != -> ( _LMNextIsInt ..  `i -> -> -> 0 `i `E4014 `i 426  ]
+{
+"136
+[e ) -> -> -> 0 `i `l `ul ]
+[e $UE 425  ]
+"137
+}
+[e :U 426 ]
+"138
+[e =+ _bufferP -> -> 1 `i `uc ]
+"139
+[e $U 427  ]
+[e :U 428 ]
+{
+"140
+[e = _ch -> *U + &U _buffer * -> ++ _bufferP -> -> 1 `i `uc `ux -> -> # *U &U _buffer `ui `ux `l ]
+"141
+[e $ ! == _ch -> -> 115 `ui `l 430  ]
+{
+"142
+[e $U 429  ]
+"143
+}
+[e :U 430 ]
+"144
+[e =<< _retval -> 4 `i ]
+"145
+[e =| _retval -> ( _hexToByte (1 -> _ch `uc `l ]
+"146
+}
+[e :U 427 ]
+"139
+[e $ < -> _bufferP `ui -> # _buffer `ui 428  ]
+[e :U 429 ]
+"147
+[e ) -> _retval `ul ]
+[e $UE 425  ]
+"148
+[e :UE 425 ]
+}
+"150
+[v _LMTakeString `(E4014 1 ef2`*uc`uc ]
+{
+[e :U _LMTakeString ]
+[v _instr `*uc 1 r1 ]
+[v _count `uc 1 r2 ]
+[f ]
+"151
+[v _i `uc 1 a ]
+[e = _i -> -> 0 `i `uc ]
+[v _length `uc 1 a ]
+[e = _length -> -> 0 `i `uc ]
+[v _ch `uc 1 a ]
+"154
+[e $U 432  ]
+[e :U 433 ]
+{
+"155
+[e = _ch *U + &U _buffer * -> ++ _bufferP -> -> 1 `i `uc `ux -> -> # *U &U _buffer `ui `ux ]
+"156
+[e $ ! == -> _ch `ui -> 58 `ui 435  ]
+{
+"157
+[e $U 434  ]
+"158
+}
+[e :U 435 ]
+"159
+[e =<< _length -> 4 `i ]
+"160
+[e =| _length ( _hexToByte (1 _ch ]
+"161
+}
+[e :U 432 ]
+"154
+[e $ < -> _bufferP `ui -> # _buffer `ui 433  ]
+[e :U 434 ]
+"162
+[e $ ! > -> _length `i - -> _count `i -> 1 `i 436  ]
+{
+"164
+[e =+ _bufferP _length ]
+"165
+[e ) . `E4014 0 ]
+[e $UE 431  ]
+"166
+}
+[e :U 436 ]
+"167
+{
+[e = _i -> -> 0 `i `uc ]
+[e $U 440  ]
+[e :U 437 ]
+{
+"168
+[e = *U + _instr * -> _i `ux -> -> # *U _instr `ui `ux *U + &U _buffer * -> ++ _bufferP -> -> 1 `i `uc `ux -> -> # *U &U _buffer `ui `ux ]
+"169
+}
+"167
+[e =+ _i -> -> 1 `i `uc ]
+[e :U 440 ]
+[e $ < -> _i `i -> _length `i 437  ]
+[e :U 438 ]
+"169
+}
+"170
+[e = *U + _instr * -> _length `ux -> -> # *U _instr `ui `ux -> -> 0 `ui `uc ]
+"171
+[e ) . `E4014 1 ]
+[e $UE 431  ]
+"172
+[e :UE 431 ]
+}
+"174
+[v _LMEnterHash `(E4014 1 ef ]
+{
+[e :U _LMEnterHash ]
+[f ]
+"175
+[e $ ! != -> *U + &U _buffer * -> _bufferP `ux -> -> # *U &U _buffer `ui `ux `ui -> 104 `ui 442  ]
+{
+"176
+[e ) . `E4014 0 ]
+[e $UE 441  ]
+"177
+}
+[e :U 442 ]
+"178
+[e = _hashStartP -> + -> _bufferP `i -> 1 `i `uc ]
+"180
+[e ) . `E4014 1 ]
+[e $UE 441  ]
+"181
+[e :UE 441 ]
+}
+"183
+[v _LMFindHashString `(E4014 1 ef1`*Cuc ]
+{
+[e :U _LMFindHashString ]
+[v _key `*Cuc 1 r1 ]
+[f ]
+"184
+[v _k `uc -> 12 `i a ]
+"186
+[e = _bufferP _hashStartP ]
+"187
+[e $U 444  ]
+[e :U 445 ]
+{
+"188
+[e $ ! ! != -> ( _LMTakeString (2 , &U _k -> -> # _k `ui `uc `i -> -> -> 0 `i `E4014 `i 447  ]
+{
+"189
+[e ) . `E4014 0 ]
+[e $UE 443  ]
+"190
+}
+[e :U 447 ]
+"191
+[e $ ! == ( _strcmp (2 , _key -> &U _k `*Cuc -> 0 `i 448  ]
+{
+"192
+[e ) . `E4014 1 ]
+[e $UE 443  ]
+"193
+}
+[e :U 448 ]
+"194
+[e $ ! != -> ( _LMNextIsInt ..  `i -> -> -> 0 `i `E4014 `i 449  ]
+{
+"195
+[e ( _LMTakeInt ..  ]
+"196
+}
+[e $U 450  ]
+[e :U 449 ]
+{
+"197
+[e ( _LMTakeString (2 , -> -> 0 `i `*uc -> -> 0 `i `uc ]
+"198
+}
+[e :U 450 ]
+"199
+[e $ ! == -> *U + &U _buffer * -> _bufferP `ux -> -> # *U &U _buffer `ui `ux `ui -> 115 `ui 451  ]
+{
+"201
+[e ) . `E4014 0 ]
+[e $UE 443  ]
+"202
+}
+[e :U 451 ]
+"203
+}
+[e :U 444 ]
+"187
+[e $ < -> _bufferP `ui -> # _buffer `ui 445  ]
+[e :U 446 ]
+"204
+[e ) . `E4014 0 ]
+[e $UE 443  ]
+"205
+[e :UE 443 ]
+}
+"207
+[v _LMGenerateSignature `(v 1 ef ]
+{
+[e :U _LMGenerateSignature ]
+[f ]
+"208
+[v F5406 `S376 1 s hash ]
+"210
+[e ( _SHA1Initialize (1 &U F5406 ]
+"211
+[e ( _SHA1AddData (3 , , &U F5406 &U _buffer -> ( _strlen (1 -> &U _buffer `*Cuc `us ]
+"212
+[e ( _SHA1AddROMData (3 , , &U F5406 &U _PRIVATE_KEY -> -> 32 `i `us ]
+"213
+[e ( _SHA1Calculate (2 , &U F5406 &U _signature ]
+"214
+[e :UE 452 ]
+}
+"216
+[v _validateSignature `(E4014 1 ef ]
+{
+[e :U _validateSignature ]
+[f ]
+"217
+[v _i `uc 1 a ]
+"218
+[e ( _LMGenerateSignature ..  ]
+"220
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `i -> 20 `i 454  ]
+[e $U 455  ]
+[e :U 454 ]
+{
+"221
+[e $ ! != -> *U + &U _signature * -> _i `ux -> -> # *U &U _signature `ui `ux `i -> *U + &U _signature2 * -> _i `ux -> -> # *U &U _signature2 `ui `ux `i 457  ]
+{
+"222
+[e ) . `E4014 0 ]
+[e $UE 453  ]
+"223
+}
+[e :U 457 ]
+"224
+}
+"220
+[e =+ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> 20 `i 454  ]
+[e :U 455 ]
+"224
+}
+"225
+[e ) . `E4014 1 ]
+[e $UE 453  ]
+"226
+[e :UE 453 ]
+}
+"228
+[v _LMParseChar `(v 1 ef1`Cuc ]
+{
+[e :U _LMParseChar ]
+[v _ch `Cuc 1 r1 ]
+[f ]
+"229
+[v F5411 `uc 1 s length ]
+[i F5411
+-> -> 0 `i `uc
+]
+"230
+[v _i `uc 1 a ]
+"232
+[e $ ! == -> _state `i -> . `E5348 0 `i 459  ]
+{
+"233
+[e ( _LMAppendChar (1 _ch ]
+"234
+[e $ ! == ( _strncmp (3 , , -> &U _buffer `*Cuc :s 1C -> -> 3 `i `ui -> 0 `i 460  ]
+{
+"235
+[e = _state . `E5348 1 ]
+"236
+}
+[e $U 461  ]
+[e :U 460 ]
+[e $ ! != -> *U + &U _buffer * -> -> -> 2 `i `ui `ux -> -> # *U &U _buffer `ui `ux `i -> 0 `i 462  ]
+{
+"237
+[e = *U + &U _buffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _buffer `ui `ux *U + &U _buffer * -> -> -> 1 `i `ui `ux -> -> # *U &U _buffer `ui `ux ]
+"238
+[e = *U + &U _buffer * -> -> -> 1 `i `ui `ux -> -> # *U &U _buffer `ui `ux *U + &U _buffer * -> -> -> 2 `i `ui `ux -> -> # *U &U _buffer `ui `ux ]
+"239
+[e = *U + &U _buffer * -> -> -> 2 `i `ui `ux -> -> # *U &U _buffer `ui `ux -> -> 0 `i `uc ]
+"240
+}
+[e :U 462 ]
+"242
+[e :U 461 ]
+}
+[e $U 463  ]
+[e :U 459 ]
+[e $ ! == -> _state `i -> . `E5348 1 `i 464  ]
+{
+"243
+[e ( _LMAppendChar (1 _ch ]
+"244
+[e $ ! == ( _strlen (1 -> &U _buffer `*Cuc -> -> 43 `i `ui 465  ]
+{
+"245
+{
+[e = _i -> -> 3 `i `uc ]
+[e $ < -> _i `i -> 43 `i 466  ]
+[e $U 467  ]
+[e :U 466 ]
+{
+"246
+[e = *U + &U _signature2 * -> -> / - -> _i `i -> 3 `i -> 2 `i `ui `ux -> -> # *U &U _signature2 `ui `ux -> | << -> ( _hexToByte (1 *U + &U _buffer * -> _i `ux -> -> # *U &U _buffer `ui `ux `i -> 4 `i -> ( _hexToByte (1 *U + &U _buffer * -> -> + -> _i `i -> 1 `i `ui `ux -> -> # *U &U _buffer `ui `ux `i `uc ]
+"247
+}
+"245
+[e =+ _i -> -> 2 `i `uc ]
+[e $ < -> _i `i -> 43 `i 466  ]
+[e :U 467 ]
+"247
+}
+"248
+[e ( _LMClear ..  ]
+"249
+[e = _state . `E5348 2 ]
+"250
+[e = F5411 -> -> 0 `i `uc ]
+"251
+}
+[e :U 465 ]
+"253
+}
+[e $U 469  ]
+[e :U 464 ]
+[e $ ! == -> _state `i -> . `E5348 2 `i 470  ]
+{
+"254
+[e $ ! == -> _ch `ui -> 58 `ui 471  ]
+{
+"255
+[e ( _LMClear ..  ]
+"256
+[e = _state . `E5348 3 ]
+"257
+}
+[e $U 472  ]
+[e :U 471 ]
+{
+"258
+[e =<< F5411 -> 4 `i ]
+"259
+[e =| F5411 ( _hexToByte (1 _ch ]
+"260
+}
+[e :U 472 ]
+"262
+}
+[e $U 473  ]
+[e :U 470 ]
+[e $ ! == -> _state `i -> . `E5348 3 `i 474  ]
+{
+"263
+[e ( _LMAppendChar (1 _ch ]
+"264
+[e -- F5411 -> -> 1 `i `uc ]
+"265
+[e $ ! == -> F5411 `i -> 0 `i 475  ]
+{
+"266
+[e $ ! != -> ( _validateSignature ..  `i -> -> -> 0 `i `E4014 `i 476  ]
+{
+"267
+[e = _state . `E5348 4 ]
+"268
+}
+[e $U 477  ]
+[e :U 476 ]
+{
+"269
+[e ( _LMClear ..  ]
+"270
+[e -> 1 `i ]
+"271
+}
+[e :U 477 ]
+"272
+}
+[e :U 475 ]
+"273
+}
+[e $U 478  ]
+[e :U 474 ]
+[e $ ! == -> _state `i -> . `E5348 4 `i 479  ]
+{
+"274
+[e -> 1 `i ]
+"275
+[e ( _LMClear ..  ]
+"276
+[e ( _LMAppendChar (1 _ch ]
+"277
+[e = _state . `E5348 1 ]
+"278
+}
+[e :U 479 ]
+"279
+[e :U 478 ]
+[e :U 473 ]
+[e :U 469 ]
+[e :U 463 ]
+[e :UE 458 ]
+}
+"281
+[v _LMHasPendingMessage `(E4014 1 ef ]
+{
+[e :U _LMHasPendingMessage ]
+[f ]
+"282
+[e ) -> -> == -> _state `i -> . `E5348 4 `i `i `E4014 ]
+[e $UE 480  ]
+"283
+[e :UE 480 ]
+}
+"285
+[v _LMContent `(*uc 1 ef ]
+{
+[e :U _LMContent ]
+[f ]
+"286
+[e ) &U _buffer ]
+[e $UE 481  ]
+"287
+[e :UE 481 ]
+}
+"289
+[v _LMPrintContent `(v 1 ef ]
+{
+[e :U _LMPrintContent ]
+[f ]
+"290
+[e -> 1 `i ]
+"291
+[e :UE 482 ]
+}
+[a 1C 50 56 58 0 ]
+

@@ -1,0 +1,146 @@
+     1: //
+     2: // Copyright (C) 2012 Telldus Technologies AB. All rights reserved.
+     3: //
+     4: // Copyright: See COPYING file that comes with this distribution
+     5: //
+     6: //
+     7: 
+     8: #include <htc.h>
+     9: #include "TCPIP Stack/TCPIP.h"
+    10: #include "pwm.h"
+    11: 
+    12: //LED types
+    13: typedef enum {
+    14:         PWM = 0,
+    15:         BLINK,
+    16:         FIXED,
+    17: } LED_TYPES;
+    18: 
+    19: 
+    20: //PWM variables
+    21: struct pwms {
+    22:         char duty;
+    23:         char fixedDuty;
+    24:         signed char dir;
+    25:         char pulses;
+    26:         LED_TYPES type;
+    27:         DWORD blinkTimer;
+    28: } txd  = {0,0,1,0,PWM,0},
+    29:         rxd  = {0,0,1,0,PWM,0};
+    30: 
+    31: void initPwm() {
+    32:         TMR2IF = 0;
+    33:         PR2 = 0xFF;
+    34: 
+    35:         T2CKPS1 = 1; //Prescaler: 1:16
+    36: 
+    37:         //Postscaler, does not affect PWM
+    38:         T2OUTPS3 = 0;
+    39:         T2OUTPS2 = 1;
+    40:         T2OUTPS1 = 1;
+    41:         T2OUTPS0 = 1;
+    42: 
+    43:         //Low priority interrupt
+    44:         TMR2IP = 0;
+    45:         TMR2IE = 1;
+    46:         TMR2ON = 1; // Turn on timer
+    47: 
+    48:         CCP1CON = 0;
+    49:         CCP2CON = 0;
+    50: 
+    51:         //Pwm mode
+    52:         //Single output: P2A modulated
+    53:         CCP2M3 = 1;
+    54:         CCP2M2 = 1;
+    55:         P2M1 = 0;
+    56:         P2M0 = 0;
+    57: 
+    58:         //Single output: P1A modulated
+    59:         CCP1M3 = 1;
+    60:         CCP1M2 = 1;
+    61:         P1M1 = 0;
+    62:         P1M0 = 0;
+    63: 
+    64:         CCP1M3 = 1;
+    65:         CCP1M2 = 1;
+    66:         CCP2M3 = 1;
+    67:         CCP2M2 = 1;
+    68: 
+    69: //      //We skip the lsb so setting them low
+    70:         DC1B1 = 0;
+    71:         DC1B0 = 0;
+    72:         DC2B1 = 0;
+    73:         DC2B0 = 0;
+    74: 
+    75: //      //Turn off the led
+    76:         CCPR1L=0x0;
+    77:         CCPR2L=0x0;
+    78: 
+    79:         // Why is this really needed?
+    80:         txd.pulses = 0;
+    81:         rxd.pulses = 0;
+    82: }
+    83: 
+    84: void pwmUpdate() {
+    85:         if (rxd.pulses) {
+    86:                 rxd.duty += rxd.dir;
+    87:                 if (rxd.duty >= 0x7F) {
+    88:                         rxd.dir = -1;
+    89:                 } else if (rxd.duty == 0) {
+    90:                         rxd.dir = 1;
+    91:                         --rxd.pulses;
+    92:                 }
+    93:                 CCPR2L = rxd.duty;
+    94:         } else if (rxd.type == FIXED) {
+    95:                 CCPR2L = rxd.fixedDuty;
+    96:         } else if (rxd.type == BLINK) {
+    97:                 if (TickGet()-rxd.blinkTimer > TICK_SECOND) {
+    98:                         rxd.fixedDuty = 0xFF - rxd.fixedDuty;
+    99:                         CCPR2L = rxd.fixedDuty;
+   100:                         rxd.blinkTimer = TickGet();
+   101:                 }
+   102:         } else {
+   103:                 CCPR2L = 0x0;
+   104:         }
+   105: 
+   106: 
+   107:         if (txd.pulses) {
+   108:                 txd.duty += txd.dir;
+   109:                 if (txd.duty >= 0x7F) {
+   110:                         txd.dir = -1;
+   111:                 } else if (txd.duty == 0) {
+   112:                         txd.dir = 1;
+   113:                         --txd.pulses;
+   114:                 }
+   115:                 CCPR1L = txd.duty;
+   116:         } else if (txd.type == FIXED) {
+   117:                 CCPR1L = txd.fixedDuty;
+   118:         } else {
+   119:                 CCPR1L = 0x0;
+   120:         }
+   121: }
+   122: 
+   123: void setRXBlink() {
+   124:         rxd.type = BLINK;
+   125:         rxd.fixedDuty = 0xFF;
+   126:         CCPR2L = 0xFF;
+   127:         rxd.blinkTimer = TickGet();
+   128: }
+   129: 
+   130: void setRXPulses(unsigned char count) {
+   131:         rxd.pulses = count;
+   132: }
+   133: 
+   134: void setTXPulses(unsigned char count) {
+   135:         txd.pulses = count;
+   136: }
+   137: 
+   138: void setRXFixed(char level) {
+   139:         rxd.type = FIXED;
+   140:         rxd.fixedDuty = level;
+   141: }
+   142: 
+   143: void setTXFixed(char level) {
+   144:         txd.type = FIXED;
+   145:         txd.fixedDuty = level;
+   146: }

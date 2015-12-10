@@ -1,0 +1,280 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+[c E5275 0 1 2 3 4 5 .. ]
+[n E5275 . SM_STACK_IDLE SM_STACK_MAC SM_STACK_IP SM_STACK_ARP SM_STACK_TCP SM_STACK_UDP  ]
+"78 /home/andresol/tellstick-net/tcpip/StackTsk.c
+[v _smStack `E5275 1 s ]
+[s S25 `us 1 `us 1 ]
+[n S25 . LW HW ]
+[s S26 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S26 . LB HB UB MB ]
+[s S22 `uc 1 `uc 1 ]
+[n S22 . LB HB ]
+[s S23 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S23 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S21 `us 1 `uc -> 2 `i `S22 1 `S23 1 ]
+[n S21 . Val v byte bits ]
+[s S27 `S21 1 `S21 1 ]
+[n S27 . low high ]
+[s S28 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S28 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S24 `ul 1 `us -> 2 `i `uc -> 4 `i `S25 1 `S26 1 `S27 1 `S28 1 ]
+[n S24 . Val w v word byte wordUnion bits ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S356 `S24 1 `S355 1 ]
+[n S356 . IPAddr MACAddr ]
+"80 /home/andresol/tellstick-net/tcpip/StackTsk.c
+[v _remoteNode `S356 1 e ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S357 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S357 0 e ]
+[c E208 0 1 .. ]
+[n E208 _BOOL FALSE TRUE  ]
+"81 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _LFSRSeedRand `(ul 0 ef1`ul ]
+"83 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _GenerateRandomDWORD `(ul 0 ef ]
+"286 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACInit `(v 0 ef ]
+"59 /home/andresol/tellstick-net/tcpip/TCPIP Stack/ARP.h
+[v _ARPInit `(v 0 ef ]
+"145 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPInit `(v 0 ef ]
+"204 /home/andresol/tellstick-net/tcpip/TCPIP Stack/TCP.h
+[v _TCPInit `(v 0 ef ]
+"135 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DHCP.h
+[v _DHCPInit `(v 0 ef1`uc ]
+"138 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DHCP.h
+[v _DHCPDisable `(v 0 ef1`uc ]
+"288 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACIsLinked `(E208 0 ef ]
+"136 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DHCP.h
+[v _DHCPTask `(v 0 ef ]
+"141 /home/andresol/tellstick-net/tcpip/TCPIP Stack/DHCP.h
+[v _DHCPIsBound `(E208 0 ef1`uc ]
+"224 /home/andresol/tellstick-net/tcpip/TCPIP Stack/TCP.h
+[v _TCPTick `(v 0 ef ]
+"146 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPTask `(v 0 ef ]
+"173 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPDiscard `(v 0 ef ]
+"290 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACGetHeader `(E208 0 ef2`*S355`*uc ]
+"85 /home/andresol/tellstick-net/tcpip/TCPIP Stack/ARP.h
+[v _ARPProcess `(E208 0 ef ]
+"188 /home/andresol/tellstick-net/tcpip/TCPIP Stack/IP.h
+[v _IPGetHeader `(E208 0 ef4`*S24`*S356`*uc`*us ]
+"56 /home/andresol/tellstick-net/tcpip/TCPIP Stack/ICMP.h
+[v _ICMPProcess `(v 0 ef2`*S356`us ]
+"223 /home/andresol/tellstick-net/tcpip/TCPIP Stack/TCP.h
+[v _TCPProcess `(E208 0 ef3`*S356`*S24`us ]
+"151 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPProcess `(E208 0 ef3`*S356`*S24`us ]
+"54 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Reboot.h
+[v _RebootTask `(v 0 ef ]
+"105 /home/andresol/tellstick-net/tcpip/StackTsk.c
+[v _StackInit `(v 1 ef ]
+{
+[e :U _StackInit ]
+[f ]
+"106
+[e = _smStack . `E5275 0 ]
+"113
+[e = . . _AppConfig 8 2 -> . `E208 1 `uc ]
+"118
+[e ( _LFSRSeedRand (1 ( _GenerateRandomDWORD ..  ]
+"120
+[e ( _MACInit ..  ]
+"126
+[e ( _ARPInit ..  ]
+"129
+[e ( _UDPInit ..  ]
+"133
+[e ( _TCPInit ..  ]
+"161
+[e ( _DHCPInit (1 -> -> 0 `i `uc ]
+"162
+[e $ ! ! != -> . . _AppConfig 8 1 `i -> -> -> 0 `i `uc `i 390  ]
+"163
+{
+"164
+[e ( _DHCPDisable (1 -> -> 0 `i `uc ]
+"165
+}
+[e :U 390 ]
+"179
+[e :UE 389 ]
+}
+"202
+[v _StackTask `(v 1 ef ]
+{
+[e :U _StackTask ]
+[f ]
+"203
+[v _dataCount `us 1 a ]
+"204
+[v _tempLocalIP `S24 1 a ]
+"205
+[v _cFrameType `uc 1 a ]
+"206
+[v _cIPFrameType `uc 1 a ]
+"253
+[e $ ! != -> . . _AppConfig 8 1 `i -> -> -> 0 `i `uc `i 392  ]
+"254
+{
+"255
+[v F5292 `E208 1 s bLastLinkState ]
+[i F5292
+. `E208 0
+]
+"256
+[v _bCurrentLinkState `E208 1 a ]
+"258
+[e = _bCurrentLinkState ( _MACIsLinked ..  ]
+"259
+[e $ ! != -> _bCurrentLinkState `i -> F5292 `i 393  ]
+"260
+{
+"261
+[e = F5292 _bCurrentLinkState ]
+"262
+[e $ ! ! != -> _bCurrentLinkState `i -> -> -> 0 `i `E208 `i 394  ]
+"263
+{
+"264
+[e = . . _AppConfig 0 0 . . _AppConfig 5 0 ]
+"265
+[e = . . _AppConfig 1 0 . . _AppConfig 6 0 ]
+"266
+[e = . . _AppConfig 8 2 -> . `E208 1 `uc ]
+"267
+[e ( _DHCPInit (1 -> -> 0 `i `uc ]
+"268
+}
+[e :U 394 ]
+"269
+}
+[e :U 393 ]
+"275
+[e ( _DHCPTask ..  ]
+"277
+[e $ ! != -> ( _DHCPIsBound (1 -> -> 0 `i `uc `i -> -> -> 0 `i `E208 `i 395  ]
+"278
+[e = . . _AppConfig 8 2 -> . `E208 0 `uc ]
+[e :U 395 ]
+"279
+}
+[e :U 392 ]
+"288
+[e ( _TCPTick ..  ]
+"293
+[e ( _UDPTask ..  ]
+"297
+[e :U 397 ]
+"298
+{
+"308
+[e ( _UDPDiscard ..  ]
+"313
+[e $ ! ! != -> ( _MACGetHeader (2 , &U . _remoteNode 1 &U _cFrameType `i -> -> -> 0 `i `E208 `i 399  ]
+"314
+[e $U 398  ]
+[e :U 399 ]
+"327
+[e $U 401  ]
+"328
+{
+"329
+[e :U 402 ]
+"330
+[e ( _ARPProcess ..  ]
+"331
+[e $U 400  ]
+"333
+[e :U 403 ]
+"334
+[e $ ! ! != -> ( _IPGetHeader (4 , , , &U _tempLocalIP &U _remoteNode &U _cIPFrameType &U _dataCount `i -> -> -> 0 `i `E208 `i 404  ]
+"335
+[e $U 400  ]
+[e :U 404 ]
+"338
+[e $ ! == -> _cIPFrameType `ui -> 1 `ui 405  ]
+"339
+{
+"362
+[e $ ! || || == . _tempLocalIP 0 . . _AppConfig 0 0 == . _tempLocalIP 0 -> -1 `ul == . _tempLocalIP 0 | & . . _AppConfig 0 0 . . _AppConfig 1 0 ~ . . _AppConfig 1 0 406  ]
+"363
+{
+"364
+[e ( _ICMPProcess (2 , &U _remoteNode _dataCount ]
+"365
+}
+[e :U 406 ]
+"367
+[e $U 400  ]
+"368
+}
+[e :U 405 ]
+"372
+[e $ ! == -> _cIPFrameType `ui -> 6 `ui 407  ]
+"373
+{
+"374
+[e ( _TCPProcess (3 , , &U _remoteNode &U _tempLocalIP _dataCount ]
+"375
+[e $U 400  ]
+"376
+}
+[e :U 407 ]
+"380
+[e $ ! == -> _cIPFrameType `ui -> 17 `ui 408  ]
+"381
+{
+"383
+[e $ ! != -> ( _UDPProcess (3 , , &U _remoteNode &U _tempLocalIP _dataCount `i -> -> -> 0 `i `E208 `i 409  ]
+"384
+[e $UE 391  ]
+[e :U 409 ]
+"385
+}
+[e :U 408 ]
+"388
+[e $U 400  ]
+"389
+}
+[e $U 400  ]
+"327
+[e :U 401 ]
+[e [\ _cFrameType , $ -> -> 6 `ui `uc 402
+ , $ -> -> 0 `ui `uc 403
+ 400 ]
+"389
+[e :U 400 ]
+"390
+}
+[e :U 396 ]
+"297
+[e $U 397  ]
+[e :U 398 ]
+"391
+[e :UE 391 ]
+}
+"409
+[v _StackApplications `(v 1 ef ]
+{
+[e :U _StackApplications ]
+[f ]
+"447
+[e ( _RebootTask ..  ]
+"469
+[e :UE 410 ]
+}

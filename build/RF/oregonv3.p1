@@ -1,0 +1,524 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+[c E3935 0 1 2 3 .. ]
+[n E3935 . SM_PREAMBLE SM_SYNC SM_PARSE_V3ID SM_PARSE_PAYLOAD  ]
+"13 /home/andresol/tellstick-net/rf/oregonv3.c
+[v _state `E3935 1 s ]
+"22 /home/andresol/tellstick-net/rf/oregonv3.c
+[v _halfTime `ui 1 s ]
+"23 /home/andresol/tellstick-net/rf/oregonv3.c
+[v _preambleSyncCount `uc 1 s ]
+"24 /home/andresol/tellstick-net/rf/oregonv3.c
+[v _byteCntV3 `uc 1 s ]
+"25 /home/andresol/tellstick-net/rf/oregonv3.c
+[v _nibblePositionV3 `uc 1 s ]
+"3 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageBeginRaw `(v 0 ef ]
+"8 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddString `(v 0 ef2`*Cuc`*Cuc ]
+"7 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddLong `(v 0 ef2`*Cuc`ul ]
+"9 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddHexString `(v 0 ef3`*Cuc`*Cuc`Cuc ]
+"4 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageEnd `(v 0 ef1`uc ]
+[i _state
+"13 /home/andresol/tellstick-net/rf/oregonv3.c
+. `E3935 0
+]
+[i _halfTime
+"22
+-> -> 0 `i `ui
+]
+[i _preambleSyncCount
+"23
+-> -> 0 `i `uc
+]
+[i _byteCntV3
+"24
+-> -> 0 `i `uc
+]
+[i _nibblePositionV3
+"25
+-> -> 0 `i `uc
+]
+"27
+[v _clearOregonV3 `(v 1 ef ]
+{
+[e :U _clearOregonV3 ]
+[f ]
+"28
+[e = _state . `E3935 0 ]
+"29
+[e = _preambleSyncCount -> -> 0 `i `uc ]
+"30
+[e = _halfTime -> -> 0 `i `ui ]
+"31
+[e = _byteCntV3 -> -> 0 `i `uc ]
+"32
+[e = _nibblePositionV3 -> -> 0 `i `uc ]
+"33
+[e :UE 323 ]
+}
+"35
+[v _oregonBitV3 `(c 1 ef2`uc`uc ]
+{
+[e :U _oregonBitV3 ]
+[v _level `uc 1 r1 ]
+[v _count `uc 1 r2 ]
+[f ]
+"37
+[e $ ! && >= -> _count `i -> 14 `i <= -> _count `i -> 21 `i 325  ]
+{
+"38
+[e $ ! == % _halfTime -> -> 2 `i `ui -> -> 1 `i `ui 326  ]
+{
+"40
+[e ) -> -U -> 2 `i `c ]
+[e $UE 324  ]
+"41
+}
+[e :U 326 ]
+"42
+[e = _halfTime + _halfTime -> -> 2 `i `ui ]
+"44
+[e ) -> _level `c ]
+[e $UE 324  ]
+"45
+}
+[e :U 325 ]
+"46
+[e $ ! && >= -> _count `i -> 6 `i <= -> _count `i -> 11 `i 327  ]
+{
+"47
+[e ++ _halfTime -> -> 1 `i `ui ]
+"48
+[e $ ! == % _halfTime -> -> 2 `i `ui -> -> 0 `i `ui 328  ]
+{
+"50
+[e ) -> _level `c ]
+[e $UE 324  ]
+"51
+}
+[e :U 328 ]
+"52
+[e ) -> -U -> 1 `i `c ]
+[e $UE 324  ]
+"53
+}
+[e :U 327 ]
+"54
+[e ) -> -U -> 2 `i `c ]
+[e $UE 324  ]
+"55
+[e :UE 324 ]
+}
+"57
+[v _oregonByteV3 `(i 1 ef2`uc`uc ]
+{
+[e :U _oregonByteV3 ]
+[v _level `uc 1 r1 ]
+[v _count `uc 1 r2 ]
+[f ]
+"58
+[v _b1 `c 1 a ]
+[e = _b1 ( _oregonBitV3 (2 , _level _count ]
+"59
+[v F3952 `uc 1 s byte ]
+[i F3952
+-> -> 0 `i `uc
+]
+"60
+[e $ ! == -> _byteCntV3 `i -> 0 `i 330  ]
+{
+"61
+[e = F3952 -> -> 0 `i `uc ]
+"62
+}
+[e :U 330 ]
+"64
+[e $ ! == -> _b1 `i -U -> 2 `i 331  ]
+{
+"65
+[e ) -U -> 2 `i ]
+[e $UE 329  ]
+"66
+}
+[e $U 332  ]
+[e :U 331 ]
+[e $ ! == -> _b1 `i -U -> 1 `i 333  ]
+{
+"67
+[e ) -U -> 1 `i ]
+[e $UE 329  ]
+"68
+}
+[e :U 333 ]
+"69
+[e :U 332 ]
+[e $ ! == -> _nibblePositionV3 `i -> 4 `i 334  ]
+{
+"70
+[e =<< F3952 -> 4 `i ]
+"71
+[e = _nibblePositionV3 -> -> 0 `i `uc ]
+"72
+}
+[e :U 334 ]
+"73
+[e $ ! != -> _b1 `i -> -> -> 0 `i `c `i 335  ]
+{
+"74
+[e =| F3952 -> << -> 1 `i -> _nibblePositionV3 `i `uc ]
+"75
+}
+[e :U 335 ]
+"77
+[e =+ _byteCntV3 -> -> 1 `i `uc ]
+"78
+[e =+ _nibblePositionV3 -> -> 1 `i `uc ]
+"79
+[e $ ! < -> _byteCntV3 `i -> 8 `i 336  ]
+{
+"80
+[e ) -U -> 1 `i ]
+[e $UE 329  ]
+"81
+}
+[e :U 336 ]
+"82
+[e = _byteCntV3 -> -> 0 `i `uc ]
+"83
+[e = _nibblePositionV3 -> -> 0 `i `uc ]
+"84
+[e ) -> F3952 `i ]
+[e $UE 329  ]
+"85
+[e :UE 329 ]
+}
+"87
+[v _streamOregonV3 `(v 1 ef2`uc`uc ]
+{
+[e :U _streamOregonV3 ]
+[v _level `uc 1 r1 ]
+[v _count `uc 1 r2 ]
+[f ]
+"90
+[v F3955 `ui 1 s id ]
+[i F3955
+-> -> 0 `i `ui
+]
+"91
+[v F3956 `i 1 s b1 ]
+"92
+[v F3957 `c 1 s expectedPayloadLengthV3 ]
+[i F3957
+-> -U -> 1 `i `c
+]
+"93
+[v F3958 `uc -> 9 `i s bufferV3 ]
+"94
+[v F3959 `uc 1 s bufferCntV3 ]
+[i F3959
+-> -> 0 `i `uc
+]
+"96
+[e $ ! != -> _level `i -> -> -> 0 `i `uc `i 338  ]
+{
+"97
+[e =+ _count -> -> 1 `i `uc ]
+"98
+}
+[e $U 339  ]
+[e :U 338 ]
+{
+"99
+[e =- _count -> -> 1 `i `uc ]
+"100
+}
+[e :U 339 ]
+"102
+[e $U 341  ]
+{
+"103
+[e :U 342 ]
+"104
+[e $ ! && >= -> _count `i -> 6 `i <= -> _count `i -> 11 `i 343  ]
+{
+"106
+[e =+ _preambleSyncCount -> -> 1 `i `uc ]
+"107
+[e $U 340  ]
+"108
+}
+[e :U 343 ]
+"110
+[e $ ! && && >= -> _count `i -> 14 `i <= -> _count `i -> 21 `i > -> _preambleSyncCount `i -> 20 `i 344  ]
+{
+"111
+[e = _state . `E3935 1 ]
+"112
+[e = _preambleSyncCount -> -> 3 `i `uc ]
+"113
+[e $U 340  ]
+"114
+}
+[e :U 344 ]
+"116
+[e ( _clearOregonV3 ..  ]
+"117
+[e $U 340  ]
+"119
+[e :U 345 ]
+"120
+[e $ ! && >= -> _count `i -> 14 `i <= -> _count `i -> 21 `i 346  ]
+{
+"121
+[e =- _preambleSyncCount -> -> 1 `i `uc ]
+"122
+[e $ ! == -> _preambleSyncCount `i -> 0 `i 347  ]
+{
+"124
+[e = F3955 -> -> 0 `i `ui ]
+"125
+[e = _state . `E3935 2 ]
+"126
+}
+[e :U 347 ]
+"127
+[e $U 340  ]
+"128
+}
+[e :U 346 ]
+"129
+[e ( _clearOregonV3 ..  ]
+"130
+[e $U 340  ]
+"132
+[e :U 348 ]
+"133
+[e = F3956 ( _oregonByteV3 (2 , _level _count ]
+"134
+[e $ ! == F3956 -U -> 2 `i 349  ]
+{
+"135
+[e ( _clearOregonV3 ..  ]
+"136
+[e $U 340  ]
+"137
+}
+[e $U 350  ]
+[e :U 349 ]
+[e $ ! == F3956 -U -> 1 `i 351  ]
+{
+"138
+[e $U 340  ]
+"139
+}
+[e $U 352  ]
+[e :U 351 ]
+{
+"140
+[e $ ! == F3955 -> -> 0 `i `ui 353  ]
+{
+"141
+[e = F3955 -> << F3956 -> 8 `i `ui ]
+"142
+}
+[e $U 354  ]
+[e :U 353 ]
+{
+"143
+[e =| F3955 -> F3956 `ui ]
+"144
+[e $U 356  ]
+{
+"145
+[e :U 357 ]
+"146
+[e :U 358 ]
+"147
+[e = F3957 -> -> 7 `i `c ]
+"148
+[e $U 355  ]
+"149
+[e :U 359 ]
+"150
+[e :U 360 ]
+"151
+[e = F3957 -> -> 5 `i `c ]
+"152
+[e $U 355  ]
+"153
+[e :U 361 ]
+"154
+[e :U 362 ]
+"155
+[e = F3957 -> -> 8 `i `c ]
+"156
+[e $U 355  ]
+"157
+[e :U 363 ]
+"158
+[e = F3957 -> -> 9 `i `c ]
+"159
+[e $U 355  ]
+"160
+[e :U 364 ]
+"161
+[e = F3957 -> -> 8 `i `c ]
+"162
+[e $U 355  ]
+"163
+[e :U 365 ]
+"164
+[e = F3957 -> -> 7 `i `c ]
+"165
+[e $U 355  ]
+"166
+[e :U 366 ]
+"167
+[e = F3957 -> -U -> 1 `i `c ]
+"168
+[e $U 355  ]
+"169
+}
+[e $U 355  ]
+"144
+[e :U 356 ]
+[e [\ F3955 , $ -> 63524 `ui 357
+ , $ -> 63668 `ui 358
+ , $ -> 55412 `ui 359
+ , $ -> 51268 `ui 360
+ , $ -> -> 6532 `i `ui 361
+ , $ -> -> 6548 `i `ui 362
+ , $ -> -> 23904 `i `ui 363
+ , $ -> -> 10516 `i `ui 364
+ , $ -> -> 11536 `i `ui 365
+ 366 ]
+"169
+[e :U 355 ]
+"170
+[e = _state . `E3935 3 ]
+"171
+[e = F3959 -> -> 0 `i `uc ]
+"172
+}
+[e :U 354 ]
+"173
+}
+[e :U 352 ]
+[e :U 350 ]
+"174
+[e $U 340  ]
+"176
+[e :U 367 ]
+"178
+[e = F3956 ( _oregonByteV3 (2 , _level _count ]
+"179
+[e $ ! == F3956 -U -> 2 `i 368  ]
+{
+"180
+[e $ ! && && && < -> F3957 `i -> 0 `i ! != -> _level `i -> -> -> 0 `i `uc `i > / _halfTime -> -> 2 `i `ui -> -> 55 `i `ui > -> _count `i -> 30 `i 369  ]
+{
+"182
+[e = F3957 -> -> 0 `i `c ]
+"183
+[e = F3956 -> 0 `i ]
+"184
+}
+[e $U 370  ]
+"185
+[e :U 369 ]
+{
+"186
+[e ( _clearOregonV3 ..  ]
+"187
+[e $U 340  ]
+"188
+}
+[e :U 370 ]
+"189
+}
+[e $U 371  ]
+[e :U 368 ]
+[e $ ! == F3956 -U -> 1 `i 372  ]
+{
+"190
+[e $U 340  ]
+"191
+}
+[e $U 373  ]
+"192
+[e :U 372 ]
+{
+"193
+[e =- F3957 -> -> 1 `i `c ]
+"194
+}
+[e :U 373 ]
+[e :U 371 ]
+"195
+[e = *U + &U F3958 * -> F3959 `ux -> -> # *U &U F3958 `ui `ux -> F3956 `uc ]
+"196
+[e =+ F3959 -> -> 1 `i `uc ]
+"198
+[e $ ! == -> F3957 `i -> 0 `i 374  ]
+{
+"201
+[e ( _clearOregonV3 ..  ]
+"202
+[e ( _rfMessageBeginRaw ..  ]
+"203
+[e ( _rfMessageAddString (2 , :s 1C :s 2C ]
+"204
+[e ( _rfMessageAddString (2 , :s 3C :s 4C ]
+"205
+[e ( _rfMessageAddLong (2 , :s 5C -> F3955 `ul ]
+"206
+[e ( _rfMessageAddHexString (3 , , :s 6C -> &U F3958 `*Cuc F3959 ]
+"207
+[e ( _rfMessageEnd (1 -> -> 1 `i `uc ]
+"208
+[e $U 340  ]
+"209
+}
+[e :U 374 ]
+"210
+[e $ ! > _halfTime -> -> 400 `i `ui 375  ]
+{
+"212
+[e ( _clearOregonV3 ..  ]
+"213
+[e $U 340  ]
+"214
+}
+[e :U 375 ]
+"215
+[e $U 340  ]
+"216
+}
+[e $U 340  ]
+"102
+[e :U 341 ]
+[e [\ _state , $ . `E3935 0 342
+ , $ . `E3935 1 345
+ , $ . `E3935 2 348
+ , $ . `E3935 3 367
+ 340 ]
+"216
+[e :U 340 ]
+"217
+[e :UE 337 ]
+}
+[a 1C 99 108 97 115 115 0 ]
+[a 2C 115 101 110 115 111 114 0 ]
+[a 4C 111 114 101 103 111 110 0 ]
+[a 3C 112 114 111 116 111 99 111 108 0 ]
+[a 5C 109 111 100 101 108 0 ]
+[a 6C 100 97 116 97 0 ]

@@ -1,0 +1,117 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+[s S25 `us 1 `us 1 ]
+[n S25 . LW HW ]
+[s S26 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S26 . LB HB UB MB ]
+[s S22 `uc 1 `uc 1 ]
+[n S22 . LB HB ]
+[s S23 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S23 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S21 `us 1 `uc -> 2 `i `S22 1 `S23 1 ]
+[n S21 . Val v byte bits ]
+[s S27 `S21 1 `S21 1 ]
+[n S27 . low high ]
+[s S28 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S28 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S24 `ul 1 `us -> 2 `i `uc -> 4 `i `S25 1 `S26 1 `S27 1 `S28 1 ]
+[n S24 . Val w v word byte wordUnion bits ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S356 `S24 1 `S355 1 ]
+[n S356 . IPAddr MACAddr ]
+"295 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACGetArray `(us 0 ef2`*uc`us ]
+"168 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACCalcRxChecksum `(us 0 ef2`us`us ]
+[s S373 `uc 1 `uc 1 `us 1 `us 1 `us 1 `uc 1 `uc 1 `us 1 `S24 1 `S24 1 ]
+[n S373 _IP_HEADER VersionIHL TypeOfService TotalLength Identification FragmentInfo TimeToLive Protocol HeaderChecksum SourceAddress DestAddress ]
+[c E208 0 1 .. ]
+[n E208 _BOOL FALSE TRUE  ]
+"302 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACIsTxReady `(E208 0 ef ]
+"292 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACSetWritePtr `(us 0 ef1`us ]
+[s S372 `S355 1 `S355 1 `S21 1 ]
+[n S372 . DestMACAddr SourceMACAddr Type ]
+"156 /home/andresol/tellstick-net/tcpip/TCPIP Stack/IP.h
+[v _IPPutHeader `(us 0 ef3`*S356`uc`us ]
+"304 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACPutArray `(v 0 ef2`*uc`us ]
+"298 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACMemCopyAsync `(v 0 ef3`us`us`us ]
+"299 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACIsMemCopyDone `(E208 0 ef ]
+"305 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACFlush `(v 0 ef ]
+"135 /home/andresol/tellstick-net/tcpip/ICMP.c
+[v _ICMPProcess `(v 1 ef2`*S356`us ]
+{
+[e :U _ICMPProcess ]
+[v _remote `*S356 1 r1 ]
+[v _len `us 1 r2 ]
+[f ]
+"136
+[v _dwVal `S24 1 a ]
+"139
+[e ( _MACGetArray (2 , -> &U _dwVal `*uc -> -> # _dwVal `ui `us ]
+"142
+[e $ ! == -> *U + &U . _dwVal 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _dwVal 1 `ui `ux `ui -> 8 `ui 390  ]
+"143
+{
+"148
+[e $ ! != -> ( _MACCalcRxChecksum (2 , -> + -> -> 0 `i `ui -> # `S373 `ui `us _len `ui -> -> -> 0 `i `us `ui 391  ]
+"149
+[e $UE 389  ]
+[e :U 391 ]
+"152
+[e = *U + &U . _dwVal 2 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _dwVal 2 `ui `ux -> -> 0 `i `uc ]
+"153
+[e =+ *U + &U . _dwVal 2 * -> -> -> 2 `i `ui `ux -> -> # *U &U . _dwVal 2 `ui `ux -> -> 8 `i `uc ]
+"154
+[e $ ! < -> *U + &U . _dwVal 2 * -> -> -> 2 `i `ui `ux -> -> # *U &U . _dwVal 2 `ui `ux `ui -> 8 `ui 392  ]
+"155
+{
+"156
+[e ++ *U + &U . _dwVal 2 * -> -> -> 3 `i `ui `ux -> -> # *U &U . _dwVal 2 `ui `ux -> -> 1 `i `uc ]
+"157
+[e $ ! == -> *U + &U . _dwVal 2 * -> -> -> 3 `i `ui `ux -> -> # *U &U . _dwVal 2 `ui `ux `ui -> 0 `ui 393  ]
+"158
+[e ++ *U + &U . _dwVal 2 * -> -> -> 2 `i `ui `ux -> -> # *U &U . _dwVal 2 `ui `ux -> -> 1 `i `uc ]
+[e :U 393 ]
+"159
+}
+[e :U 392 ]
+"163
+[e $U 394  ]
+[e :U 395 ]
+[e :U 394 ]
+[e $ ! != -> ( _MACIsTxReady ..  `i -> -> -> 0 `i `E208 `i 395  ]
+[e :U 396 ]
+"167
+[e ( _MACSetWritePtr (1 -> + + - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 1 `ul -> -> # `S372 `ui `ul `us ]
+"170
+[e ( _IPPutHeader (3 , , _remote -> -> 1 `ui `uc _len ]
+"173
+[e ( _MACPutArray (2 , -> &U _dwVal `*uc -> -> # _dwVal `ui `us ]
+"174
+[e ( _MACMemCopyAsync (3 , , -> -U -> 1 `i `us -> -U -> 1 `i `us -> - -> _len `ui -> -> 4 `i `ui `us ]
+"175
+[e $U 397  ]
+[e :U 398 ]
+[e :U 397 ]
+[e $ ! != -> ( _MACIsMemCopyDone ..  `i -> -> -> 0 `i `E208 `i 398  ]
+[e :U 399 ]
+"178
+[e ( _MACFlush ..  ]
+"179
+}
+[e :U 390 ]
+"203
+[e :UE 389 ]
+}

@@ -1,0 +1,440 @@
+     1: /*********************************************************************
+     2:  *
+     3:  *                  Tick Manager for Timekeeping
+     4:  *
+     5:  *********************************************************************
+     6:  * FileName:        Tick.c
+     7:  * Dependencies:    Timer 0 (PIC18) or Timer 1 (PIC24F, PIC24H, 
+     8:  *                                      dsPIC30F, dsPIC33F, PIC32)
+     9:  * Processor:       PIC18, PIC24F, PIC24H, dsPIC30F, dsPIC33F, PIC32
+    10:  * Compiler:        Microchip C32 v1.10b or higher
+    11:  *                                      Microchip C30 v3.12 or higher
+    12:  *                                      Microchip C18 v3.30 or higher
+    13:  *                                      HI-TECH PICC-18 PRO 9.63PL2 or higher
+    14:  * Company:         Microchip Technology, Inc.
+    15:  *
+    16:  * Software License Agreement
+    17:  *
+    18:  * Copyright (C) 2002-2010 Microchip Technology Inc.  All rights
+    19:  * reserved.
+    20:  *
+    21:  * Microchip licenses to you the right to use, modify, copy, and
+    22:  * distribute:
+    23:  * (i)  the Software when embedded on a Microchip microcontroller or
+    24:  *      digital signal controller product ("Device") which is
+    25:  *      integrated into Licensee's product; or
+    26:  * (ii) ONLY the Software driver source files ENC28J60.c, ENC28J60.h,
+    27:  *              ENCX24J600.c and ENCX24J600.h ported to a non-Microchip device
+    28:  *              used in conjunction with a Microchip ethernet controller for
+    29:  *              the sole purpose of interfacing with the ethernet controller.
+    30:  *
+    31:  * You should refer to the license agreement accompanying this
+    32:  * Software for additional information regarding your rights and
+    33:  * obligations.
+    34:  *
+    35:  * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT
+    36:  * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+    37:  * LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+    38:  * PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL
+    39:  * MICROCHIP BE LIABLE FOR ANY INCIDENTAL, SPECIAL, INDIRECT OR
+    40:  * CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF
+    41:  * PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES, ANY CLAIMS
+    42:  * BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE
+    43:  * THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION, OR OTHER
+    44:  * SIMILAR COSTS, WHETHER ASSERTED ON THE BASIS OF CONTRACT, TORT
+    45:  * (INCLUDING NEGLIGENCE), BREACH OF WARRANTY, OR OTHERWISE.
+    46:  *
+    47:  *
+    48:  * Author               Date        Comment
+    49:  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    50:  * Nilesh Rajbharti     6/28/01     Original        (Rev 1.0)
+    51:  * Nilesh Rajbharti     2/9/02      Cleanup
+    52:  * Nilesh Rajbharti     5/22/02     Rev 2.0 (See version.log for detail)
+    53:  * Howard Schlunder             6/13/07         Changed to use timer without 
+    54:  *                                                                      writing for perfect accuracy.
+    55: ********************************************************************/
+    56: #define __TICK_C
+    57: 
+    58: #include "TCPIP Stack/TCPIP.h"
+    59: 
+    60: // Internal counter to store Ticks.  This variable is incremented in an ISR and 
+    61: // therefore must be marked volatile to prevent the compiler optimizer from 
+    62: // reordering code to use this value in the main context while interrupts are 
+    63: // disabled.
+    64: static volatile DWORD dwInternalTicks = 0;
+    65: 
+    66: // 6-byte value to store Ticks.  Allows for use over longer periods of time.
+    67: static BYTE vTickReading[6];
+    68: 
+    69: static void GetTickCopy(void);
+    70: 
+    71: 
+    72: /*****************************************************************************
+    73:   Function:
+    74:         void TickInit(void)
+    75: 
+    76:   Summary:
+    77:         Initializes the Tick manager module.
+    78: 
+    79:   Description:
+    80:         Configures the Tick module and any necessary hardware resources.
+    81: 
+    82:   Precondition:
+    83:         None
+    84: 
+    85:   Parameters:
+    86:         None
+    87: 
+    88:   Returns:
+    89:         None
+    90:         
+    91:   Remarks:
+    92:         This function is called only one during lifetime of the application.
+    93:   ***************************************************************************/
+    94: void TickInit(void)
+    95: {
+    96: #if defined(__18CXX)
+    97:         // Use Timer0 for 8 bit processors
+    98:     // Initialize the time
+    99:     TMR0H = 0;
+   100:     TMR0L = 0;
+   101: 
+   102:         // Set up the timer interrupt
+   103:         INTCON2bits.TMR0IP = 0;         // Low priority
+   104:     INTCONbits.TMR0IF = 0;
+   105:     INTCONbits.TMR0IE = 1;              // Enable interrupt
+   106: 
+   107:     // Timer0 on, 16-bit, internal timer, 1:256 prescalar
+   108:     T0CON = 0x87;
+   109: 
+   110: #else
+   111:         // Use Timer 1 for 16-bit and 32-bit processors
+   112:         // 1:256 prescale
+   113:         T1CONbits.TCKPS = 3;
+   114:         // Base
+   115:         PR1 = 0xFFFF;
+   116:         // Clear counter
+   117:         TMR1 = 0;
+   118: 
+   119:         // Enable timer interrupt
+   120:         #if defined(__C30__)
+   121:                 IPC0bits.T1IP = 2;      // Interrupt priority 2 (low)
+   122:                 IFS0bits.T1IF = 0;
+   123:                 IEC0bits.T1IE = 1;
+   124:         #else
+   125:                 IPC1bits.T1IP = 2;      // Interrupt priority 2 (low)
+   126:                 IFS0CLR = _IFS0_T1IF_MASK;
+   127:                 IEC0SET = _IEC0_T1IE_MASK;
+   128:         #endif
+   129: 
+   130:         // Start timer
+   131:         T1CONbits.TON = 1;
+   132: #endif
+   133: }
+   134: 
+   135: /*****************************************************************************
+   136:   Function:
+   137:         static void GetTickCopy(void)
+   138: 
+   139:   Summary:
+   140:         Reads the tick value.
+   141: 
+   142:   Description:
+   143:         This function performs an interrupt-safe and synchronized read of the 
+   144:         48-bit Tick value.
+   145: 
+   146:   Precondition:
+   147:         None
+   148: 
+   149:   Parameters:
+   150:         None
+   151: 
+   152:   Returns:
+   153:         None
+   154:   ***************************************************************************/
+   155: static void GetTickCopy(void)
+   156: {
+   157:         // Perform an Interrupt safe and synchronized read of the 48-bit 
+   158:         // tick value
+   159: #if defined(__18CXX)
+   160:         do
+   161:         {
+   162:                 INTCONbits.TMR0IE = 1;          // Enable interrupt
+   163:                 Nop();
+   164:                 INTCONbits.TMR0IE = 0;          // Disable interrupt
+   165:                 vTickReading[0] = TMR0L;
+   166:                 vTickReading[1] = TMR0H;
+   167:                 *((DWORD*)&vTickReading[2]) = dwInternalTicks;
+   168:         } while(INTCONbits.TMR0IF);
+   169:         INTCONbits.TMR0IE = 1;                  // Enable interrupt
+   170: #elif defined(__C30__)
+   171:         do
+   172:         {
+   173:                 DWORD dwTempTicks;
+   174:                 
+   175:                 IEC0bits.T1IE = 1;                      // Enable interrupt
+   176:                 Nop();
+   177:                 IEC0bits.T1IE = 0;                      // Disable interrupt
+   178: 
+   179:                 // Get low 2 bytes
+   180:                 ((WORD*)vTickReading)[0] = TMR1;
+   181:                 
+   182:                 // Correct corner case where interrupt increments byte[4+] but 
+   183:                 // TMR1 hasn't rolled over to 0x0000 yet
+   184:                 dwTempTicks = dwInternalTicks;
+   185:                 if(((WORD*)vTickReading)[0] == 0xFFFFu)
+   186:                         dwTempTicks--;
+   187:                 
+   188:                 // Get high 4 bytes
+   189:                 vTickReading[2] = ((BYTE*)&dwTempTicks)[0];
+   190:                 vTickReading[3] = ((BYTE*)&dwTempTicks)[1];
+   191:                 vTickReading[4] = ((BYTE*)&dwTempTicks)[2];
+   192:                 vTickReading[5] = ((BYTE*)&dwTempTicks)[3];
+   193:         } while(IFS0bits.T1IF);
+   194:         IEC0bits.T1IE = 1;                              // Enable interrupt
+   195: #else   // PIC32
+   196:         do
+   197:         {
+   198:                 DWORD dwTempTicks;
+   199:                 
+   200:                 IEC0SET = _IEC0_T1IE_MASK;      // Enable interrupt
+   201:                 Nop();
+   202:                 IEC0CLR = _IEC0_T1IE_MASK;      // Disable interrupt
+   203:                 
+   204:                 // Get low 2 bytes
+   205:                 ((volatile WORD*)vTickReading)[0] = TMR1;
+   206:                 
+   207:                 // Correct corner case where interrupt increments byte[4+] but 
+   208:                 // TMR1 hasn't rolled over to 0x0000 yet
+   209:                 dwTempTicks = dwInternalTicks;
+   210: 
+   211:                 // PIC32MX3XX/4XX devices trigger the timer interrupt when TMR1 == PR1 
+   212:                 // (TMR1 prescalar is 0x00), requiring us to undo the ISR's increment 
+   213:                 // of the upper 32 bits of our 48 bit timer in the special case when 
+   214:                 // TMR1 == PR1 == 0xFFFF.  For other PIC32 families, the ISR is 
+   215:                 // triggered when TMR1 increments from PR1 to 0x0000, making no special 
+   216:                 // corner case.
+   217:                 #if __PIC32_FEATURE_SET__ <= 460
+   218:                         if(((WORD*)vTickReading)[0] == 0xFFFFu)
+   219:                                 dwTempTicks--;
+   220:                 #elif !defined(__PIC32_FEATURE_SET__)
+   221:                         #error __PIC32_FEATURE_SET__ macro must be defined.  You need to download a newer C32 compiler version.
+   222:                 #endif
+   223:                 
+   224:                 // Get high 4 bytes
+   225:                 vTickReading[2] = ((BYTE*)&dwTempTicks)[0];
+   226:                 vTickReading[3] = ((BYTE*)&dwTempTicks)[1];
+   227:                 vTickReading[4] = ((BYTE*)&dwTempTicks)[2];
+   228:                 vTickReading[5] = ((BYTE*)&dwTempTicks)[3];
+   229:         } while(IFS0bits.T1IF);
+   230:         IEC0SET = _IEC0_T1IE_MASK;              // Enable interrupt
+   231: #endif
+   232: }
+   233: 
+   234: 
+   235: /*****************************************************************************
+   236:   Function:
+   237:         DWORD TickGet(void)
+   238: 
+   239:   Summary:
+   240:         Obtains the current Tick value.
+   241: 
+   242:   Description:
+   243:         This function retrieves the current Tick value, allowing timing and
+   244:         measurement code to be written in a non-blocking fashion.  This function
+   245:         retrieves the least significant 32 bits of the internal tick counter, 
+   246:         and is useful for measuring time increments ranging from a few 
+   247:         microseconds to a few hours.  Use TickGetDiv256 or TickGetDiv64K for
+   248:         longer periods of time.
+   249: 
+   250:   Precondition:
+   251:         None
+   252: 
+   253:   Parameters:
+   254:         None
+   255: 
+   256:   Returns:
+   257:         Lower 32 bits of the current Tick value.
+   258:   ***************************************************************************/
+   259: DWORD TickGet(void)
+   260: {
+   261:         GetTickCopy();
+   262:         return *((DWORD*)&vTickReading[0]);
+   263: }
+   264: 
+   265: /*****************************************************************************
+   266:   Function:
+   267:         DWORD TickGetDiv256(void)
+   268: 
+   269:   Summary:
+   270:         Obtains the current Tick value divided by 256.
+   271: 
+   272:   Description:
+   273:         This function retrieves the current Tick value, allowing timing and
+   274:         measurement code to be written in a non-blocking fashion.  This function
+   275:         retrieves the middle 32 bits of the internal tick counter, 
+   276:         and is useful for measuring time increments ranging from a few 
+   277:         minutes to a few weeks.  Use TickGet for shorter periods or TickGetDiv64K
+   278:         for longer ones.
+   279: 
+   280:   Precondition:
+   281:         None
+   282: 
+   283:   Parameters:
+   284:         None
+   285: 
+   286:   Returns:
+   287:         Middle 32 bits of the current Tick value.
+   288:   ***************************************************************************/
+   289: DWORD TickGetDiv256(void)
+   290: {
+   291:         DWORD dw;
+   292: 
+   293:         GetTickCopy();
+   294:         ((BYTE*)&dw)[0] = vTickReading[1];      // Note: This copy must be done one 
+   295:         ((BYTE*)&dw)[1] = vTickReading[2];      // byte at a time to prevent misaligned 
+   296:         ((BYTE*)&dw)[2] = vTickReading[3];      // memory reads, which will reset the PIC.
+   297:         ((BYTE*)&dw)[3] = vTickReading[4];
+   298:         
+   299:         return dw;
+   300: }
+   301: 
+   302: /*****************************************************************************
+   303:   Function:
+   304:         DWORD TickGetDiv64K(void)
+   305: 
+   306:   Summary:
+   307:         Obtains the current Tick value divided by 64K.
+   308: 
+   309:   Description:
+   310:         This function retrieves the current Tick value, allowing timing and
+   311:         measurement code to be written in a non-blocking fashion.  This function
+   312:         retrieves the most significant 32 bits of the internal tick counter, 
+   313:         and is useful for measuring time increments ranging from a few 
+   314:         days to a few years, or for absolute time measurements.  Use TickGet or
+   315:         TickGetDiv256 for shorter periods of time.
+   316: 
+   317:   Precondition:
+   318:         None
+   319: 
+   320:   Parameters:
+   321:         None
+   322: 
+   323:   Returns:
+   324:         Upper 32 bits of the current Tick value.
+   325:   ***************************************************************************/
+   326: DWORD TickGetDiv64K(void)
+   327: {
+   328:         DWORD dw;
+   329: 
+   330:         GetTickCopy();
+   331:         ((BYTE*)&dw)[0] = vTickReading[2];      // Note: This copy must be done one 
+   332:         ((BYTE*)&dw)[1] = vTickReading[3];      // byte at a time to prevent misaligned 
+   333:         ((BYTE*)&dw)[2] = vTickReading[4];      // memory reads, which will reset the PIC.
+   334:         ((BYTE*)&dw)[3] = vTickReading[5];
+   335:         
+   336:         return dw;
+   337: }
+   338: 
+   339: 
+   340: /*****************************************************************************
+   341:   Function:
+   342:         DWORD TickConvertToMilliseconds(DWORD dwTickValue)
+   343: 
+   344:   Summary:
+   345:         Converts a Tick value or difference to milliseconds.
+   346: 
+   347:   Description:
+   348:         This function converts a Tick value or difference to milliseconds.  For
+   349:         example, TickConvertToMilliseconds(32768) returns 1000 when a 32.768kHz 
+   350:         clock with no prescaler drives the Tick module interrupt.
+   351: 
+   352:   Precondition:
+   353:         None
+   354: 
+   355:   Parameters:
+   356:         dwTickValue     - Value to convert to milliseconds
+   357: 
+   358:   Returns:
+   359:         Input value expressed in milliseconds.
+   360: 
+   361:   Remarks:
+   362:         This function performs division on DWORDs, which is slow.  Avoid using
+   363:         it unless you absolutely must (such as displaying data to a user).  For
+   364:         timeout comparisons, compare the current value to a multiple or fraction 
+   365:         of TICK_SECOND, which will be calculated only once at compile time.
+   366:   ***************************************************************************/
+   367: DWORD TickConvertToMilliseconds(DWORD dwTickValue)
+   368: {
+   369:         return (dwTickValue+(TICKS_PER_SECOND/2000ul))/((DWORD)(TICKS_PER_SECOND/1000ul));
+   370: }
+   371: 
+   372: 
+   373: /*****************************************************************************
+   374:   Function:
+   375:         void TickUpdate(void)
+   376: 
+   377:   Description:
+   378:         Updates the tick value when an interrupt occurs.
+   379: 
+   380:   Precondition:
+   381:         None
+   382: 
+   383:   Parameters:
+   384:         None
+   385: 
+   386:   Returns:
+   387:         None
+   388:   ***************************************************************************/
+   389: #if defined(__18CXX)
+   390: void TickUpdate(void)
+   391: {
+   392:     if(INTCONbits.TMR0IF)
+   393:     {
+   394:                 // Increment internal high tick counter
+   395:                 dwInternalTicks++;
+   396: 
+   397:                 // Reset interrupt flag
+   398:         INTCONbits.TMR0IF = 0;
+   399:     }
+   400: }
+   401: 
+   402: /*****************************************************************************
+   403:   Function:
+   404:         void _ISR _T1Interrupt(void)
+   405: 
+   406:   Description:
+   407:         Updates the tick value when an interrupt occurs.
+   408: 
+   409:   Precondition:
+   410:         None
+   411: 
+   412:   Parameters:
+   413:         None
+   414: 
+   415:   Returns:
+   416:         None
+   417:   ***************************************************************************/
+   418: #elif defined(__PIC32MX__)
+   419: void __attribute((interrupt(ipl2), vector(_TIMER_1_VECTOR), nomips16)) _T1Interrupt(void)
+   420: {
+   421:         // Increment internal high tick counter
+   422:         dwInternalTicks++;
+   423: 
+   424:         // Reset interrupt flag
+   425:         IFS0CLR = _IFS0_T1IF_MASK;
+   426: }
+   427: #else
+   428: #if __C30_VERSION__ >= 300
+   429: void _ISR __attribute__((__no_auto_psv__)) _T1Interrupt(void)
+   430: #else
+   431: void _ISR _T1Interrupt(void)
+   432: #endif
+   433: {
+   434:         // Increment internal high tick counter
+   435:         dwInternalTicks++;
+   436: 
+   437:         // Reset interrupt flag
+   438:         IFS0bits.T1IF = 0;
+   439: }
+   440: #endif

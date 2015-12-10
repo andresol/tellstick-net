@@ -1,0 +1,467 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+[c E3935 0 1 2 .. ]
+[n E3935 . SM_WAIT SM_PARSE_ID SM_PARSE_DATA  ]
+"12 /home/andresol/tellstick-net/rf/oregon.c
+[v _state `E3935 1 s ]
+"20 /home/andresol/tellstick-net/rf/oregon.c
+[v _byteCnt `uc 1 s ]
+"21 /home/andresol/tellstick-net/rf/oregon.c
+[v _bitCnt `uc 1 s ]
+"22 /home/andresol/tellstick-net/rf/oregon.c
+[v _totByteCnt `uc 1 s ]
+"23 /home/andresol/tellstick-net/rf/oregon.c
+[v _byteLength `i 1 e ]
+"3 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageBeginRaw `(v 0 ef ]
+"8 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddString `(v 0 ef2`*Cuc`*Cuc ]
+"7 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddLong `(v 0 ef2`*Cuc`ul ]
+"9 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddHexString `(v 0 ef3`*Cuc`*Cuc`Cuc ]
+"4 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageEnd `(v 0 ef1`uc ]
+[i _state
+"12 /home/andresol/tellstick-net/rf/oregon.c
+. `E3935 0
+]
+[i _byteCnt
+"20
+-> -> 0 `i `uc
+]
+[i _bitCnt
+"21
+-> -> 0 `i `uc
+]
+[i _totByteCnt
+"22
+-> -> 0 `i `uc
+]
+[i _byteLength
+"23
+-U -> 1 `i
+]
+"25
+[v _clearOregon `(v 1 ef ]
+{
+[e :U _clearOregon ]
+[f ]
+"26
+[e = _byteCnt -> -> 0 `i `uc ]
+"27
+[e = _bitCnt -> -> 0 `i `uc ]
+"28
+[e = _totByteCnt -> -> 0 `i `uc ]
+"29
+[e = _state . `E3935 0 ]
+"30
+[e = _byteLength -U -> 1 `i ]
+"31
+[e :UE 323 ]
+}
+"33
+[v _oregonBit `(c 1 ef2`uc`uc ]
+{
+[e :U _oregonBit ]
+[v _level `uc 1 r1 ]
+[v _count `uc 1 r2 ]
+[f ]
+"34
+[v F3947 `b 1 s b1 ]
+[i F3947
+-> 0 `i
+]
+"36
+[e $ ! == -> _bitCnt `i -> 0 `i 325  ]
+{
+"38
+[e $ ! ! && >= -> _count `i -> 4 `i <= -> _count `i -> 13 `i 326  ]
+{
+"39
+[e ) -> -U -> 2 `i `c ]
+[e $UE 324  ]
+"40
+}
+[e :U 326 ]
+"41
+[e = _bitCnt -> -> 1 `i `uc ]
+"43
+}
+[e $U 327  ]
+[e :U 325 ]
+[e $ ! == -> _bitCnt `i -> 1 `i 328  ]
+{
+"45
+[e $ ! && ! && >= -> _count `i -> 12 `i <= -> _count `i -> 22 `i != -> _totByteCnt `i _byteLength 329  ]
+{
+"46
+[e = _bitCnt -> -> 0 `i `uc ]
+"47
+[e ) -> -U -> 2 `i `c ]
+[e $UE 324  ]
+"48
+}
+[e :U 329 ]
+"50
+[e = F3947 -> _level `b ]
+"51
+[e = _bitCnt -> -> 2 `i `uc ]
+"52
+[e ) -> -> F3947 `i `c ]
+[e $UE 324  ]
+"54
+}
+[e $U 330  ]
+[e :U 328 ]
+[e $ ! == -> _bitCnt `i -> 2 `i 331  ]
+{
+"56
+[e $ ! && != -> _level `i -> -> -> 0 `i `uc `i && >= -> _count `i -> 4 `i <= -> _count `i -> 13 `i 332  ]
+{
+"58
+[e = _bitCnt -> -> 0 `i `uc ]
+"59
+}
+[e $U 333  ]
+[e :U 332 ]
+[e $ ! && >= -> _count `i -> 12 `i <= -> _count `i -> 22 `i 334  ]
+{
+"61
+[e = _bitCnt -> -> 1 `i `uc ]
+"62
+}
+[e $U 335  ]
+[e :U 334 ]
+[e $ ! && >= -> _count `i -> 4 `i <= -> _count `i -> 13 `i 336  ]
+{
+"64
+[e = _bitCnt -> -> 0 `i `uc ]
+"65
+}
+[e :U 336 ]
+"66
+[e :U 335 ]
+[e :U 333 ]
+[e ) -> -U -> 1 `i `c ]
+[e $UE 324  ]
+"67
+}
+[e :U 331 ]
+"69
+[e :U 330 ]
+[e :U 327 ]
+[e ) -> -U -> 1 `i `c ]
+[e $UE 324  ]
+"70
+[e :UE 324 ]
+}
+"72
+[v _oregonByte `(i 1 ef2`uc`uc ]
+{
+[e :U _oregonByte ]
+[v _level `uc 1 r1 ]
+[v _count `uc 1 r2 ]
+[f ]
+"73
+[v _b1 `c 1 a ]
+[e = _b1 ( _oregonBit (2 , _level _count ]
+"74
+[v F3952 `uc 1 s byte ]
+[i F3952
+-> -> 0 `i `uc
+]
+"76
+[e $ ! == -> _b1 `i -U -> 2 `i 338  ]
+{
+"77
+[e ) -U -> 2 `i ]
+[e $UE 337  ]
+"78
+}
+[e $U 339  ]
+[e :U 338 ]
+[e $ ! == -> _b1 `i -U -> 1 `i 340  ]
+{
+"79
+[e ) -U -> 1 `i ]
+[e $UE 337  ]
+"80
+}
+[e :U 340 ]
+"81
+[e :U 339 ]
+[e =>> F3952 -> 1 `i ]
+"82
+[e $ ! != -> _b1 `i -> -> -> 0 `i `c `i 341  ]
+{
+"83
+[e =| F3952 -> << -> 1 `i -> 7 `i `uc ]
+"84
+}
+[e :U 341 ]
+"85
+[e =+ _totByteCnt -> -> 1 `i `uc ]
+"86
+[e =+ _byteCnt -> -> 1 `i `uc ]
+"87
+[e $ ! < -> _byteCnt `i -> 8 `i 342  ]
+{
+"88
+[e ) -U -> 1 `i ]
+[e $UE 337  ]
+"89
+}
+[e :U 342 ]
+"90
+[e = _byteCnt -> -> 0 `i `uc ]
+"91
+[e ) -> F3952 `i ]
+[e $UE 337  ]
+"92
+[e :UE 337 ]
+}
+"94
+[v _streamOregon `(v 1 ef2`uc`uc ]
+{
+[e :U _streamOregon ]
+[v _level `uc 1 r1 ]
+[v _count `uc 1 r2 ]
+[f ]
+"95
+[v F3955 `uc 1 s cnt ]
+[i F3955
+-> -> 0 `i `uc
+]
+"96
+[v F3956 `ui 1 s id ]
+[i F3956
+-> -> 0 `i `ui
+]
+"97
+[v F3957 `i 1 s b1 ]
+"98
+[v F3958 `uc 1 s length ]
+[i F3958
+-> -> 0 `i `uc
+]
+"99
+[v F3959 `uc -> 8 `i s buffer ]
+"101
+[e $ ! != -> _level `i -> -> -> 0 `i `uc `i 344  ]
+{
+"102
+[e =+ _count -> -> 3 `i `uc ]
+"103
+}
+[e $U 345  ]
+[e :U 344 ]
+{
+"104
+[e =- _count -> -> 3 `i `uc ]
+"105
+}
+[e :U 345 ]
+"107
+[e $U 347  ]
+{
+"108
+[e :U 348 ]
+"109
+[e $ ! && >= -> _count `i -> 12 `i <= -> _count `i -> 22 `i 349  ]
+{
+"110
+[e =+ F3955 -> -> 1 `i `uc ]
+"111
+[e $U 346  ]
+"112
+}
+[e $U 350  ]
+[e :U 349 ]
+{
+"113
+}
+[e :U 350 ]
+"114
+[e $ ! && >= -> _count `i -> 4 `i <= -> _count `i -> 13 `i 351  ]
+{
+"115
+[e $ ! > -> F3955 `i -> 25 `i 352  ]
+{
+"116
+[e = _state . `E3935 1 ]
+"117
+[e = F3956 -> -> 0 `i `ui ]
+"118
+}
+[e :U 352 ]
+"119
+[e = F3955 -> -> 0 `i `uc ]
+"120
+}
+[e :U 351 ]
+"121
+[e $U 346  ]
+"123
+[e :U 353 ]
+"124
+[e = F3957 ( _oregonByte (2 , _level _count ]
+"125
+[e $ ! == F3957 -U -> 2 `i 354  ]
+{
+"126
+[e ( _clearOregon ..  ]
+"127
+[e $U 346  ]
+"128
+}
+[e $U 355  ]
+[e :U 354 ]
+[e $ ! == F3957 -U -> 1 `i 356  ]
+{
+"129
+[e $U 346  ]
+"130
+}
+[e $U 357  ]
+[e :U 356 ]
+{
+"131
+[e $ ! == F3956 -> -> 0 `i `ui 358  ]
+{
+"132
+[e = F3956 -> << F3957 -> 8 `i `ui ]
+"133
+}
+[e $U 359  ]
+[e :U 358 ]
+{
+"134
+[e =| F3956 -> F3957 `ui ]
+"135
+[e $U 361  ]
+{
+"136
+[e :U 362 ]
+"137
+[e = F3958 -> -> 6 `i `uc ]
+"138
+[e = _byteLength -> 63 `i ]
+"139
+[e $U 360  ]
+"140
+[e :U 363 ]
+"141
+[e :U 364 ]
+"142
+[e = F3958 -> -> 8 `i `uc ]
+"143
+[e = _byteLength -> 79 `i ]
+"144
+[e $U 360  ]
+"145
+[e :U 365 ]
+"146
+[e ( _clearOregon ..  ]
+"147
+[e $UE 343  ]
+"148
+}
+[e $U 360  ]
+"135
+[e :U 361 ]
+[e [\ F3956 , $ -> 59980 `ui 362
+ , $ -> -> 2637 `i `ui 363
+ , $ -> -> 6701 `i `ui 364
+ 365 ]
+"148
+[e :U 360 ]
+"149
+[e = _state . `E3935 2 ]
+"150
+[e = F3955 -> -> 0 `i `uc ]
+"151
+}
+[e :U 359 ]
+"152
+}
+[e :U 357 ]
+[e :U 355 ]
+"153
+[e $U 346  ]
+"155
+[e :U 366 ]
+"156
+[e = F3957 ( _oregonByte (2 , _level _count ]
+"157
+[e $ ! == F3957 -U -> 2 `i 367  ]
+{
+"158
+[e ( _clearOregon ..  ]
+"159
+[e $U 346  ]
+"160
+}
+[e $U 368  ]
+[e :U 367 ]
+[e $ ! == F3957 -U -> 1 `i 369  ]
+{
+"161
+[e $U 346  ]
+"162
+}
+[e :U 369 ]
+"163
+[e :U 368 ]
+[e = *U + &U F3959 * -> F3955 `ux -> -> # *U &U F3959 `ui `ux -> F3957 `uc ]
+"164
+[e =+ F3955 -> -> 1 `i `uc ]
+"165
+[e =- F3958 -> -> 1 `i `uc ]
+"166
+[e $ ! == -> F3958 `i -> 0 `i 370  ]
+{
+"167
+[e ( _clearOregon ..  ]
+"168
+[e ( _rfMessageBeginRaw ..  ]
+"169
+[e ( _rfMessageAddString (2 , :s 1C :s 2C ]
+"170
+[e ( _rfMessageAddString (2 , :s 3C :s 4C ]
+"171
+[e ( _rfMessageAddLong (2 , :s 5C -> F3956 `ul ]
+"172
+[e ( _rfMessageAddHexString (3 , , :s 6C -> &U F3959 `*Cuc F3955 ]
+"173
+[e ( _rfMessageEnd (1 -> -> 1 `i `uc ]
+"174
+}
+[e :U 370 ]
+"176
+[e $U 346  ]
+"177
+}
+[e $U 346  ]
+"107
+[e :U 347 ]
+[e [\ _state , $ . `E3935 0 348
+ , $ . `E3935 1 353
+ , $ . `E3935 2 366
+ 346 ]
+"177
+[e :U 346 ]
+"178
+[e :UE 343 ]
+}
+[a 1C 99 108 97 115 115 0 ]
+[a 2C 115 101 110 115 111 114 0 ]
+[a 4C 111 114 101 103 111 110 0 ]
+[a 3C 112 114 111 116 111 99 111 108 0 ]
+[a 5C 109 111 100 101 108 0 ]
+[a 6C 100 97 116 97 0 ]

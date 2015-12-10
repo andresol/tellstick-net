@@ -1,0 +1,303 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+[s S25 `us 1 `us 1 ]
+[n S25 . LW HW ]
+[s S26 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S26 . LB HB UB MB ]
+[s S22 `uc 1 `uc 1 ]
+[n S22 . LB HB ]
+[s S23 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S23 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S21 `us 1 `uc -> 2 `i `S22 1 `S23 1 ]
+[n S21 . Val v byte bits ]
+[s S27 `S21 1 `S21 1 ]
+[n S27 . low high ]
+[s S28 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S28 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S24 `ul 1 `us -> 2 `i `uc -> 4 `i `S25 1 `S26 1 `S27 1 `S28 1 ]
+[n S24 . Val w v word byte wordUnion bits ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S356 `S24 1 `S355 1 ]
+[n S356 . IPAddr MACAddr ]
+"79 /home/andresol/tellstick-net/tcpip/ARP.c
+[v _Cache `S356 1 s ]
+[s S375 `us 1 `us 1 `uc 1 `uc 1 `us 1 `S355 1 `S24 1 `S355 1 `S24 1 ]
+[n S375 . HardwareType Protocol MACAddrLen ProtocolLen Operation SenderMACAddr SenderIPAddr TargetMACAddr TargetIPAddr ]
+[c E208 0 1 .. ]
+[n E208 _BOOL FALSE TRUE  ]
+"302 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACIsTxReady `(E208 0 ef ]
+"292 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACSetWritePtr `(us 0 ef1`us ]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _memcpy `(*v 0 ef3`*v`*Cv`ui ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S357 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S357 0 e ]
+"88 /home/andresol/tellstick-net/tcpip/TCPIP Stack/ARP.h
+[v _SwapARPPacket `(v 0 ef1`*S375 ]
+"301 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACPutHeader `(v 0 ef3`*S355`uc`us ]
+"304 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACPutArray `(v 0 ef2`*uc`us ]
+"305 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACFlush `(v 0 ef ]
+"295 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACGetArray `(us 0 ef2`*uc`us ]
+"296 /home/andresol/tellstick-net/tcpip/TCPIP Stack/MAC.h
+[v _MACDiscardRx `(v 0 ef ]
+"104 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _swaps `(us 0 ef1`us ]
+"320 /home/andresol/tellstick-net/tcpip/ARP.c
+[v _ARPPut `(E208 1 sf1`*S375 ]
+{
+[e :U _ARPPut ]
+[v _packet `*S375 1 r1 ]
+[f ]
+"321
+[e $U 390  ]
+[e :U 391 ]
+[e :U 390 ]
+[e $ ! != -> ( _MACIsTxReady ..  `i -> -> -> 0 `i `E208 `i 391  ]
+[e :U 392 ]
+"322
+[e ( _MACSetWritePtr (1 -> + - - - - * -> -> -> 8 `i `l `ul -> 1024 `ul + + -> 1 `ul -> 1518 `ul -> 7 `ul -> 3900 `ul -> 0 `ul -> 0 `ul -> 1 `ul `us ]
+"325
+[e = . *U _packet 0 -> -> 1 `ui `us ]
+"326
+[e = . *U _packet 1 -> -> 2048 `ui `us ]
+"327
+[e = . *U _packet 2 -> -> # `S355 `ui `uc ]
+"328
+[e = . *U _packet 3 -> -> # `S24 `ui `uc ]
+"330
+[e ( _memcpy (3 , , -> &U . *U _packet 5 `*v -> -> &U . _AppConfig 9 `*v `*Cv -> # . *U _packet 5 `ui ]
+"334
+[e = . *U _packet 6 . _AppConfig 0 ]
+"337
+[e ( _SwapARPPacket (1 _packet ]
+"339
+[e ( _MACPutHeader (3 , , &U . *U _packet 7 -> -> 6 `ui `uc -> -> # *U _packet `ui `us ]
+"340
+[e ( _MACPutArray (2 , -> _packet `*uc -> -> # *U _packet `ui `us ]
+"341
+[e ( _MACFlush ..  ]
+"343
+[e ) . `E208 1 ]
+[e $UE 389  ]
+"344
+[e :UE 389 ]
+}
+"374
+[v _ARPInit `(v 1 ef ]
+{
+[e :U _ARPInit ]
+[f ]
+"375
+[e = *U + &U . . _Cache 1 0 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _Cache 1 0 `ui `ux -> -> 255 `i `uc ]
+"376
+[e = *U + &U . . _Cache 1 0 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _Cache 1 0 `ui `ux -> -> 255 `i `uc ]
+"377
+[e = *U + &U . . _Cache 1 0 * -> -> -> 2 `i `ui `ux -> -> # *U &U . . _Cache 1 0 `ui `ux -> -> 255 `i `uc ]
+"378
+[e = *U + &U . . _Cache 1 0 * -> -> -> 3 `i `ui `ux -> -> # *U &U . . _Cache 1 0 `ui `ux -> -> 255 `i `uc ]
+"379
+[e = *U + &U . . _Cache 1 0 * -> -> -> 4 `i `ui `ux -> -> # *U &U . . _Cache 1 0 `ui `ux -> -> 255 `i `uc ]
+"380
+[e = *U + &U . . _Cache 1 0 * -> -> -> 5 `i `ui `ux -> -> # *U &U . . _Cache 1 0 `ui `ux -> -> 255 `i `uc ]
+"382
+[e = . . _Cache 0 0 -> -> -> 0 `i `l `ul ]
+"383
+[e :UE 393 ]
+}
+"413
+[v _ARPProcess `(E208 1 ef ]
+{
+[e :U _ARPProcess ]
+[f ]
+"414
+[v _packet `S375 1 a ]
+"415
+[v F5286 `S356 1 s Target ]
+"423
+[c E5287 0 1 .. ]
+[n E5287 . SM_ARP_IDLE SM_ARP_REPLY  ]
+[v F5290 `E5287 1 s smARP ]
+[i F5290
+. `E5287 0
+]
+"425
+[e $U 396  ]
+"426
+{
+"427
+[e :U 397 ]
+"429
+[e ( _MACGetArray (2 , -> &U _packet `*uc -> -> # _packet `ui `us ]
+"430
+[e ( _MACDiscardRx ..  ]
+"431
+[e ( _SwapARPPacket (1 &U _packet ]
+"436
+[e $ ! || || != -> . _packet 0 `ui -> 1 `ui != -> . _packet 2 `ui -> # `S355 `ui != -> . _packet 3 `ui -> # `S24 `ui 398  ]
+"437
+{
+"438
+[e ) . `E208 1 ]
+[e $UE 394  ]
+"439
+}
+[e :U 398 ]
+"454
+[e $ ! == -> . _packet 4 `ui -> 2 `ui 399  ]
+"455
+{
+"461
+[e = . _Cache 1 . _packet 5 ]
+"462
+[e = . _Cache 0 . _packet 6 ]
+"463
+[e ) . `E208 1 ]
+[e $UE 394  ]
+"464
+}
+[e :U 399 ]
+"468
+[e $ ! == -> . _packet 4 `ui -> 1 `ui 400  ]
+"469
+{
+"470
+[e $ ! != . . _packet 8 0 . . _AppConfig 0 0 401  ]
+"471
+{
+"472
+[e ) . `E208 1 ]
+[e $UE 394  ]
+"473
+}
+[e :U 401 ]
+"494
+[e = . F5286 0 . _packet 6 ]
+"495
+[e = . F5286 1 . _packet 5 ]
+"497
+[e = F5290 . `E5287 1 ]
+"498
+}
+[e :U 400 ]
+"501
+[e :U 402 ]
+"502
+[e = . _packet 4 -> -> 2 `ui `us ]
+"515
+[e = . _packet 7 . F5286 1 ]
+"516
+[e = . _packet 8 . F5286 0 ]
+"522
+[e $ ! ! != -> ( _ARPPut (1 &U _packet `i -> -> -> 0 `i `E208 `i 403  ]
+"523
+{
+"524
+[e ) . `E208 0 ]
+[e $UE 394  ]
+"525
+}
+[e :U 403 ]
+"528
+[e = F5290 . `E5287 0 ]
+"529
+[e $U 395  ]
+"530
+}
+[e $U 395  ]
+"425
+[e :U 396 ]
+[e [\ F5290 , $ . `E5287 0 397
+ , $ . `E5287 1 402
+ 395 ]
+"530
+[e :U 395 ]
+"532
+[e ) . `E208 1 ]
+[e $UE 394  ]
+"533
+[e :UE 394 ]
+}
+"566
+[v _ARPResolve `(v 1 ef1`*S24 ]
+{
+[e :U _ARPResolve ]
+[v _IPAddr `*S24 1 r1 ]
+[f ]
+"567
+[v _packet `S375 1 a ]
+"591
+[e = . _packet 4 -> -> 1 `ui `us ]
+"592
+[e = *U + &U . . _packet 7 0 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _packet 7 0 `ui `ux -> -> 255 `i `uc ]
+"593
+[e = *U + &U . . _packet 7 0 * -> -> -> 1 `i `ui `ux -> -> # *U &U . . _packet 7 0 `ui `ux -> -> 255 `i `uc ]
+"594
+[e = *U + &U . . _packet 7 0 * -> -> -> 2 `i `ui `ux -> -> # *U &U . . _packet 7 0 `ui `ux -> -> 255 `i `uc ]
+"595
+[e = *U + &U . . _packet 7 0 * -> -> -> 3 `i `ui `ux -> -> # *U &U . . _packet 7 0 `ui `ux -> -> 255 `i `uc ]
+"596
+[e = *U + &U . . _packet 7 0 * -> -> -> 4 `i `ui `ux -> -> # *U &U . . _packet 7 0 `ui `ux -> -> 255 `i `uc ]
+"597
+[e = *U + &U . . _packet 7 0 * -> -> -> 5 `i `ui `ux -> -> # *U &U . . _packet 7 0 `ui `ux -> -> 255 `i `uc ]
+"601
+[e = . _packet 8 ? != & ^ . . _AppConfig 0 0 . *U _IPAddr 0 . . _AppConfig 1 0 -> -> 0 `i `ul : . _AppConfig 2 *U _IPAddr ]
+"606
+[e ( _ARPPut (1 &U _packet ]
+"607
+[e :UE 404 ]
+}
+"649
+[v _ARPIsResolved `(E208 1 ef2`*S24`*S355 ]
+{
+[e :U _ARPIsResolved ]
+[v _IPAddr `*S24 1 r1 ]
+[v _MACAddr `*S355 1 r2 ]
+[f ]
+"651
+[e $ ! || == . . _Cache 0 0 . *U _IPAddr 0 && == . . _Cache 0 0 . . _AppConfig 2 0 != & ^ . . _AppConfig 0 0 . *U _IPAddr 0 . . _AppConfig 1 0 -> -> 0 `i `ul 406  ]
+"652
+{
+"653
+[e = *U _MACAddr . _Cache 1 ]
+"654
+[e ) . `E208 1 ]
+[e $UE 405  ]
+"655
+}
+[e :U 406 ]
+"656
+[e ) . `E208 0 ]
+[e $UE 405  ]
+"657
+[e :UE 405 ]
+}
+"679
+[v _SwapARPPacket `(v 1 ef1`*S375 ]
+{
+[e :U _SwapARPPacket ]
+[v _p `*S375 1 r1 ]
+[f ]
+"680
+[e = . *U _p 0 ( _swaps (1 . *U _p 0 ]
+"681
+[e = . *U _p 1 ( _swaps (1 . *U _p 1 ]
+"682
+[e = . *U _p 4 ( _swaps (1 . *U _p 4 ]
+"683
+[e :UE 407 ]
+}

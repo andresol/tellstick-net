@@ -1,0 +1,220 @@
+     1: #include "hasta.h"
+     2: #include "receive.h"
+     3: #include "message.h"
+     4: #include <htc.h>
+     5: #include <stdio.h>
+     6: #include <string.h>
+     7: 
+     8: enum {
+     9:         SM_NONE = 0,
+    10:         SM_FIRST,
+    11:         SM_OLD_BEFOREPARSE,
+    12:         SM_OLD_PARSE,
+    13:         SM_SECOND_NEW,
+    14:         SM_THIRD_NEW,
+    15:         SM_NEW_BEFOREPARSE,
+    16:         SM_NEW_PARSE
+    17: } static hastastate = SM_NONE;
+    18: 
+    19: #define BIG_PULSE_NEW(x) (x>=9 && x<=15)
+    20: #define BIG_PULSE_OLD(x) (x>=5 && x<=7)
+    21: #define SMALL_PULSE_NEW(x) (x>=4 && x<=8)
+    22: #define SMALL_PULSE_OLD(x) (x>=2 && x<=4)
+    23: #ifdef TELLSTICK_DUO
+    24: //duo
+    25: #define FIRST_PULSE(x) (x>=77 && x<=81) //typically 78-79
+    26: #define SECOND_PULSE_NEW(x) (x>=40 && x<=43)    //typically 41-42
+    27: #define SECOND_PULSE_OLD(x) (x>=26 && x<=29)  //typically 27 (28)
+    28: #define THIRD_PULSE_NEW(x) (x>=25 && x<=28)  //typically 26 (27)
+    29: #else
+    30: //net
+    31: #define FIRST_PULSE(x) (x>=86 && x<=91) //typically 88
+    32: #define SECOND_PULSE_NEW(x) (x>=43 && x<=46)    //typically 44-45
+    33: #define SECOND_PULSE_OLD(x) (x>=28 && x<=31)  //typically 29-30
+    34: #define THIRD_PULSE_NEW(x) (x>=27 && x<=31)  //typically 28-29
+    35: #endif
+    36: 
+    37: 
+    38: #define FOURTH_PULSE_NEW(x) (x>=4 && x<=8)  //typically 6-7 (5 for Duo)
+    39: 
+    40: static unsigned char bytecount = 0;
+    41: static unsigned char hastabyte = 0;
+    42: unsigned long hastadata = 0;
+    43: unsigned long mask = 1;
+    44: static unsigned char prepulse = 0; //0=none, 1=short, 2=long
+    45: static unsigned int pulsecount = 0;
+    46: unsigned long totalhastadata = 0;
+    47: 
+    48: void clearHasta() {
+    49:         prepulse = 0;
+    50:         hastadata = 0;
+    51:         totalhastadata = 0;
+    52:         mask = 1;
+    53:         hastastate = SM_NONE;
+    54:         pulsecount = 0;
+    55:         bytecount = 0;
+    56:         hastabyte = 0;
+    57: }
+    58: 
+    59: void streamHasta(unsigned char level, unsigned char count) {
+    60:         switch(hastastate) {
+    61:                 case SM_NONE:
+    62:                         if (level && FIRST_PULSE(count)) {
+    63:                                 hastastate = SM_FIRST;
+    64:                         }
+    65:                         break;
+    66:                 case SM_FIRST:
+    67:                         if (SECOND_PULSE_OLD(count)) {
+    68:                                 hastastate = SM_OLD_PARSE;
+    69:                                 break;
+    70:                         }
+    71:                         if (SECOND_PULSE_NEW(count)) {
+    72:                                 hastastate = SM_SECOND_NEW;
+    73:                                 break;
+    74:                         }
+    75:                         //else
+    76:                         clearHasta();
+    77:                         break;
+    78:                 case SM_SECOND_NEW:
+    79:                         if (THIRD_PULSE_NEW(count)){
+    80:                                 hastastate = SM_THIRD_NEW;
+    81:                                 break;
+    82:                         }
+    83:                         clearHasta();
+    84:                         break;
+    85:                 case SM_THIRD_NEW:
+    86:                         if (FOURTH_PULSE_NEW(count)){
+    87:                                 hastastate = SM_NEW_PARSE;
+    88:                                 break;
+    89:                         }
+    90:                         clearHasta();
+    91:                         break;
+    92: 
+    93:                 case SM_OLD_PARSE:
+    94:                         if (prepulse == 0){
+    95:                                 //first pulse
+    96:                                 if (SMALL_PULSE_OLD(count)){
+    97:                                         prepulse = 1;
+    98:                                         break;
+    99:                                 }
+   100:                                 else if (BIG_PULSE_OLD(count)){
+   101:                                         prepulse = 2;
+   102:                                         break;
+   103:                                 }
+   104:                                 //error
+   105:                                 clearHasta();
+   106:                                 break;
+   107:                         }
+   108:                         else if (prepulse == 1){
+   109:                                 if (BIG_PULSE_OLD(count)){
+   110:                                         prepulse = 0;
+   111:                                         pulsecount++;
+   112:                                         mask <<= 1;
+   113:                                         break;
+   114:                                 }
+   115:                                 //error, wrong kind of pulse or invalid pulse
+   116:                                 clearHasta();
+   117:                                 break;
+   118:                         }
+   119:                         else if(prepulse == 2){
+   120:                                 if(SMALL_PULSE_OLD(count)){
+   121:                                         prepulse = 0;
+   122:                                         pulsecount++;
+   123:                                         hastabyte |= mask;
+   124:                                         mask <<= 1;
+   125:                                         break;
+   126:                                 }
+   127:                                 //error, wrong kind of pulse or invalid pulse
+   128:                                 clearHasta();
+   129:                                 break;
+   130:                         }
+   131:                         clearHasta();
+   132:                         break;
+   133: 
+   134:                 case SM_NEW_PARSE:
+   135:                         if (prepulse == 0){
+   136:                                 //first pulse
+   137:                                 if (SMALL_PULSE_NEW(count)){
+   138:                                         prepulse = 1;
+   139:                                         break;
+   140:                                 }
+   141:                                 else if (BIG_PULSE_NEW(count)){
+   142:                                         prepulse = 2;
+   143:                                         break;
+   144:                                 }
+   145:                                 clearHasta();
+   146:                                 break;
+   147:                         }
+   148:                         else if (prepulse == 1){
+   149:                                 if (BIG_PULSE_NEW(count)){
+   150:                                         prepulse = 0;
+   151:                                         pulsecount++;
+   152:                                         mask <<= 1;
+   153:                                         break;
+   154:                                 }
+   155:                                 //error, wrong kind of pulse or invalid pulse
+   156:                                 clearHasta();
+   157:                                 break;
+   158:                         }
+   159:                         else if(prepulse == 2){
+   160:                                 if(SMALL_PULSE_NEW(count)){
+   161:                                         prepulse = 0;
+   162:                                         pulsecount++;
+   163:                                         hastabyte |= mask;
+   164:                                         mask <<= 1;
+   165:                                         break;
+   166:                                 }
+   167:                                 //error, wrong kind of pulse or invalid pulse
+   168:                                 clearHasta();
+   169:                                 break;
+   170:                         }
+   171:                         clearHasta();
+   172:                         break;
+   173:         }
+   174: 
+   175:         if (pulsecount == 8){
+   176:                 bytecount++;
+   177:                 if (bytecount < 5){
+   178:                         totalhastadata = totalhastadata + hastabyte;
+   179:                         if (bytecount < 4){
+   180:                                 totalhastadata = totalhastadata << 8;
+   181:                         }
+   182:                         hastadata = hastadata + hastabyte;
+   183:                         hastabyte = 0;
+   184:                 }
+   185:                 pulsecount = 0;
+   186:                 mask = 1;
+   187:         }
+   188: 
+   189:         if (hastastate == SM_OLD_PARSE && bytecount == 4){
+   190:                 unsigned long temptotalhastadata = totalhastadata;
+   191: 
+   192:                 clearHasta();
+   193: 
+   194:                 rfMessageBeginRaw();
+   195:                         rfMessageAddString("protocol", "hasta");
+   196:                         rfMessageAddString("model", "selflearning");
+   197:                         rfMessageAddLong("data", temptotalhastadata);
+   198:                 rfMessageEnd(1);
+   199:                 return;
+   200:         }
+   201: 
+   202:         if (hastastate == SM_NEW_PARSE && bytecount == 5){
+   203:                 unsigned long hastachecksum = hastabyte;
+   204:                 unsigned long temphastadata = hastadata;
+   205:                 unsigned long temptotalhastadata = totalhastadata;
+   206: 
+   207:                 clearHasta();
+   208:                 if(((temphastadata + hastachecksum) % 256) != 1){
+   209:                         //printf("checksum ERROR");
+   210:                         return;
+   211:                 }
+   212: 
+   213:                 rfMessageBeginRaw();
+   214:                         rfMessageAddString("protocol", "hasta");
+   215:                         rfMessageAddString("model", "selflearningv2");
+   216:                         rfMessageAddLong("data", temptotalhastadata);
+   217:                 rfMessageEnd(1);
+   218:         }
+   219:         return;
+   220: }

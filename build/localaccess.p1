@@ -1,0 +1,108 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+"12 /home/andresol/tellstick-net/firmware/localaccess.c
+[v _localSocket `uc 1 e ]
+"147 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPOpenEx `(uc 0 ef4`ul`uc`us`us ]
+"170 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPIsGetReady `(us 0 ef1`uc ]
+"9 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMClear `(v 0 ef ]
+[c E3956 0 1 .. ]
+[n E3956 _BOOL FALSE TRUE  ]
+"171 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPGet `(E3956 0 ef1`*uc ]
+"8 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMAppendChar `(v 0 ef1`Cuc ]
+"173 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPDiscard `(v 0 ef ]
+"8 /home/andresol/tellstick-net/firmware/tellsticknet.h
+[v _handleMessage `(v 0 ef ]
+"14 /home/andresol/tellstick-net/firmware/localaccess.c
+[v _localAccessTask `(v 1 ef ]
+{
+[e :U _localAccessTask ]
+[f ]
+"18
+[c E5330 0 1 .. ]
+[n E5330 . LA_RESET LA_LISTEN  ]
+[v F5333 `E5330 1 s state ]
+[i F5333
+. `E5330 0
+]
+"20
+[v _ch `uc 1 a ]
+"22
+[e $U 392  ]
+{
+"23
+[e :U 393 ]
+"24
+[e = _localSocket ( _UDPOpenEx (4 , , , -> -> 0 `i `ul -> -> 4 `ui `uc -> -> 42314 `l `us -> -> 42314 `l `us ]
+"26
+[e $ ! == -> _localSocket `ui -> 255 `ui 394  ]
+{
+"27
+[e $UE 390  ]
+"28
+}
+[e $U 395  ]
+[e :U 394 ]
+{
+"29
+[e = F5333 . `E5330 1 ]
+"30
+}
+[e :U 395 ]
+"31
+[e $U 391  ]
+"33
+[e :U 396 ]
+"35
+[e $ ! ! != -> ( _UDPIsGetReady (1 _localSocket `ui -> -> -> 0 `i `us `ui 397  ]
+{
+"36
+[e $UE 390  ]
+"37
+}
+[e :U 397 ]
+"40
+[e ( _LMClear ..  ]
+"41
+[e $U 398  ]
+[e :U 399 ]
+{
+"42
+[e ( _UDPGet (1 &U _ch ]
+"43
+[e ( _LMAppendChar (1 _ch ]
+"44
+}
+[e :U 398 ]
+"41
+[e $ != -> ( _UDPIsGetReady (1 _localSocket `ui -> -> -> 0 `i `us `ui 399  ]
+[e :U 400 ]
+"46
+[e ( _UDPDiscard ..  ]
+"47
+[e ( _handleMessage ..  ]
+"48
+[e ( _LMClear ..  ]
+"49
+}
+[e $U 391  ]
+"22
+[e :U 392 ]
+[e [\ F5333 , $ . `E5330 0 393
+ , $ . `E5330 1 396
+ 391 ]
+"49
+[e :U 391 ]
+"50
+[e :UE 390 ]
+}

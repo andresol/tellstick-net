@@ -1,0 +1,185 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+"64 /home/andresol/tellstick-net/tcpip/Tick.c
+[v _dwInternalTicks `Vul 1 s ]
+"67 /home/andresol/tellstick-net/tcpip/Tick.c
+[v _vTickReading `uc -> 6 `i s ]
+"3016 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR0H `Vuc 0 e@4055 ]
+"3012 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TMR0L `Vuc 0 e@4054 ]
+[s S319 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S319 . RBIP INT3IP TMR0IP INTEDG3 INTEDG2 INTEDG1 INTEDG0 nRBPU ]
+[s S320 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :3 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S320 . . . T0IP . . RBPU ]
+[u S318 `S319 1 `S320 1 ]
+[n S318 . . . ]
+"3238 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _INTCON2bits `S318 0 e@4081 ]
+[s S322 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S322 . RBIF INT0IF TMR0IF RBIE INT0IE TMR0IE PEIE_GIEL GIE_GIEH ]
+[s S323 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S323 . . . . . . . PEIE GIE ]
+[s S324 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S324 . . . . . . . GIEL GIEH ]
+[s S325 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S325 . . . . . . . . . ]
+[s S326 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S326 . . INT0F T0IF . INT0E T0IE . . ]
+[s S327 :6 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S327 . . . . ]
+[u S321 `S322 1 `S323 1 `S324 1 `S325 1 `S326 1 `S327 1 ]
+[n S321 . . . . . . . ]
+"3315 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _INTCONbits `S321 0 e@4082 ]
+"2984 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _T0CON `Vuc 0 e@4053 ]
+[i _dwInternalTicks
+"64 /home/andresol/tellstick-net/tcpip/Tick.c
+-> -> -> 0 `i `l `ul
+]
+"95
+[v _TickInit `(v 1 ef ]
+{
+[e :U _TickInit ]
+[f ]
+"99
+[e = _TMR0H -> -> 0 `i `uc ]
+"100
+[e = _TMR0L -> -> 0 `i `uc ]
+"103
+[e = . . _INTCON2bits 0 2 -> -> 0 `i `uc ]
+"104
+[e = . . _INTCONbits 0 2 -> -> 0 `i `uc ]
+"105
+[e = . . _INTCONbits 0 5 -> -> 1 `i `uc ]
+"108
+[e = _T0CON -> -> 135 `i `uc ]
+"133
+[e :UE 389 ]
+}
+"156
+[v _GetTickCopy `(v 1 sf ]
+{
+[e :U _GetTickCopy ]
+[f ]
+"160
+[e :U 393 ]
+"161
+{
+"162
+[e = . . _INTCONbits 0 5 -> -> 1 `i `uc ]
+"163
+[; NOP ;#
+"164
+[e = . . _INTCONbits 0 5 -> -> 0 `i `uc ]
+"165
+[e = *U + &U _vTickReading * -> -> -> 0 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux _TMR0L ]
+"166
+[e = *U + &U _vTickReading * -> -> -> 1 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux _TMR0H ]
+"167
+[e = *U -> &U *U + &U _vTickReading * -> -> -> 2 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux `*ul _dwInternalTicks ]
+"168
+}
+[e $ != -> . . _INTCONbits 0 2 `i -> -> -> 0 `i `Vuc `i 393  ]
+[e :U 392 ]
+"169
+[e = . . _INTCONbits 0 5 -> -> 1 `i `uc ]
+"232
+[e :UE 390 ]
+}
+"260
+[v _TickGet `(ul 1 ef ]
+{
+[e :U _TickGet ]
+[f ]
+"261
+[e ( _GetTickCopy ..  ]
+"262
+[e ) *U -> &U *U + &U _vTickReading * -> -> -> 0 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux `*ul ]
+[e $UE 394  ]
+"263
+[e :UE 394 ]
+}
+"290
+[v _TickGetDiv256 `(ul 1 ef ]
+{
+[e :U _TickGetDiv256 ]
+[f ]
+"291
+[v _dw `ul 1 a ]
+"293
+[e ( _GetTickCopy ..  ]
+"294
+[e = *U + -> &U _dw `*uc * -> -> 0 `i `x -> -> # *U -> &U _dw `*uc `i `x *U + &U _vTickReading * -> -> -> 1 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux ]
+"295
+[e = *U + -> &U _dw `*uc * -> -> 1 `i `x -> -> # *U -> &U _dw `*uc `i `x *U + &U _vTickReading * -> -> -> 2 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux ]
+"296
+[e = *U + -> &U _dw `*uc * -> -> 2 `i `x -> -> # *U -> &U _dw `*uc `i `x *U + &U _vTickReading * -> -> -> 3 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux ]
+"297
+[e = *U + -> &U _dw `*uc * -> -> 3 `i `x -> -> # *U -> &U _dw `*uc `i `x *U + &U _vTickReading * -> -> -> 4 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux ]
+"299
+[e ) _dw ]
+[e $UE 395  ]
+"300
+[e :UE 395 ]
+}
+"327
+[v _TickGetDiv64K `(ul 1 ef ]
+{
+[e :U _TickGetDiv64K ]
+[f ]
+"328
+[v _dw `ul 1 a ]
+"330
+[e ( _GetTickCopy ..  ]
+"331
+[e = *U + -> &U _dw `*uc * -> -> 0 `i `x -> -> # *U -> &U _dw `*uc `i `x *U + &U _vTickReading * -> -> -> 2 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux ]
+"332
+[e = *U + -> &U _dw `*uc * -> -> 1 `i `x -> -> # *U -> &U _dw `*uc `i `x *U + &U _vTickReading * -> -> -> 3 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux ]
+"333
+[e = *U + -> &U _dw `*uc * -> -> 2 `i `x -> -> # *U -> &U _dw `*uc `i `x *U + &U _vTickReading * -> -> -> 4 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux ]
+"334
+[e = *U + -> &U _dw `*uc * -> -> 3 `i `x -> -> # *U -> &U _dw `*uc `i `x *U + &U _vTickReading * -> -> -> 5 `i `ui `ux -> -> # *U &U _vTickReading `ui `ux ]
+"336
+[e ) _dw ]
+[e $UE 396  ]
+"337
+[e :UE 396 ]
+}
+"368
+[v _TickConvertToMilliseconds `(ul 1 ef1`ul ]
+{
+[e :U _TickConvertToMilliseconds ]
+[v _dwTickValue `ul 1 r1 ]
+[f ]
+"369
+[e ) / + _dwTickValue / / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul -> 2000 `ul / / + / -> 41666667 `ul -> -> -> 4 `i `l `ul -> 128 `ul -> 256 `ul -> 1000 `ul ]
+[e $UE 397  ]
+"370
+[e :UE 397 ]
+}
+"391
+[v _TickUpdate `(v 1 ef ]
+{
+[e :U _TickUpdate ]
+[f ]
+"392
+[e $ ! != -> . . _INTCONbits 0 2 `i -> -> -> 0 `i `Vuc `i 399  ]
+"393
+{
+"395
+[e ++ _dwInternalTicks -> -> -> 1 `i `l `ul ]
+"398
+[e = . . _INTCONbits 0 2 -> -> 0 `i `uc ]
+"399
+}
+[e :U 399 ]
+"400
+[e :UE 398 ]
+}

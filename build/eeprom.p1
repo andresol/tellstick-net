@@ -1,0 +1,146 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+"140 /usr/hitech/picc-18/pro/9.66/include/peripheral/i2c.h
+[v _EEByteWrite1 `(uc 0 ef3`uc`uc`uc ]
+"133 /usr/hitech/picc-18/pro/9.66/include/peripheral/i2c.h
+[v _EEAckPolling1 `(uc 0 ef1`uc ]
+"1692 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISC3 `Vb 0 e@31907 ]
+"1693 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _TRISC4 `Vb 0 e@31908 ]
+"2716 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _SSP1STAT `Vuc 0 e@4039 ]
+"2688 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _SSP1CON1 `Vuc 0 e@4038 ]
+"2646 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _SSP1CON2 `Vuc 0 e@4037 ]
+"103 /usr/hitech/picc-18/pro/9.66/include/legacy/ppic18f67j60.h
+[v _RC3 `VNb 0 e@31763 ]
+"104 /usr/hitech/picc-18/pro/9.66/include/legacy/ppic18f67j60.h
+[v _RC4 `VNb 0 e@31764 ]
+"2803 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _SSPADD `Vuc 0 e@4040 ]
+"157 /usr/hitech/picc-18/pro/9.66/include/peripheral/i2c.h
+[v _EERandomRead1 `(ui 0 ef2`uc`uc ]
+"11 /home/andresol/tellstick-net/firmware/eeprom.c
+[v _clearEEPROM `(v 1 ef1`ui ]
+{
+[e :U _clearEEPROM ]
+[v _size `ui 1 r1 ]
+[f ]
+"12
+[v _i `uc 1 a ]
+"14
+{
+[e = _i -> -> 0 `i `uc ]
+[e $U 326  ]
+[e :U 323 ]
+{
+"15
+[e ( _EEByteWrite1 (3 , , -> -> 160 `i `uc _i -> -> 255 `i `uc ]
+"16
+[e ( _EEAckPolling1 (1 -> -> 160 `i `uc ]
+"17
+}
+"14
+[e ++ _i -> -> 1 `i `uc ]
+[e :U 326 ]
+[e $ < -> _i `ui _size 323  ]
+[e :U 324 ]
+"17
+}
+"18
+[e :UE 322 ]
+}
+"20
+[v _initEEPROM `(v 1 ef ]
+{
+[e :U _initEEPROM ]
+[f ]
+"21
+[e = _TRISC3 -> -> 1 `i `b ]
+"22
+[e = _TRISC4 -> -> 1 `i `b ]
+"23
+[e :U 330 ]
+{
+[e =& _SSP1STAT -> -> 63 `i `uc ]
+[e = _SSP1CON1 -> -> 0 `i `uc ]
+[e = _SSP1CON2 -> -> 0 `i `uc ]
+[e =| _SSP1CON1 -> -> 8 `i `uc ]
+[e =| _SSP1STAT -> -> 128 `i `uc ]
+[e = _RC3 -> -> 1 `i `b ]
+[e = _RC4 -> -> 1 `i `b ]
+[e =| _SSP1CON1 -> -> 32 `i `uc ]
+}
+[e :U 329 ]
+"24
+[e = _SSPADD -> -> 67 `i `uc ]
+"25
+[e :UE 327 ]
+}
+"27
+[v _saveEEPROM `(v 1 ef2`*uc`ui ]
+{
+[e :U _saveEEPROM ]
+[v _ptr `*uc 1 r1 ]
+[v _size `ui 1 r2 ]
+[f ]
+"28
+[v _i `uc 1 a ]
+"30
+{
+[e = _i -> -> 0 `i `uc ]
+[e $U 335  ]
+[e :U 332 ]
+{
+"31
+[e ( _EEByteWrite1 (3 , , -> -> 160 `i `uc _i *U ++ _ptr * -> -> 1 `i `x -> -> # *U _ptr `i `x ]
+"32
+[e ( _EEAckPolling1 (1 -> -> 160 `i `uc ]
+"33
+}
+"30
+[e ++ _i -> -> 1 `i `uc ]
+[e :U 335 ]
+[e $ < -> _i `ui _size 332  ]
+[e :U 333 ]
+"33
+}
+"34
+[e :UE 331 ]
+}
+"36
+[v _loadEEPROM `(v 1 ef2`*uc`ui ]
+{
+[e :U _loadEEPROM ]
+[v _ptr `*uc 1 r1 ]
+[v _size `ui 1 r2 ]
+[f ]
+"40
+[v _i `uc 1 a ]
+"41
+{
+[e = _i -> -> 0 `i `uc ]
+[e $U 340  ]
+[e :U 337 ]
+{
+"42
+[e = *U ++ _ptr * -> -> 1 `i `x -> -> # *U _ptr `i `x -> ( _EERandomRead1 (2 , -> -> 160 `i `uc _i `uc ]
+"43
+}
+"41
+[e ++ _i -> -> 1 `i `uc ]
+[e :U 340 ]
+[e $ < -> _i `ui _size 337  ]
+[e :U 338 ]
+"43
+}
+"44
+[e :UE 336 ]
+}

@@ -1,0 +1,136 @@
+Version 3.2 HI-TECH Software Intermediate Code
+"8 /home/andresol/tellstick-net/rf/receive.h
+[v _rfRetreatBit `(v 0 ef2`*us`*uc ]
+"3 /home/andresol/tellstick-net/rf/receive.h
+[v _rfCountSimilar `(uc 0 ef2`*us`*uc ]
+"3 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageBeginRaw `(v 0 ef ]
+"8 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddString `(v 0 ef2`*Cuc`*Cuc ]
+"7 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageAddLong `(v 0 ef2`*Cuc`ul ]
+"4 /home/andresol/tellstick-net/rf/message.h
+[v _rfMessageEnd `(v 0 ef1`uc ]
+"9 /home/andresol/tellstick-net/rf/everflourish.c
+[v _everflourishBit `(uc 1 ef4`uc`uc`uc`uc ]
+{
+[e :U _everflourishBit ]
+[v _b1 `uc 1 r1 ]
+[v _b2 `uc 1 r2 ]
+[v _b3 `uc 1 r3 ]
+[v _b4 `uc 1 r4 ]
+[f ]
+"11
+[e $ ! && && && < -> _b1 `i -> 13 `i < -> _b2 `i -> 13 `i < -> _b3 `i -> 13 `i > -> _b4 `i -> 16 `i 3  ]
+{
+"12
+[e ) -> -> 1 `i `uc ]
+[e $UE 2  ]
+"13
+}
+[e :U 3 ]
+"14
+[e $ ! && && && < -> _b1 `i -> 13 `i > -> _b2 `i -> 16 `i < -> _b3 `i -> 13 `i < -> _b4 `i -> 13 `i 4  ]
+{
+"15
+[e ) -> -> 0 `i `uc ]
+[e $UE 2  ]
+"16
+}
+[e :U 4 ]
+"17
+[e ) -> -> 2 `i `uc ]
+[e $UE 2  ]
+"18
+[e :UE 2 ]
+}
+"20
+[v _parseEverFlourish `(uc 1 ef2`us`uc ]
+{
+[e :U _parseEverFlourish ]
+[v _scanP `us 1 r1 ]
+[v _scanBit `uc 1 r2 ]
+[f ]
+"22
+[v _data `ul 1 a ]
+[e = _data -> -> -> 0 `i `l `ul ]
+"23
+[v _mask `ul 1 a ]
+[e = _mask -> -> -> 1 `i `l `ul ]
+"24
+[e ( _rfRetreatBit (2 , &U _scanP &U _scanBit ]
+"26
+{
+[v _i `i 1 a ]
+[e = _i -> 0 `i ]
+[e $ < _i -> 24 `i 6  ]
+[e $U 7  ]
+[e :U 6 ]
+{
+"27
+[v _b1 `uc 1 a ]
+[e = _b1 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"28
+[v _b2 `uc 1 a ]
+[e = _b2 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"29
+[v _b3 `uc 1 a ]
+[e = _b3 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"30
+[v _b4 `uc 1 a ]
+[e = _b4 ( _rfCountSimilar (2 , &U _scanP &U _scanBit ]
+"31
+[e $U 10  ]
+{
+"32
+[e :U 11 ]
+"33
+[e $U 9  ]
+"34
+[e :U 12 ]
+"35
+[e =| _data _mask ]
+"36
+[e $U 9  ]
+"37
+[e :U 13 ]
+"38
+[e ) -> -> 0 `i `uc ]
+[e $UE 5  ]
+"39
+}
+[e $U 9  ]
+"31
+[e :U 10 ]
+[e [\ ( _everflourishBit (4 , , , _b1 _b2 _b3 _b4 , $ -> -> 0 `i `uc 11
+ , $ -> -> 1 `i `uc 12
+ 13 ]
+"39
+[e :U 9 ]
+"40
+[e =<< _mask -> 1 `i ]
+"41
+}
+"26
+[e =+ _i -> 1 `i ]
+[e $ < _i -> 24 `i 6  ]
+[e :U 7 ]
+"41
+}
+"43
+[e ( _rfMessageBeginRaw ..  ]
+"44
+[e ( _rfMessageAddString (2 , :s 1C :s 2C ]
+"45
+[e ( _rfMessageAddLong (2 , :s 3C _data ]
+"46
+[e ( _rfMessageEnd (1 -> -> 2 `i `uc ]
+"48
+[e ) -> -> 1 `i `uc ]
+[e $UE 5  ]
+"49
+[e :UE 5 ]
+}
+[a 1C 112 114 111 116 111 99 111 108 0 ]
+[a 2C 101 118 101 114 102 108 111 117 114 105 115 104 0 ]
+[a 3C 100 97 116 97 0 ]

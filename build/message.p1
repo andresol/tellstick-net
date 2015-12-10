@@ -1,0 +1,119 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+"9 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMClear `(v 0 ef ]
+"11 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMAppendString `(v 0 ef1`*Cuc ]
+"15 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMStartHash `(v 0 ef ]
+"19 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMEndHash `(v 0 ef ]
+"9 /home/andresol/tellstick-net/firmware/tellsticknet.h
+[v _sendToLocalListeners `(v 0 ef ]
+"11 /home/andresol/tellstick-net/firmware/pwm.h
+[v _setRXPulses `(v 0 ef1`uc ]
+"18 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMAppendHashInt `(v 0 ef2`*Cuc`ul ]
+"16 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMAppendHashString `(v 0 ef2`*Cuc`*Cuc ]
+"17 /home/andresol/tellstick-net/firmware/livemessage.h
+[v _LMAppendHashHexString `(v 0 ef3`*Cuc`*Cuc`Cuc ]
+"18 /home/andresol/tellstick-net/firmware/message.c
+[v _rfMessageBegin `(v 1 ef ]
+{
+[e :U _rfMessageBegin ]
+[f ]
+"22
+[e ( _LMClear ..  ]
+"23
+[e ( _LMAppendString (1 :s 1C ]
+"24
+[e ( _LMStartHash ..  ]
+"25
+[e :UE 390 ]
+}
+"27
+[v _rfMessageBeginRaw `(v 1 ef ]
+{
+[e :U _rfMessageBeginRaw ]
+[f ]
+"31
+[e ( _LMClear ..  ]
+"32
+[e ( _LMAppendString (1 :s 2C ]
+"33
+[e ( _LMStartHash ..  ]
+"34
+[e :UE 391 ]
+}
+"36
+[v _rfMessageEnd `(v 1 ef1`uc ]
+{
+[e :U _rfMessageEnd ]
+[v _type `uc 1 r1 ]
+[f ]
+"40
+[e ( _LMEndHash ..  ]
+"41
+[e ( _sendToLocalListeners ..  ]
+"42
+[e ( _setRXPulses (1 _type ]
+"43
+[e :UE 392 ]
+}
+"45
+[v _rfMessageAddByte `(v 1 ef2`*Cuc`uc ]
+{
+[e :U _rfMessageAddByte ]
+[v _key `*Cuc 1 r1 ]
+[v _value `uc 1 r2 ]
+[f ]
+"49
+[e ( _LMAppendHashInt (2 , _key -> _value `ul ]
+"50
+[e :UE 393 ]
+}
+"52
+[v _rfMessageAddLong `(v 1 ef2`*Cuc`ul ]
+{
+[e :U _rfMessageAddLong ]
+[v _key `*Cuc 1 r1 ]
+[v _value `ul 1 r2 ]
+[f ]
+"53
+[e ( _LMAppendHashInt (2 , _key _value ]
+"72
+[e :UE 394 ]
+}
+"74
+[v _rfMessageAddString `(v 1 ef2`*Cuc`*Cuc ]
+{
+[e :U _rfMessageAddString ]
+[v _key `*Cuc 1 r1 ]
+[v _value `*Cuc 1 r2 ]
+[f ]
+"78
+[e ( _LMAppendHashString (2 , _key _value ]
+"79
+[e :UE 395 ]
+}
+"81
+[v _rfMessageAddHexString `(v 1 ef3`*Cuc`*Cuc`Cuc ]
+{
+[e :U _rfMessageAddHexString ]
+[v _key `*Cuc 1 r1 ]
+[v _value `*Cuc 1 r2 ]
+[v _length `Cuc 1 r3 ]
+[f ]
+"89
+[e ( _LMAppendHashHexString (3 , , _key _value _length ]
+"90
+[e :UE 396 ]
+}
+[a 2C 82 97 119 68 97 116 97 0 ]
+[a 1C 68 97 116 97 0 ]

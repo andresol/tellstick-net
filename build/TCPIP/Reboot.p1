@@ -1,0 +1,122 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S348 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S348 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S347 `S348 1 :8 `uc 1 ]
+[n S347 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S347 1 e ]
+"147 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPOpenEx `(uc 0 ef4`ul`uc`us`us ]
+"170 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPIsGetReady `(us 0 ef1`uc ]
+[s S25 `us 1 `us 1 ]
+[n S25 . LW HW ]
+[s S26 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S26 . LB HB UB MB ]
+[s S22 `uc 1 `uc 1 ]
+[n S22 . LB HB ]
+[s S23 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S23 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S21 `us 1 `uc -> 2 `i `S22 1 `S23 1 ]
+[n S21 . Val v byte bits ]
+[s S27 `S21 1 `S21 1 ]
+[n S27 . low high ]
+[s S28 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S28 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S24 `ul 1 `us -> 2 `i `uc -> 4 `i `S25 1 `S26 1 `S27 1 `S28 1 ]
+[n S24 . Val w v word byte wordUnion bits ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S356 `S24 1 `S355 1 ]
+[n S356 . IPAddr MACAddr ]
+"72 /home/andresol/tellstick-net/tcpip/Reboot.c
+[v _remoteNode `S356 0 e ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S357 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `S24 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S357 0 e ]
+"173 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPDiscard `(v 0 ef ]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _memcpy `(*v 0 ef3`*v`*Cv`ui ]
+"107 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _CalcIPChecksum `(us 0 ef2`*uc`us ]
+[s S292 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :2 `Vuc 1 :1 `Vuc 1 ]
+[n S292 . nBOR nPOR nPD nTO nRI . IPEN ]
+[s S293 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 :1 `Vuc 1 ]
+[n S293 . BOR POR PD TO RI ]
+[u S291 `S292 1 `S293 1 ]
+[n S291 . . . ]
+"2925 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _RCONbits `S291 0 e@4048 ]
+"3323 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _PRODH `Vuc 0 e@4084 ]
+"3319 /usr/hitech/picc-18/pro/9.66/include/pic18f67j60.h
+[v _PRODL `Vuc 0 e@4083 ]
+"94 /home/andresol/tellstick-net/tcpip/Reboot.c
+[v _RebootTask `(v 1 ef ]
+{
+[e :U _RebootTask ]
+[f ]
+"95
+[v F5277 `uc 1 s MySocket ]
+[i F5277
+-> -> 255 `ui `uc
+]
+"101
+[s S389 `uc -> 6 `i `ul 1 `us 1 ]
+[n S389 . vMACAddress dwIPAddress wChecksum ]
+[v _BootloaderAddress `S389 1 a ]
+"103
+[e $ ! == -> F5277 `ui -> 255 `ui 391  ]
+"104
+[e = F5277 ( _UDPOpenEx (4 , , , -> -> -> 0 `i `l `ul -> -> 0 `ui `uc -> -> 69 `i `us -> -> 0 `ul `us ]
+[e :U 391 ]
+"107
+[e $ ! == -> F5277 `ui -> 255 `ui 392  ]
+"108
+[e $UE 390  ]
+[e :U 392 ]
+"111
+[e $ ! ! != -> ( _UDPIsGetReady (1 F5277 `ui -> -> -> 0 `i `us `ui 393  ]
+"112
+[e $UE 390  ]
+[e :U 393 ]
+"116
+[e $ ! != & . . _remoteNode 0 0 . . _AppConfig 1 0 & . . _AppConfig 0 0 . . _AppConfig 1 0 394  ]
+"117
+{
+"118
+[e ( _UDPDiscard ..  ]
+"119
+[e $UE 390  ]
+"120
+}
+[e :U 394 ]
+"124
+[e ( _memcpy (3 , , -> &U *U + &U . _BootloaderAddress 0 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _BootloaderAddress 0 `ui `ux `*v -> -> &U *U + &U . . _AppConfig 9 0 * -> -> -> 0 `i `ui `ux -> -> # *U &U . . _AppConfig 9 0 `ui `ux `*v `*Cv -> # . _AppConfig 9 `ui ]
+"125
+[e = . _BootloaderAddress 1 . . _AppConfig 0 0 ]
+"126
+[e = . _BootloaderAddress 2 ( _CalcIPChecksum (2 , -> &U _BootloaderAddress `*uc -> - -> # _BootloaderAddress `ui -> # . _BootloaderAddress 2 `ui `us ]
+"135
+[e = . . _RCONbits 1 1 -> -> 0 `i `uc ]
+"137
+{
+"138
+[v _wvPROD `S21 1 a ]
+"140
+[e = . _wvPROD 0 -> &U _BootloaderAddress `us ]
+"141
+[e = _PRODH *U + &U . _wvPROD 1 * -> -> -> 1 `i `ui `ux -> -> # *U &U . _wvPROD 1 `ui `ux ]
+"142
+[e = _PRODL *U + &U . _wvPROD 1 * -> -> -> 0 `i `ui `ux -> -> # *U &U . _wvPROD 1 `ui `ux ]
+"143
+}
+"145
+[; RESET ;#
+"146
+[e :UE 390 ]
+}

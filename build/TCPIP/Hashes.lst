@@ -1,0 +1,846 @@
+     1: /*********************************************************************
+     2:  *
+     3:  *      Hash Function Library
+     4:  *  Library for Microchip TCP/IP Stack
+     5:  *       -Calculates MD5 and SHA-1 Hashes
+     6:  *       -Reference: RFC 1321 (MD5), RFC 3174 and FIPS 180-1 (SHA-1)
+     7:  *
+     8:  *********************************************************************
+     9:  * FileName:        Hashes.c
+    10:  * Dependencies:    None
+    11:  * Processor:       PIC18, PIC24F, PIC24H, dsPIC30F, dsPIC33F, PIC32
+    12:  * Processor:       PIC18, PIC24F, PIC24H, dsPIC30F, dsPIC33F, PIC32
+    13:  * Compiler:        Microchip C32 v1.05 or higher
+    14:  *                                      Microchip C30 v3.12 or higher
+    15:  *                                      Microchip C18 v3.30 or higher
+    16:  *                                      HI-TECH PICC-18 PRO 9.63PL2 or higher
+    17:  * Company:         Microchip Technology, Inc.
+    18:  *
+    19:  * Software License Agreement
+    20:  *
+    21:  * Copyright (C) 2002-2009 Microchip Technology Inc.  All rights
+    22:  * reserved.
+    23:  *
+    24:  * Microchip licenses to you the right to use, modify, copy, and
+    25:  * distribute:
+    26:  * (i)  the Software when embedded on a Microchip microcontroller or
+    27:  *      digital signal controller product ("Device") which is
+    28:  *      integrated into Licensee's product; or
+    29:  * (ii) ONLY the Software driver source files ENC28J60.c, ENC28J60.h,
+    30:  *              ENCX24J600.c and ENCX24J600.h ported to a non-Microchip device
+    31:  *              used in conjunction with a Microchip ethernet controller for
+    32:  *              the sole purpose of interfacing with the ethernet controller.
+    33:  *
+    34:  * You should refer to the license agreement accompanying this
+    35:  * Software for additional information regarding your rights and
+    36:  * obligations.
+    37:  *
+    38:  * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT
+    39:  * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+    40:  * LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A
+    41:  * PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL
+    42:  * MICROCHIP BE LIABLE FOR ANY INCIDENTAL, SPECIAL, INDIRECT OR
+    43:  * CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF
+    44:  * PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR SERVICES, ANY CLAIMS
+    45:  * BY THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE
+    46:  * THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION, OR OTHER
+    47:  * SIMILAR COSTS, WHETHER ASSERTED ON THE BASIS OF CONTRACT, TORT
+    48:  * (INCLUDING NEGLIGENCE), BREACH OF WARRANTY, OR OTHERWISE.
+    49:  *
+    50:  * IMPORTANT:  The implementation and use of third party algorithms, 
+    51:  * specifications and/or other technology may require a license from 
+    52:  * various third parties.  It is your responsibility to obtain 
+    53:  * information regarding any applicable licensing obligations.
+    54:  *
+    55:  *
+    56:  * Author               Date            Comment
+    57:  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    58:  * Elliott Wood         5/01/07         Original
+    59:  * Elliott Wood                 11/21/07        Greatly increased HashBlock speed
+    60:  ********************************************************************/
+    61: #define __HASHES_C
+    62: 
+    63: /*****************************************************************************
+    64:   Internal:
+    65:         Performance Statistics are as follows:
+    66:         (Given in instructions per block = 512 bits = 64 bytes)
+    67:         
+    68:                                         MD5                                     SHA1
+    69:                 C18                     23k instr/block         50k instr/block
+    70:                 Hi-Tech C       19k instr/block         50k instr/block
+    71:                 C30                     21k instr/block         17k instr/block
+    72:                 
+    73:   ***************************************************************************/
+    74: 
+    75: #include "TCPIP Stack/TCPIP.h"
+    76: 
+    77: /****************************************************************************
+    78:   Section:
+    79:         Functions and variables required for both hash types
+    80:   ***************************************************************************/
+    81: 
+    82: #if defined(STACK_USE_MD5) || defined(STACK_USE_SHA1)
+    83: 
+    84: // Stores a copy of the last block with the required padding
+    85: BYTE lastBlock[64];
+    86: 
+    87: /*****************************************************************************
+    88:   Function:
+    89:         void HashAddData(HASH_SUM* theSum, BYTE* data, WORD len)
+    90: 
+    91:   Description:
+    92:         Adds data to the hash sum.
+    93: 
+    94:   Precondition:
+    95:         The hash sum has already been initialized
+    96: 
+    97:   Parameters:
+    98:         theSum - hash context state
+    99:         data - the data to be added to the hash sum
+   100:         len - length of data
+   101: 
+   102:   Returns:
+   103:         None
+   104:         
+   105:   Remarks:
+   106:         This function calls the appropriate hashing function based on the 
+   107:         hash typed defined in theSum.
+   108:   ***************************************************************************/
+   109: void HashAddData(HASH_SUM* theSum, BYTE* data, WORD len)
+   110: {
+   111:         #if defined(STACK_USE_MD5)
+   112:         if(theSum->hashType == HASH_MD5)
+   113:                 MD5AddData(theSum, data, len);
+   114:         #endif
+   115:         #if defined(STACK_USE_SHA1)
+   116:         if(theSum->hashType == HASH_SHA1)
+   117:                 SHA1AddData(theSum, data, len);
+   118:         #endif
+   119: }
+   120: 
+   121: /*****************************************************************************
+   122:   Function:
+   123:         void HashAddROMData(HASH_SUM* theSum, ROM BYTE* data, WORD len)
+   124: 
+   125:   Description:
+   126:         Adds data to the hash sum.
+   127: 
+   128:   Precondition:
+   129:         The hash sum has already been initialized
+   130: 
+   131:   Parameters:
+   132:         theSum - hash context state
+   133:         data - the data to be added to the hash sum
+   134:         len - length of data
+   135: 
+   136:   Returns:
+   137:         None
+   138:         
+   139:   Remarks:
+   140:         This function calls the appropriate hashing function based on the 
+   141:         hash typed defined in theSum.
+   142:         
+   143:         This function is aliased to HashAddData on non-PIC18 platforms.
+   144:   ***************************************************************************/
+   145: #if defined(__18CXX)
+   146: void HashAddROMData(HASH_SUM* theSum, ROM BYTE* data, WORD len)
+   147: {
+   148:         #if defined(STACK_USE_MD5)
+   149:         if(theSum->hashType == HASH_MD5)
+   150:                 MD5AddROMData(theSum, data, len);
+   151:         #endif
+   152:         #if defined(STACK_USE_SHA1)
+   153:         if(theSum->hashType == HASH_SHA1)
+   154:                 SHA1AddROMData(theSum, data, len);
+   155:         #endif
+   156: }
+   157: #endif
+   158: 
+   159: #endif
+   160: 
+   161: 
+   162: /****************************************************************************
+   163:   Section:
+   164:         Functions and variables required for MD5
+   165:   ***************************************************************************/
+   166: 
+   167: #if defined(STACK_USE_MD5)
+   168: 
+   169: // Array of pre-defined R vales for MD5
+   170: static ROM BYTE _MD5_r[64] = {7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
+   171:                                   5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
+   172:                                   4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
+   173:                                   6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21};
+   174: 
+   175: // Array of pre-defined K values for MD5
+   176: static ROM DWORD _MD5_k[64] = { 0xD76AA478, 0xE8C7B756, 0x242070DB, 0xC1BDCEEE, 0xF57C0FAF, 0x4787C62A, 0xA8304613, 0xFD469501, 
+   177:                                                         0x698098D8, 0x8B44F7AF, 0xFFFF5BB1, 0x895CD7BE, 0x6B901122, 0xFD987193, 0xA679438E, 0x49B40821, 
+   178:                                                         0xF61E2562, 0xC040B340, 0x265E5A51, 0xE9B6C7AA, 0xD62F105D, 0x02441453, 0xD8A1E681, 0xE7D3FBC8, 
+   179:                                                         0x21E1CDE6, 0xC33707D6, 0xF4D50D87, 0x455A14ED, 0xA9E3E905, 0xFCEFA3F8, 0x676F02D9, 0x8D2A4C8A, 
+   180:                                                         0xFFFA3942, 0x8771F681, 0x6D9D6122, 0xFDE5380C, 0xA4BEEA44, 0x4BDECFA9, 0xF6BB4B60, 0xBEBFBC70, 
+   181:                                                         0x289B7EC6, 0xEAA127FA, 0xD4EF3085, 0x04881D05, 0xD9D4D039, 0xE6DB99E5, 0x1FA27CF8, 0xC4AC5665, 
+   182:                                                         0xF4292244, 0x432AFF97, 0xAB9423A7, 0xFC93A039, 0x655B59C3, 0x8F0CCC92, 0xFFEFF47D, 0x85845DD1, 
+   183:                                                         0x6FA87E4F, 0xFE2CE6E0, 0xA3014314, 0x4E0811A1, 0xF7537E82, 0xBD3AF235, 0x2AD7D2BB, 0xEB86D391 };
+   184: 
+   185: static void MD5HashBlock(BYTE* data, DWORD* h0, DWORD* h1, DWORD* h2, DWORD* h3);
+   186: 
+   187: /*****************************************************************************
+   188:   Function:
+   189:         void MD5Initialize(HASH_SUM* theSum)
+   190: 
+   191:   Description:
+   192:         Initializes a new MD5 hash.
+   193: 
+   194:   Precondition:
+   195:         None
+   196: 
+   197:   Parameters:
+   198:         theSum - pointer to the allocated HASH_SUM object to initialize as MD5
+   199: 
+   200:   Returns:
+   201:         None
+   202:   ***************************************************************************/
+   203: void MD5Initialize(HASH_SUM* theSum)
+   204: {
+   205:         theSum->h0 = 0x67452301;
+   206:         theSum->h1 = 0xefcdab89;
+   207:         theSum->h2 = 0x98badcfe;
+   208:         theSum->h3 = 0x10325476;
+   209:         theSum->bytesSoFar = 0;
+   210:         theSum->hashType = HASH_MD5;
+   211: }
+   212: 
+   213: /*****************************************************************************
+   214:   Function:
+   215:         void MD5AddData(HASH_SUM* theSum, BYTE* data, WORD len)
+   216: 
+   217:   Description:
+   218:         Adds data to an MD5 hash calculation.
+   219: 
+   220:   Precondition:
+   221:         The hash context has already been initialized.
+   222: 
+   223:   Parameters:
+   224:         theSum - a pointer to the hash context structure
+   225:         data - the data to add to the hash
+   226:         len - the length of the data to add
+   227: 
+   228:   Returns:
+   229:         None
+   230:   ***************************************************************************/
+   231: void MD5AddData(HASH_SUM* theSum, BYTE* data, WORD len)
+   232: {
+   233:         BYTE *blockPtr;
+   234: 
+   235:         // Seek to the first free byte
+   236:         blockPtr = theSum->partialBlock + ( theSum->bytesSoFar & 0x3f );
+   237: 
+   238:         // Update the total number of bytes
+   239:         theSum->bytesSoFar += len;
+   240: 
+   241:         // Copy data into the partial block
+   242:         while(len != 0u)
+   243:         {
+   244:                 *blockPtr++ = *data++;
+   245: 
+   246:                 // If the partial block is full, hash the data and start over
+   247:                 if(blockPtr == theSum->partialBlock + 64)
+   248:                 {
+   249:                         MD5HashBlock(theSum->partialBlock, &theSum->h0, &theSum->h1, &theSum->h2, &theSum->h3);
+   250:                         blockPtr = theSum->partialBlock;
+   251:                 }
+   252:                 
+   253:                 len--;
+   254:         }
+   255:         
+   256: }
+   257: 
+   258: /*****************************************************************************
+   259:   Function:
+   260:         void MD5AddROMData(HASH_SUM* theSum, ROM BYTE* data, WORD len)
+   261: 
+   262:   Description:
+   263:         Adds data to an MD5 hash calculation.
+   264: 
+   265:   Precondition:
+   266:         The hash context has already been initialized.
+   267: 
+   268:   Parameters:
+   269:         theSum - a pointer to the hash context structure
+   270:         data - the data to add to the hash
+   271:         len - the length of the data to add
+   272: 
+   273:   Returns:
+   274:         None
+   275:         
+   276:   Remarks:
+   277:         This function is aliased to MD5AddData on non-PIC18 platforms.
+   278:   ***************************************************************************/
+   279: #if defined(__18CXX)
+   280: void MD5AddROMData(HASH_SUM* theSum, ROM BYTE* data, WORD len)
+   281: {
+   282:         BYTE *blockPtr;
+   283: 
+   284:         // Seek to the first free byte
+   285:         blockPtr = theSum->partialBlock + ( theSum->bytesSoFar & 0x3f );
+   286: 
+   287:         // Update the total number of bytes
+   288:         theSum->bytesSoFar += len;
+   289: 
+   290:         // Copy data into the partial block
+   291:         while(len != 0u)
+   292:         {
+   293:                 *blockPtr++ = *data++;
+   294: 
+   295:                 // If the partial block is full, hash the data and start over
+   296:                 if(blockPtr == theSum->partialBlock + 64)
+   297:                 {
+   298:                         MD5HashBlock(theSum->partialBlock, &theSum->h0, &theSum->h1, &theSum->h2, &theSum->h3);
+   299:                         blockPtr = theSum->partialBlock;
+   300:                 }
+   301:                 
+   302:                 len--;
+   303:         }
+   304:         
+   305: }
+   306: #endif
+   307: 
+   308: /*****************************************************************************
+   309:   Function:
+   310:         static void MD5HashBlock(BYTE* data, DWORD* h0, DWORD* h1, 
+   311:                                                                 DWORD* h2, DWORD* h3)
+   312: 
+   313:   Summary:
+   314:         Calculates the MD5 hash sum of a block.
+   315: 
+   316:   Description:
+   317:         This function calculates the MD5 hash sum over a block and updates
+   318:         the values of h0-h3 with the next context.
+   319: 
+   320:   Precondition:
+   321:         The data pointer must be WORD aligned on 16-bit parts and DWORD
+   322:         aligned on 32-bit PICs.  If alignment is not correct, a memory alignment
+   323:         exception will occur.
+   324: 
+   325:   Parameters:
+   326:         data - The block of 64 bytes to hash
+   327:         h0 - the current hash context h0 value
+   328:         h1 - the current hash context h1 value
+   329:         h2 - the current hash context h2 value
+   330:         h3 - the current hash context h3 value
+   331: 
+   332:   Returns:
+   333:         None
+   334:   
+   335:   Internal:
+   336:         TODO convert data to a DWORD* or read from the pointer using byte
+   337:         accesses only to avoid any accidental alignment errors
+   338:   ***************************************************************************/
+   339: static void MD5HashBlock(BYTE* data, DWORD* h0, DWORD* h1, DWORD* h2, DWORD* h3)
+   340: {
+   341:         DWORD a, b, c, d, f, temp;
+   342:         BYTE i, j;
+   343: 
+   344:         // Set up a, b, c, d
+   345:         a = *h0;
+   346:         b = *h1;
+   347:         c = *h2;
+   348:         d = *h3;
+   349: 
+   350:         // Main mixer loop for 64 operations
+   351:         for(i = 0; i < 64u; i++)
+   352:         {
+   353:                 if(i <= 15u)
+   354:                 {
+   355:                         f = (b & c) | ((~b) & d);
+   356:                         j = i;
+   357:                 }
+   358:                 else if(i > 15u && i <= 31u)
+   359:                 {
+   360:                         f = (d & b) | ((~d) & c);
+   361:                         j = (5 * i + 1) & 0x0f;
+   362:                 }
+   363:                 else if(i > 31u && i <= 47u)
+   364:                 {
+   365:                         f = (b ^ c ^ d);
+   366:                         j = (3 * i + 5) & 0x0f;
+   367:                 }
+   368:                 else
+   369:                 {
+   370:                         f = c ^ (b | (~d));
+   371:                         j = (7 * i) & 0x0f;
+   372:                 }
+   373:                 
+   374:                 // Calculate the new mixer values
+   375:                 temp = d;
+   376:                 d = c;
+   377:                 c = b;
+   378:                 j *= 4;
+   379:                 b = leftRotateDWORD(a+f+_MD5_k[i]+(*(DWORD*)&data[j]),_MD5_r[i]) + b;
+   380:                 a = temp;
+   381:         }
+   382: 
+   383:         // Add the new hash to the sum
+   384:         *h0 += a;
+   385:         *h1 += b;
+   386:         *h2 += c;
+   387:         *h3 += d;
+   388: 
+   389: }
+   390: 
+   391: /*****************************************************************************
+   392:   Function:
+   393:         void MD5Calculate(HASH_SUM* theSum, BYTE* result)
+   394: 
+   395:   Summary:
+   396:         Calculates an MD5 hash
+   397: 
+   398:   Description:
+   399:         This function calculates the hash sum of all input data so far.  It is
+   400:         non-destructive to the hash context, so more data may be added after
+   401:         this function is called.
+   402: 
+   403:   Precondition:
+   404:         The hash context has been properly initialized.
+   405: 
+   406:   Parameters:
+   407:         theSum - the current hash context
+   408:         result - 16 byte array in which to store the resulting hash
+   409: 
+   410:   Returns:
+   411:         None
+   412:   ***************************************************************************/
+   413: void MD5Calculate(HASH_SUM* theSum, BYTE* result)
+   414: {
+   415:         DWORD h0, h1, h2, h3;
+   416:         BYTE i, *partPtr, *endPtr;
+   417: 
+   418:         // Initialize the hash variables
+   419:         h0 = theSum->h0;
+   420:         h1 = theSum->h1;
+   421:         h2 = theSum->h2;
+   422:         h3 = theSum->h3;
+   423: 
+   424:         // Find out how far along we are in the partial block and copy to last block
+   425:         partPtr = theSum->partialBlock;
+   426:         endPtr = partPtr + ( theSum->bytesSoFar & 0x3f );
+   427:         for(i = 0; partPtr != endPtr; i++)
+   428:         {
+   429:                 lastBlock[i] = *partPtr++;
+   430:         }
+   431: 
+   432:         // Add one more 1 bit and 7 zeros
+   433:         lastBlock[i++] = 0x80;
+   434: 
+   435:         // If there's 8 or more bytes left to 64, then this is the last block
+   436:         if(i > 56u)
+   437:         {// If there's not enough space, then zero fill this and add a new block
+   438:                 // Zero pad the remainder
+   439:                 for( ; i < 64u; lastBlock[i++] = 0x00);
+   440: 
+   441:                 // Calculate a hash on this block and add it to the sum
+   442:                 MD5HashBlock(lastBlock, &h0, &h1, &h2, &h3);
+   443: 
+   444:                 // Create a new block for the size
+   445:                 i = 0;
+   446:         }
+   447: 
+   448:         // Zero fill the rest of the block
+   449:         for( ; i < 56u; lastBlock[i++] = 0x00);
+   450: 
+   451:         // Fill in the size, in bits, in little-endian
+   452:         lastBlock[56] = theSum->bytesSoFar << 3;
+   453:         lastBlock[57] = theSum->bytesSoFar >> 5;
+   454:         lastBlock[58] = theSum->bytesSoFar >> 13;
+   455:         lastBlock[59] = theSum->bytesSoFar >> 21;
+   456:         lastBlock[60] = theSum->bytesSoFar >> 29;
+   457:         lastBlock[61] = 0;
+   458:         lastBlock[62] = 0;
+   459:         lastBlock[63] = 0;
+   460: 
+   461:         // Calculate a hash on this final block and add it to the sum
+   462:         MD5HashBlock(lastBlock, &h0, &h1, &h2, &h3);
+   463:         
+   464:         // Format the result in little-endian format
+   465:         memcpy((void*)result,(void*)&h0,4);
+   466:         memcpy((void*)&result[4],(void*)&h1,4);
+   467:         memcpy((void*)&result[8],(void*)&h2,4);
+   468:         memcpy((void*)&result[12],(void*)&h3,4);
+   469: }
+   470: 
+   471: #endif //ends MD5
+   472: 
+   473: /****************************************************************************
+   474:   Section:
+   475:         Functions and variables required for SHA-1
+   476:   ***************************************************************************/
+   477: 
+   478: #if defined(STACK_USE_SHA1)
+   479: 
+   480: static void SHA1HashBlock(BYTE* data, DWORD* h0, DWORD* h1, DWORD* h2, DWORD* h3, DWORD* h4);
+   481: 
+   482: /*****************************************************************************
+   483:   Function:
+   484:         void SHA1Initialize(HASH_SUM* theSum)
+   485: 
+   486:   Description:
+   487:         Initializes a new SHA-1 hash.
+   488: 
+   489:   Precondition:
+   490:         None
+   491: 
+   492:   Parameters:
+   493:         theSum - pointer to the allocated HASH_SUM object to initialize as SHA-1
+   494: 
+   495:   Returns:
+   496:         None
+   497:   ***************************************************************************/
+   498: void SHA1Initialize(HASH_SUM* theSum)
+   499: {
+   500:         theSum->h0 = 0x67452301;
+   501:         theSum->h1 = 0xEFCDAB89;
+   502:         theSum->h2 = 0x98BADCFE;
+   503:         theSum->h3 = 0x10325476;
+   504:         theSum->h4 = 0xC3D2E1F0;
+   505:         theSum->bytesSoFar = 0;
+   506:         theSum->hashType = HASH_SHA1;
+   507: }
+   508: 
+   509: /*****************************************************************************
+   510:   Function:
+   511:         void SHA1AddData(HASH_SUM* theSum, BYTE* data, WORD len)
+   512: 
+   513:   Description:
+   514:         Adds data to a SHA-1 hash calculation.
+   515: 
+   516:   Precondition:
+   517:         The hash context has already been initialized.
+   518: 
+   519:   Parameters:
+   520:         theSum - a pointer to the hash context structure
+   521:         data - the data to add to the hash
+   522:         len - the length of the data to add
+   523: 
+   524:   Returns:
+   525:         None
+   526:   ***************************************************************************/
+   527: void SHA1AddData(HASH_SUM* theSum, BYTE* data, WORD len)
+   528: {
+   529:         BYTE *blockPtr;
+   530: 
+   531:         // Seek to the first free byte
+   532:         blockPtr = theSum->partialBlock + ( theSum->bytesSoFar & 0x3f );
+   533: 
+   534:         // Update the total number of bytes
+   535:         theSum->bytesSoFar += len;
+   536: 
+   537:         // Copy data into the partial block
+   538:         while(len != 0u)
+   539:         {
+   540:                 *blockPtr++ = *data++;
+   541: 
+   542:                 // If the partial block is full, hash the data and start over
+   543:                 if(blockPtr == theSum->partialBlock + 64)
+   544:                 {
+   545:                         SHA1HashBlock(theSum->partialBlock, &theSum->h0, &theSum->h1,
+   546:                                                          &theSum->h2, &theSum->h3, &theSum->h4);
+   547:                         blockPtr = theSum->partialBlock;
+   548:                 }
+   549:                 
+   550:                 len--;
+   551:         }
+   552:         
+   553: }
+   554: 
+   555: /*****************************************************************************
+   556:   Function:
+   557:         void SHA1AddROMData(HASH_SUM* theSum, ROM BYTE* data, WORD len)
+   558: 
+   559:   Description:
+   560:         Adds data to a SHA-1 hash calculation.
+   561: 
+   562:   Precondition:
+   563:         The hash context has already been initialized.
+   564: 
+   565:   Parameters:
+   566:         theSum - a pointer to the hash context structure
+   567:         data - the data to add to the hash
+   568:         len - the length of the data to add
+   569: 
+   570:   Returns:
+   571:         None
+   572:         
+   573:   Remarks:
+   574:         This function is aliased to SHA1AddData on non-PIC18 platforms.
+   575:   ***************************************************************************/
+   576: #if defined(__18CXX)
+   577: void SHA1AddROMData(HASH_SUM* theSum, ROM BYTE* data, WORD len)
+   578: {
+   579:         BYTE *blockPtr;
+   580: 
+   581:         // Seek to the first free byte
+   582:         blockPtr = theSum->partialBlock + ( theSum->bytesSoFar & 0x3f );
+   583: 
+   584:         // Update the total number of bytes
+   585:         theSum->bytesSoFar += len;
+   586: 
+   587:         // Copy data into the partial block
+   588:         while(len != 0u)
+   589:         {
+   590:                 *blockPtr++ = *data++;
+   591: 
+   592:                 // If the partial block is full, hash the data and start over
+   593:                 if(blockPtr == theSum->partialBlock + 64)
+   594:                 {
+   595:                         SHA1HashBlock(theSum->partialBlock, &theSum->h0, &theSum->h1,
+   596:                                                          &theSum->h2, &theSum->h3, &theSum->h4);
+   597:                         blockPtr = theSum->partialBlock;
+   598:                 }
+   599:                 
+   600:                 len--;
+   601:         }
+   602:         
+   603: }
+   604: #endif
+   605: 
+   606: /*****************************************************************************
+   607:   Function:
+   608:         static void SHA1HashBlock(BYTE* data, DWORD* h0, DWORD* h1, 
+   609:                                                                 DWORD* h2, DWORD* h3, DWORD* h4)
+   610: 
+   611:   Summary:
+   612:         Calculates the SHA-1 hash sum of a block.
+   613: 
+   614:   Description:
+   615:         This function calculates the SHA-1 hash sum over a block and updates
+   616:         the values of h0-h3 with the next context.
+   617: 
+   618:   Precondition:
+   619:         The data pointer must be WORD aligned on 16-bit parts and DWORD
+   620:         aligned on 32-bit PICs.  If alignment is not correct, a memory alignment
+   621:         exception will occur.
+   622: 
+   623:   Parameters:
+   624:         data - The block of 64 bytes to hash
+   625:         h0 - the current hash context h0 value
+   626:         h1 - the current hash context h1 value
+   627:         h2 - the current hash context h2 value
+   628:         h3 - the current hash context h3 value
+   629:         h4 - the current hash context h4 value
+   630: 
+   631:   Returns:
+   632:         None
+   633:   
+   634:   Internal:
+   635:         TODO convert data to a DWORD* or read from the pointer using byte
+   636:         accesses only to avoid any accidental alignment errors
+   637:   ***************************************************************************/
+   638: static void SHA1HashBlock(BYTE* data, DWORD* h0, DWORD* h1, DWORD* h2, 
+   639:                                                         DWORD* h3, DWORD* h4)
+   640: {
+   641:         DWORD a, b, c, d, e, f, k, temp;
+   642:         DWORD_VAL *w = (DWORD_VAL*)lastBlock;
+   643:         BYTE i, back3, back8, back14;
+   644: 
+   645:         // Set up a, b, c, d, e
+   646:         a = *h0;
+   647:         b = *h1;
+   648:         c = *h2;
+   649:         d = *h3;
+   650:         e = *h4;
+   651: 
+   652:         // Set up the w[] vector
+   653:         if(lastBlock == data)
+   654:         {// If they're the same, just swap endian-ness
+   655:                 for(i = 0; i < 16u; i++)
+   656:                 {
+   657:                         back3 = data[3];
+   658:                         data[3] = data[0];
+   659:                         data[0] = back3;
+   660:                         back3 = data[1];
+   661:                         data[1] = data[2];
+   662:                         data[2] = back3;
+   663:                         data += 4;
+   664:                 }
+   665:         }
+   666:         else
+   667:         {// Otherwise, copy values in swaping endian-ness as we go
+   668:                 for(i = 0; i < 16u; i++)
+   669:                 {
+   670:                         w[i].v[3] = *data++;
+   671:                         w[i].v[2] = *data++;
+   672:                         w[i].v[1] = *data++;
+   673:                         w[i].v[0] = *data++;
+   674:                 }
+   675:         }
+   676:         back3 = 13;
+   677:         back8 = 8;
+   678:         back14 = 2;
+   679: 
+   680:         // Main mixer loop for 80 operations
+   681:         for(i = 0; i < 80u; i++)
+   682:         {
+   683:                 if(i <= 19u)
+   684:                 {
+   685:                         f = (b & c) | ((~b) & d);
+   686:                         k = 0x5A827999;
+   687:                 }
+   688:                 else if(i >= 20u && i <= 39u)
+   689:                 {
+   690:                         f = b ^ c ^ d;
+   691:                         k = 0x6ED9EBA1;
+   692:                 }
+   693:                 else if(i >= 40u && i <= 59u)
+   694:                 {
+   695:                         f = (b & c) | (b & d) | (c & d);
+   696:                         k = 0x8F1BBCDC;
+   697:                 }
+   698:                 else
+   699:                 {
+   700:                         f = b ^ c ^ d;
+   701:                         k = 0xCA62C1D6;
+   702:                 }
+   703: 
+   704:                 // Calculate the w[] value and store it in the array for future use
+   705:                 if(i >= 16u)
+   706:                 {
+   707:                         #if defined(HI_TECH_C)
+   708:                         // This section is unrolled for HI_TECH_C because it cannot parse
+   709:                         // the expression used by the other compilers
+   710:                         DWORD temp2;
+   711:                         temp = w[back3].Val;
+   712:                         temp2 = w[back8].Val;
+   713:                         temp ^= temp2;
+   714:                         temp2 = w[back14].Val;
+   715:                         temp ^= temp2;
+   716:                         temp2 = w[i&0x0f].Val;
+   717:                         temp ^= temp2;
+   718:                         w[i&0x0f].Val = leftRotateDWORD(temp, 1);
+   719:                         #else
+   720:                         w[i&0x0f].Val = leftRotateDWORD( ( w[back3].Val ^ w[back8].Val ^
+   721:                                                                                         w[back14].Val ^ w[i&0x0f].Val), 1);
+   722:                         #endif
+   723:                         back3 += 1;
+   724:                         back8 += 1;
+   725:                         back14 += 1;
+   726:                         back3 &= 0x0f;
+   727:                         back8 &= 0x0f;
+   728:                         back14 &= 0x0f;
+   729:                 }
+   730:                 
+   731:                 // Calculate the new mixers
+   732:                 temp = leftRotateDWORD(a, 5) + f + e + k + w[i & 0x0f].Val;
+   733:                 e = d;
+   734:                 d = c;
+   735:                 c = leftRotateDWORD(b, 30);
+   736:                 b = a;
+   737:                 a = temp;
+   738:         }
+   739: 
+   740:         // Add the new hash to the sum
+   741:         *h0 += a;
+   742:         *h1 += b;
+   743:         *h2 += c;
+   744:         *h3 += d;
+   745:         *h4 += e;
+   746: 
+   747: }
+   748: 
+   749: /*****************************************************************************
+   750:   Function:
+   751:         void SHA1Calculate(HASH_SUM* theSum, BYTE* result)
+   752: 
+   753:   Summary:
+   754:         Calculates a SHA-1 hash
+   755: 
+   756:   Description:
+   757:         This function calculates the hash sum of all input data so far.  It is
+   758:         non-destructive to the hash context, so more data may be added after
+   759:         this function is called.
+   760: 
+   761:   Precondition:
+   762:         The hash context has been properly initialized.
+   763: 
+   764:   Parameters:
+   765:         theSum - the current hash context
+   766:         result - 20 byte array in which to store the resulting hash
+   767: 
+   768:   Returns:
+   769:         None
+   770:   ***************************************************************************/
+   771: void SHA1Calculate(HASH_SUM* theSum, BYTE* result)
+   772: {
+   773:         DWORD h0, h1, h2, h3, h4;
+   774:         BYTE i, *partPtr, *endPtr;
+   775: 
+   776:         // Initialize the hash variables
+   777:         h0 = theSum->h0;
+   778:         h1 = theSum->h1;
+   779:         h2 = theSum->h2;
+   780:         h3 = theSum->h3;
+   781:         h4 = theSum->h4;
+   782: 
+   783:         // Find out how far along we are in the partial block and copy to last block
+   784:         partPtr = theSum->partialBlock;
+   785:         endPtr = partPtr + ( theSum->bytesSoFar & 0x3f );
+   786:         for(i = 0; partPtr != endPtr; i++)
+   787:         {
+   788:                 lastBlock[i] = *partPtr++;
+   789:         }
+   790: 
+   791:         // Add one more bit and 7 zeros
+   792:         lastBlock[i++] = 0x80;
+   793: 
+   794:         // If there's 8 or more bytes left to 64, then this is the last block
+   795:         if(i > 56u)
+   796:         {// If there's not enough space, then zero fill this and add a new block
+   797:                 // Zero pad the remainder
+   798:                 for( ; i < 64u; lastBlock[i++] = 0x00);
+   799: 
+   800:                 // Calculate a hash on this block and add it to the sum
+   801:                 SHA1HashBlock(lastBlock, &h0, &h1, &h2, &h3, &h4);
+   802: 
+   803:                 //create a new block for the size
+   804:                 i = 0;
+   805:         }
+   806: 
+   807:         // Zero fill the rest of the block
+   808:         for( ; i < 56u; lastBlock[i++] = 0x00);
+   809: 
+   810:         // Fill in the size, in bits, in big-endian
+   811:         lastBlock[63] = theSum->bytesSoFar << 3;
+   812:         lastBlock[62] = theSum->bytesSoFar >> 5;
+   813:         lastBlock[61] = theSum->bytesSoFar >> 13;
+   814:         lastBlock[60] = theSum->bytesSoFar >> 21;
+   815:         lastBlock[59] = theSum->bytesSoFar >> 29;
+   816:         lastBlock[58] = 0;
+   817:         lastBlock[57] = 0;
+   818:         lastBlock[56] = 0;
+   819: 
+   820:         // Calculate a hash on this final block and add it to the sum
+   821:         SHA1HashBlock(lastBlock, &h0, &h1, &h2, &h3, &h4);
+   822:         
+   823:         // Format the result in big-endian format
+   824:         *result++ = ((BYTE*)&h0)[3];
+   825:         *result++ = ((BYTE*)&h0)[2];
+   826:         *result++ = ((BYTE*)&h0)[1];
+   827:         *result++ = ((BYTE*)&h0)[0];
+   828:         *result++ = ((BYTE*)&h1)[3];
+   829:         *result++ = ((BYTE*)&h1)[2];
+   830:         *result++ = ((BYTE*)&h1)[1];
+   831:         *result++ = ((BYTE*)&h1)[0];
+   832:         *result++ = ((BYTE*)&h2)[3];
+   833:         *result++ = ((BYTE*)&h2)[2];
+   834:         *result++ = ((BYTE*)&h2)[1];
+   835:         *result++ = ((BYTE*)&h2)[0];
+   836:         *result++ = ((BYTE*)&h3)[3];
+   837:         *result++ = ((BYTE*)&h3)[2];
+   838:         *result++ = ((BYTE*)&h3)[1];
+   839:         *result++ = ((BYTE*)&h3)[0];
+   840:         *result++ = ((BYTE*)&h4)[3];
+   841:         *result++ = ((BYTE*)&h4)[2];
+   842:         *result++ = ((BYTE*)&h4)[1];
+   843:         *result++ = ((BYTE*)&h4)[0];
+   844: }
+   845: 
+   846: #endif  //#end SHA-1

@@ -1,0 +1,207 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[s S316 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S316 . Cap1OVF Cap2OVF Cap3OVF Cap4OVF Cap5OVF ]
+[u S315 `S316 1 :8 `uc 1 ]
+[n S315 capstatus . . ]
+"68 /usr/hitech/picc-18/pro/9.66/include/peripheral/capture.h
+[v _CapStatus `S315 1 e ]
+"147 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPOpenEx `(uc 0 ef4`ul`uc`us`us ]
+"170 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPIsGetReady `(us 0 ef1`uc ]
+[c E3956 0 1 .. ]
+[n E3956 _BOOL FALSE TRUE  ]
+"171 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPGet `(E3956 0 ef1`*uc ]
+"173 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPDiscard `(v 0 ef ]
+"28 /usr/hitech/picc-18/pro/9.66/include/string.h
+[v _memcpy `(*v 0 ef3`*v`*Cv`ui ]
+[s S346 `us 1 `us 1 ]
+[n S346 . LW HW ]
+[s S347 `uc 1 `uc 1 `uc 1 `uc 1 ]
+[n S347 . LB HB UB MB ]
+[s S343 `uc 1 `uc 1 ]
+[n S343 . LB HB ]
+[s S344 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S344 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 ]
+[u S342 `us 1 `uc -> 2 `i `S343 1 `S344 1 ]
+[n S342 . Val v byte bits ]
+[s S348 `S342 1 `S342 1 ]
+[n S348 . low high ]
+[s S349 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S349 . b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11 b12 b13 b14 b15 b16 b17 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 b28 b29 b30 b31 ]
+[u S345 `ul 1 `us -> 2 `i `uc -> 4 `i `S346 1 `S347 1 `S348 1 `S349 1 ]
+[n S345 . Val w v word byte wordUnion bits ]
+[s S355 `uc -> 6 `i ]
+[n S355 . v ]
+[s S356 `S345 1 `S355 1 ]
+[n S356 . IPAddr MACAddr ]
+[u S378 `S356 1 `ul 1 ]
+[n S378 . remoteNode remoteHost ]
+[c E4932 0 1 2 3 4 5 .. ]
+[n E4932 . UDP_DNS_IS_RESOLVED UDP_DNS_RESOLVE UDP_GATEWAY_SEND_ARP UDP_GATEWAY_GET_ARP UDP_CLOSED UDP_OPENED  ]
+[s S379 :1 `uc 1 ]
+[n S379 . bRemoteHostIsROM ]
+[s S377 `S378 1 `us 1 `us 1 `E4932 1 `ul 1 `uc 1 `S379 1 `us 1 ]
+[n S377 . remote remotePort localPort smState retryInterval retryCount flags eventTime ]
+"104 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPSocketInfo `S377 -> 0 `x e ]
+"15 /home/andresol/tellstick-net/firmware/discovery.c
+[v _remoteNode `S356 0 e ]
+"155 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPIsPutReady `(us 0 ef1`uc ]
+"164 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPPutROMString `(*Cuc 0 ef1`*Cuc ]
+"156 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPPut `(E3956 0 ef1`uc ]
+"91 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _btohexa_high `(uc 0 ef1`uc ]
+[s S358 :6 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S358 . . bIsDHCPEnabled bInConfigMode ]
+[s S357 `S345 1 `S345 1 `S345 1 `S345 1 `S345 1 `S345 1 `S345 1 `uc -> 16 `i `S358 1 `S355 1 ]
+[n S357 . MyIPAddr MyMask MyGateway PrimaryDNSServer SecondaryDNSServer DefaultIPAddr DefaultMask NetBIOSName Flags MyMACAddr ]
+"139 /home/andresol/tellstick-net/tcpip/TCPIP Stack/StackTsk.h
+[v _AppConfig `S357 0 e ]
+"92 /home/andresol/tellstick-net/tcpip/TCPIP Stack/Helpers.h
+[v _btohexa_low `(uc 0 ef1`uc ]
+"158 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPPutString `(*uc 0 ef1`*uc ]
+[s S389 `uc -> 6 `i `uc -> 11 `i `S345 1 `S345 1 `S345 1 `S345 1 `S345 1 ]
+[n S389 . MACAddr secret ipAddr netmask gateway dns1 dns2 ]
+"24 /home/andresol/tellstick-net/firmware/common.h
+[v _config `S389 0 e ]
+"159 /home/andresol/tellstick-net/tcpip/TCPIP Stack/UDP.h
+[v _UDPFlush `(v 0 ef ]
+"17 /home/andresol/tellstick-net/firmware/discovery.c
+[v _discoveryTask `(v 1 ef ]
+{
+[e :U _discoveryTask ]
+[f ]
+"23
+[c E5292 0 1 2 3 .. ]
+[n E5292 . DISCOVERY_HOME DISCOVERY_LISTEN DISCOVERY_REQUEST_RECEIVED DISCOVERY_DISABLED  ]
+[v F5297 `E5292 1 s DiscoverySM ]
+[i F5297
+. `E5292 0
+]
+"25
+[v F5298 `uc 1 s MySocket ]
+"26
+[v _i `uc 1 a ]
+"28
+[e $U 392  ]
+{
+"29
+[e :U 393 ]
+"30
+[e = F5298 ( _UDPOpenEx (4 , , , -> -> 0 `i `ul -> -> 4 `ui `uc -> -> 30303 `i `us -> -> 30303 `i `us ]
+"32
+[e $ ! == -> F5298 `ui -> 255 `ui 394  ]
+{
+"33
+[e $UE 390  ]
+"34
+}
+[e $U 395  ]
+[e :U 394 ]
+{
+"35
+[e ++ F5297 -> -> 1 `i `E5292 ]
+"36
+}
+[e :U 395 ]
+"37
+[e $U 391  ]
+"39
+[e :U 396 ]
+"41
+[e $ ! ! != -> ( _UDPIsGetReady (1 F5298 `ui -> -> -> 0 `i `us `ui 397  ]
+{
+"42
+[e $UE 390  ]
+"43
+}
+[e :U 397 ]
+"46
+[e ( _UDPGet (1 &U _i ]
+"47
+[e ( _UDPDiscard ..  ]
+"48
+[e $ ! != -> _i `ui -> 68 `ui 398  ]
+{
+"49
+[e $UE 390  ]
+"50
+}
+[e :U 398 ]
+"53
+[e ++ F5297 -> -> 1 `i `E5292 ]
+"56
+[e ( _memcpy (3 , , -> &U . . *U + &U _UDPSocketInfo * -> F5298 `ux -> -> # *U &U _UDPSocketInfo `ui `ux 0 0 `*v -> &U _remoteNode `*Cv -> # `S356 `ui ]
+"60
+[e :U 399 ]
+"61
+[e $ ! ! != -> ( _UDPIsPutReady (1 F5298 `ui -> -> -> 0 `i `us `ui 400  ]
+{
+"62
+[e $UE 390  ]
+"63
+}
+[e :U 400 ]
+"65
+[e ( _UDPPutROMString (1 :s 1C ]
+"67
+{
+[e = _i -> -> 0 `i `uc ]
+[e $ < -> _i `i -> 6 `i 401  ]
+[e $U 402  ]
+[e :U 401 ]
+{
+"68
+[e ( _UDPPut (1 ( _btohexa_high (1 *U + &U . . _AppConfig 9 0 * -> _i `ux -> -> # *U &U . . _AppConfig 9 0 `ui `ux ]
+"69
+[e ( _UDPPut (1 ( _btohexa_low (1 *U + &U . . _AppConfig 9 0 * -> _i `ux -> -> # *U &U . . _AppConfig 9 0 `ui `ux ]
+"70
+}
+"67
+[e =+ _i -> -> 1 `i `uc ]
+[e $ < -> _i `i -> 6 `i 401  ]
+[e :U 402 ]
+"70
+}
+"71
+[e ( _UDPPut (1 -> -> 58 `ui `uc ]
+"72
+[e ( _UDPPutString (1 &U . _config 1 ]
+"73
+[e ( _UDPPut (1 -> -> 58 `ui `uc ]
+"74
+[e ( _UDPPutROMString (1 :s 2C ]
+"77
+[e ( _UDPFlush ..  ]
+"80
+[e = F5297 . `E5292 1 ]
+"81
+[e $U 391  ]
+"83
+[e :U 404 ]
+"84
+[e $U 391  ]
+"85
+}
+[e $U 391  ]
+"28
+[e :U 392 ]
+[e [\ F5297 , $ . `E5292 0 393
+ , $ . `E5292 1 396
+ , $ . `E5292 2 399
+ , $ . `E5292 3 404
+ 391 ]
+"85
+[e :U 391 ]
+"86
+[e :UE 390 ]
+}
+[a 2C 88 0 ]
+[a 1C 84 101 108 108 83 116 105 99 107 78 101 116 58 0 ]

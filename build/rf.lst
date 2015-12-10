@@ -1,0 +1,79 @@
+     1: //
+     2: // Copyright (C) 2012 Telldus Technologies AB. All rights reserved.
+     3: //
+     4: // Copyright: See COPYING file that comes with this distribution
+     5: //
+     6: //
+     7: 
+     8: #include "rf.h"
+     9: #include "config.h"
+    10: #include "transmit.h"
+    11: #include "HardwareProfile.h"
+    12: #include <htc.h>
+    13: 
+    14: void activateReceiver() {
+    15:         TX_ANT = 0;
+    16:         RX_ANT = 1;
+    17: }
+    18: 
+    19: void activateTransmitter() {
+    20:         TX_ANT = 1;
+    21:         RX_ANT = 0;
+    22: }
+    23: 
+    24: void initReceiver() {
+    25:         // Prescaler 1:1
+    26:         T4CKPS1 = 0;
+    27:         T4CKPS0 = 0;
+    28: 
+    29:         // Postscaler 1:7
+    30:         T4OUTPS3 = 0;
+    31:         T4OUTPS2 = 0;
+    32:         T4OUTPS1 = 1;
+    33:         T4OUTPS0 = 0;
+    34: 
+    35:         //T3RD16 = 0; //Read/Write in 16-bit mode
+    36: 
+    37:         TMR4ON = 1; // Turn on timer
+    38:         TMR4IF = 0;
+    39:         PR4 = 0xFF;
+    40:         TMR4IE = 1; // Enable interrupt on timer2
+    41: 
+    42: 
+    43:         //SPDT control
+    44:         RX_ANT_TRIS = 0; //Output
+    45:         RECEIVER_TRIS = 1; //Input
+    46: 
+    47:         //High priority interrupt
+    48:         TMR4IP = 1;
+    49: }
+    50: 
+    51: void initTransmitter() {
+    52:         //SPDT control
+    53:         TX_ANT_TRIS = 0; //Output
+    54: 
+    55:         //The SENDER is an output
+    56:         SENDER_TRIS = 0;
+    57: 
+    58:         SENDER = 0;
+    59: 
+    60:         //Timer 3
+    61: 
+    62:         T3CKPS1 = 0;
+    63:         T3CKPS0 = 0;
+    64: 
+    65:         TMR3IE = 1;
+    66:         TMR3IP = 1;
+    67:         TMR3ON = 0;
+    68: }
+    69: 
+    70: void rfStartTransmit() {
+    71:         TMR4ON=0; //Turn off receive sampling
+    72:         activateTransmitter();
+    73: }
+    74: 
+    75: void rfStopTransmit() {
+    76:         activateReceiver();
+    77:         TMR3ON = 0;
+    78:         TMR4ON = 1; //Turn on receive sampling
+    79: }
